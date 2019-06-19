@@ -21,7 +21,7 @@ def new_patch():
 
 
 if __name__ == '__main__':
-    Q = [0 for i in range(13)]
+    Q = [[0 for i in range(13)] for j in range(100)]
     A = list(range(13))
     delta = 0.4
     for i in range(1,101):
@@ -29,10 +29,12 @@ if __name__ == '__main__':
         n = delta/i
         patch = new_patch()
         while patch.num_cancer > 50:
+            state = patch.num_cancer // 100
             rand = random.random()
             if rand > n:
-                ind = np.argmax(Q)
+                ind = np.argmax(Q[state])
             else:
                 ind = random.randint(0,12)
             rew = act(patch, A[ind])
-            Q[ind] = Q[ind]+0.2*rew
+            Q[state][ind] = Q[state][ind]+0.2*(rew+0.3*max(Q[patch.num_cancer//100])- Q[state][ind])
+            patch.tick()
