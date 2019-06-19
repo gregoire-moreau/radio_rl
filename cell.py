@@ -5,13 +5,18 @@ from deer.base_classes import Environment
 cell_cycle = {'G1':12, 'S':6, 'G2':4, 'm': 2}
 
 class Cell:
-    def __init__(self, patch):
+    def __init__(self, patch, x, y):
         self.age = 0
         self.stage = 'G1'
         self.alive = True
         self.patch = patch
+        self.cancer = False
+        self.x = x
+        self.y = y
 
     def tick(self):
+        if not self.alive:
+            return
         # Absorb oxygen
         self.age += 1
         if False: #Check sufficient energy
@@ -19,7 +24,8 @@ class Cell:
         elif self.age == cell_cycle[self.stage]:
             self.age = 0
             if self.stage =='m':
-                self.divide()
+                if self.cancer:
+                    self.divide()
                 self.stage = 'G1'
             else:
                 if self.stage == 'G1':
@@ -30,7 +36,7 @@ class Cell:
                     self.stage = 'm'
 
     def divide(self):
-        self.patch.addCellDivide(Cell(self.patch))
+        self.patch.spreadCancer(self.x, self.y)
 
     def irradiate(self, dose):
         fraction = util.survival_fraction(dose)
@@ -40,32 +46,39 @@ class Cell:
 
 class Patch:
     def __init__(self):
-        self.num_cells = 0
-        self.cells = []
-        self.addList = []
+        self.num_healthy = 9999
+        self.num_cancer = 1
+        self.cells = [[Cell(self, i, j) for i in range(100)] for j in range(100)]
+        self.cells[49][49].cancer = True
 
-    def addCell(self, cell):
-        self.num_cells += 1
-        self.cells.append(cell)
 
-    def addCellDivide(self, cell):
-        self.addList.append(cell)
+    def spreadCancer(self, x, y):
+        for tup in [(x-1, y-1), (x-1, y), (x-1, y+1), (x, y-1), (x, y+1), (x+1, y-1), (x+1, y), (x+1, y+1)]:
+            if (tup[0] >= 0 and tup[0] < 100 and tup[1] >= 0 and tup[1] < 100):
+                self.cells[tup[0]][tup[1]].cancer = True
 
 
     def recount(self):
-        self.cells[:] = [cell for cell in self.cells if cell.alive]
-        self.num_cells = len(self.cells)
+        self.num_healthy = 0
+        self.num_cancer = 0
+        for i in range(100):
+            for j in range(100):
+                if self.cells[i][j].alive:
+                    if self.cells[i][j].cancer:
+                        self.num_cancer += 1
+                    else:
+                        self.num_healthy +=1
 
     def tick(self):
-        for cell in self.cells:
-            cell.tick()
-        self.cells += self.addList
-        self.addList = []
+        for row in self.cells:
+            for cell in row:
+                cell.tick()
         self.recount()
 
     def irradiate(self, dose):
-        for cell in self.cells:
-            cell.irradiate(dose)
+        for row in self.cells:
+            for cell in row:
+                cell.irradiate(dose)
         self.recount()
 
 
