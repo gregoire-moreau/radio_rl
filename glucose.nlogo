@@ -3,6 +3,7 @@ globals
 [
   border ;;border patches where glucose sources
   main ;;all other patches
+  center ;;
   critical-glucose-level
   quiescent-glucose-level
   max-glucose-absorption
@@ -45,8 +46,10 @@ end
 to setup-glucose
   set border patches with [count neighbors != 8];;idetifies patches that have less than eightneighbors as source cells
   set main patches with [count neighbors = 8];;identifies all other patches as interior patches
+  set center patches with [ pxcor = 0 and pycor = 0]
   ask border [set glucose 100];;sets initial level of source cells
   ask main [set glucose 100];;sets initial level of tissue cells
+  ask center [set glucose 100];;sets initial level of tissue cells
 end
 
 
@@ -79,15 +82,14 @@ to go
   update-Healthycell-Distribution
   ask patches [set turtle-count (count turtles-here)]
   diffuse glucose drate
-  ask border [set glucose 10]
+  ;;ask border [set glucose 10]
   recolor
-  tick
 end
 
 
 to diffuse-off-border
   diffuse glucose 1 ;; rate of diffusion command has to be between 0 and drate, max drate is 1
-  ask border [set glucose 110] ;;replenishes edge/source cells to a glucose level of 110
+  ask center [set glucose 110] ;;replenishes edge/source cells to a glucose level of 110
   recolor
 end
 to recolor
@@ -106,7 +108,7 @@ to cycle
           set energy 0
           set stage 0
           set color gray]
-[absorb-glucose
+        [absorb-glucose
           set age ( age + 1 )]]
     ]
   ]
@@ -145,7 +147,7 @@ to cycle
   if stage = 0
   [
     ifelse age > 13 [die] ;usually spend 11 hours, but allow for up to 13
-[ifelse ( glucose / count turtles-here ) < critical-glucose-level [die]
+    [ifelse ( glucose / count turtles-here ) < critical-glucose-level [die]
       [ifelse ( glucose / count turtles-here ) < quiescent-glucose-level
         [absorb-glucose
           set age 0
@@ -177,7 +179,7 @@ to absorb-glucose
   [
     let qefficiency (.75 * efficiency)
     set energy (energy + qefficiency)
-ask patch-here [set glucose (glucose - qefficiency)]
+    ask patch-here [set glucose (glucose - qefficiency)]
   ]
   ;this reduces glucose consumption during the quiescent phase
   ;cells aren't progressing to division and need less energy to perform functions
@@ -185,21 +187,21 @@ ask patch-here [set glucose (glucose - qefficiency)]
     set energy (energy + efficiency)
     let pefficiency efficiency
     ask patch-here [set glucose (glucose - pefficiency)]
-]
+  ]
 end
 
 to divide
   set stage 0
   set color gray
   hatch-Healthycells 1
-[downhill turtle-count
+  [downhill turtle-count
     set age 0
     set energy 0
     set stage 0
     set color gray
     set efficiency random-normal average-glucose-absorption (average-glucose-absorption /
       3)
-if efficiency > max-glucose-absorption [ set efficiency max-glucose-absorption ]
+    if efficiency > max-glucose-absorption [ set efficiency max-glucose-absorption ]
     set transition random-normal (average-glucose-absorption * 11) (average-glucose-absorption
       * 11 / 3)]
 end
@@ -230,8 +232,8 @@ end
 GRAPHICS-WINDOW
 210
 10
-647
-448
+881
+682
 -1
 -1
 13.0
@@ -241,13 +243,13 @@ GRAPHICS-WINDOW
 1
 1
 0
+0
+0
 1
-1
-1
--16
-16
--16
-16
+-25
+25
+-25
+25
 0
 0
 1
@@ -263,7 +265,7 @@ drate
 drate
 0
 1
-0.9
+0.1
 0.1
 1
 NIL
@@ -312,17 +314,17 @@ Initial-Number-Healthycells
 Initial-Number-Healthycells
 0
 1000
-53.0
+95.0
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-899
-97
-1507
-351
+884
+82
+1251
+342
 Healthycell stage distribution
 NIL
 NIL
@@ -331,7 +333,7 @@ NIL
 0.0
 10.0
 true
-false
+true
 "" ""
 PENS
 "G1" 1.0 0 -7500403 true "" ""
@@ -341,10 +343,10 @@ PENS
 "Quiescent" 1.0 0 -1184463 true "" ""
 
 PLOT
-847
-386
-1356
-576
+910
+374
+1419
+564
 Population plot
 NIL
 NIL
@@ -359,10 +361,10 @@ PENS
 "population" 1.0 0 -7500403 true "" ""
 
 PLOT
-676
-194
-876
-344
+1270
+127
+1470
+277
 Interior glucose
 NIL
 NIL
