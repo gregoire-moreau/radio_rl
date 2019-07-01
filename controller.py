@@ -28,20 +28,22 @@ class Controller:
             self.glucose_plot = plt.subplot(121)
             self.cell_plot = plt.subplot(122)
             if draw_mode == 'cells':
-                self.cell_plot.imshow([[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
+                self.cell_plot.imshow([[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
                 self.glucose_plot.imshow(self.grid.glucose)
 
     def go(self):
         self.grid.fill_source(100)
         cell_count = self.grid.cycle_cells()
         self.tick += 1
+        if self.tick >= 500 and self.tick% 12 ==0:
+            grid.irradiate(3,25,25,15,3)
         self.grid.diffuse_glucose(0.9)
         print("Tick :", self.tick, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count)
         if self.draw_step > 0 and self.tick % self.draw_step == 0:
             plt.pause(0.02)
             if self.draw_mode == 'cells':
                 self.cell_plot.imshow(
-                    [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
+                    [[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
                 self.glucose_plot.imshow(self.grid.glucose)
 
 
@@ -55,7 +57,15 @@ def random_sources(xsize, ysize, number):
     return src
 
 
+def patch_type(patch):
+    if len(patch) == 0:
+        return 0
+    else:
+        return patch[0].cell_type()
+
+
 if __name__ == '__main__':
+    random.seed(420)
     grid = Grid(50, 50, glucose = True, border = False, sources=random_sources(50,50, 50), cells = True)
     controller = Controller(grid, glucose = True, draw_step = 100, hcells = 500, draw_mode= 'cells', cancercells=True)
     for i in range(10000):

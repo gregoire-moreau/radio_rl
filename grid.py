@@ -1,6 +1,7 @@
 from cell import HealthyCell, CancerCell
 import numpy as np
 import random
+import math
 
 
 class Grid:
@@ -76,6 +77,23 @@ class Grid:
                 sum.append([i, j, len(self.cells[i][j])])
         return sum
 
+    def irradiate(self, dose, x, y, radius, bystander_radius):
+        for i in range(self.xsize):
+            for j in range(self.ysize):
+                dist = math.sqrt((x-i)**2 + (y-j)**2)
+                if dist <= radius:
+                    for cell in self.cells[i][j]:
+                        cell.radiate(dose)
+                elif dist < radius + bystander_radius:
+                    for cell in self.cells[i][j]:
+                        cell.bystander_radiation((1/2) *
+                                                 math.sqrt(
+                                                     (-dist+radius+bystander_radius) *
+                                                     (dist+bystander_radius-radius) *
+                                                     (dist - bystander_radius + radius) *
+                                                     (dist + bystander_radius + radius)
+                                                 ))
+                self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
 
 def rand_min(neigh):
     v = 1000000
