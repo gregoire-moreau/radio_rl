@@ -17,6 +17,7 @@ class Controller:
         self.draw_step = draw_step
         self.draw_mode = draw_mode
         for i in range(hcells):
+            print(i)
             new_cell = HealthyCell(random.randint(0, 4))
             self.grid.cells[random.randint(0, grid.xsize-1)][random.randint(0, grid.ysize-1)].append(new_cell)
         if cancercells:
@@ -25,36 +26,31 @@ class Controller:
         if draw_step > 0:
             matplotlib.use("TkAgg")
             plt.ion()
-            self.glucose_plot = plt.subplot(121)
-            self.cell_plot = plt.subplot(122)
+            self.glucose_plot = plt.subplot(221)
+            self.cell_plot = plt.subplot(222)
+            self.oxygen_plot = plt.subplot(223)
             if draw_mode == 'cells':
                 self.cell_plot.imshow([[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
                 self.glucose_plot.imshow(self.grid.glucose)
+                self.oxygen_plot.imshow(self.grid.oxygen)
 
     def go(self):
-        self.grid.fill_source(100)
-        cell_count = self.grid.cycle_cells()
+        self.grid.fill_source(100, 4500)
+        self.grid.cycle_cells()
         self.tick += 1
-        if self.tick >= 500 and self.tick% 12 ==0:
-            grid.irradiate(3,25,25,15,3)
+        if self.tick >= 750 and self.tick% 24 ==0:
+            grid.irradiate(4,50,50,30,3)
         self.grid.diffuse_glucose(0.9)
-        print("Tick :", self.tick, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count)
+        self.grid.diffuse_oxygen(0.9)
+        print("Tick :", self.tick, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
+              "Blood Vessels : ", len(self.grid.sources))
         if self.draw_step > 0 and self.tick % self.draw_step == 0:
             plt.pause(0.02)
             if self.draw_mode == 'cells':
                 self.cell_plot.imshow(
                     [[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
                 self.glucose_plot.imshow(self.grid.glucose)
-
-
-def random_sources(xsize, ysize, number):
-    src = []
-    for _ in range(number):
-        x = random.randint(0, xsize-1)
-        y = random.randint(0, ysize-1)
-        if (x, y) not in src:
-            src.append((x,y))
-    return src
+                self.oxygen_plot.imshow(self.grid.oxygen)
 
 
 def patch_type(patch):
@@ -66,8 +62,8 @@ def patch_type(patch):
 
 if __name__ == '__main__':
     random.seed(420)
-    grid = Grid(50, 50, glucose = True, border = False, sources=random_sources(50,50, 50), cells = True)
-    controller = Controller(grid, glucose = True, draw_step = 100, hcells = 500, draw_mode= 'cells', cancercells=True)
+    grid = Grid(100, 100, glucose = True, oxygen = True, cells = True, border = False, sources=250)
+    controller = Controller(grid, glucose = True,  draw_step = 24, hcells = 1000, oxygen=True, draw_mode= 'cells', cancercells=True)
     for i in range(10000):
         controller.go()
     #plt.ioff()
