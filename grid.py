@@ -4,7 +4,7 @@ import random
 import math
 
 
-occlusion_number = 5
+occlusion_number = 10
 
 
 class Grid:
@@ -87,11 +87,11 @@ class Grid:
                 self.glucose[i][j] = glucose
                 self.oxygen[i][j] = oxygen
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
+                # Angiogenesis
                 if (oxygen < len(self.cells[i][j])*critical_oxygen_level
                     or glucose < critical_glucose_level*len(self.cells[i][j]))\
-                        and (i, j) not in self.sources:
+                        and (i, j) not in self.sources: # if one nutrient is low and they are still cells
                     if random.random() < (self.num_sources-len(self.sources))/self.num_sources:
-                        # print("Angiogenesis")
                         self.sources.append((i,j))
                 tot_count += count
         return tot_count
