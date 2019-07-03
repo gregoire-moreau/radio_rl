@@ -5,6 +5,7 @@ import math
 
 
 occlusion_number = 10
+sqrt_2_pi = math.sqrt(2*math.pi)
 
 
 class Grid:
@@ -35,32 +36,64 @@ class Grid:
                 self.oxygen[x][y] = oxygen
 
     def diffuse_glucose(self, drate):
-        new_array = [[0 for i in range(self.ysize)] for j in range(self.xsize)]
-        for x in range(self.xsize):
-            for y in range(self.ysize):
-                new_array[x][y] = (1.0-drate)*self.glucose[x][y] + 0.125*drate*self.neighbors_glucose(x, y)
-        self.glucose = new_array
+        self.glucose = (1-drate)*np.array(self.glucose)+drate*self.neighbors_glucose()
 
     def diffuse_oxygen(self, drate):
-        new_array = [[0 for i in range(self.ysize)] for j in range(self.xsize)]
-        for x in range(self.xsize):
-            for y in range(self.ysize):
-                new_array[x][y] = (1.0-drate)*self.oxygen[x][y] + 0.125*drate*self.neighbors_oxygen(x, y)
-        self.oxygen = new_array
+        self.oxygen = (1 - drate) * np.array(self.oxygen) + drate * self.neighbors_oxygen()
 
-    def neighbors_glucose(self, x, y):
-        sum = 0.0
-        for (i, j) in [(x-1, y-1), (x-1, y), (x-1, y+1), (x, y-1), (x, y+1), (x+1, y-1), (x+1, y), (x+1, y+1)]:
-            if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
-                sum += self.glucose[i][j]
-        return sum
+    def neighbors_glucose(self):
+        down = np.roll(self.glucose, 1, axis= 0)
+        up = np.roll(self.glucose, -1, axis=0)
+        right = np.roll(self.glucose, 1, axis=(0, 1))
+        left = np.roll(self.glucose, -1, axis=(0, 1))
+        down_right = np.roll(down, 1, axis=(0, 1))
+        down_left = np.roll(down, -1, axis=(0, 1))
+        up_right = np.roll(up, 1, axis=(0, 1))
+        up_left = np.roll(up, -1, axis=(0, 1))
+        for i in range(self.ysize):  # Down
+            down[0][i] = 0
+            down_left[0][i] = 0
+            down_right[0][i] = 0
+        for i in range(self.ysize):  # Up
+            up[self.xsize-1][i] = 0
+            up_left[self.xsize - 1][i] = 0
+            up_right[self.xsize - 1][i] = 0
+        for i in range(self.xsize):  # Right
+            right[i][0] = 0
+            down_right[i][0] = 0
+            up_right[i][0] = 0
+        for i in range(self.xsize):  # Left
+            left[i][self.ysize-1] = 0
+            down_left[i][self.ysize-1] = 0
+            up_left[i][self.ysize-1] = 0
+        return down+up+right+left+down_left+down_right+up_left+up_right
 
-    def neighbors_oxygen(self, x, y):
-        sum = 0.0
-        for (i, j) in [(x-1, y-1), (x-1, y), (x-1, y+1), (x, y-1), (x, y+1), (x+1, y-1), (x+1, y), (x+1, y+1)]:
-            if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
-                sum += self.oxygen[i][j]
-        return sum
+    def neighbors_oxygen(self):
+        down = np.roll(self.oxygen, 1, axis= 0)
+        up = np.roll(self.oxygen, -1, axis=0)
+        right = np.roll(self.oxygen, 1, axis=(0, 1))
+        left = np.roll(self.oxygen, -1, axis=(0, 1))
+        down_right = np.roll(down, 1, axis=(0, 1))
+        down_left = np.roll(down, -1, axis=(0, 1))
+        up_right = np.roll(up, 1, axis=(0, 1))
+        up_left = np.roll(up, -1, axis=(0, 1))
+        for i in range(self.ysize):  # Down
+            down[0][i] = 0
+            down_left[0][i] = 0
+            down_right[0][i] = 0
+        for i in range(self.ysize):  # Up
+            up[self.xsize-1][i] = 0
+            up_left[self.xsize - 1][i] = 0
+            up_right[self.xsize - 1][i] = 0
+        for i in range(self.xsize):  # Right
+            right[i][0] = 0
+            down_right[i][0] = 0
+            up_right[i][0] = 0
+        for i in range(self.xsize):  # Left
+            left[i][self.ysize-1] = 0
+            down_left[i][self.ysize-1] = 0
+            up_left[i][self.ysize-1] = 0
+        return down+up+right+left+down_left+down_right+up_left+up_right
 
     def cycle_cells(self):
         tot_count = 0
@@ -104,13 +137,14 @@ class Grid:
                 sum.append([i, j, len(self.cells[i][j])])
         return sum
 
-    def irradiate(self, dose, x, y, radius, bystander_radius):
+    def irradiate(self, dose, x, y, std_dev, bystander_radius):
+        radius = 3*std_dev
         for i in range(self.xsize):
             for j in range(self.ysize):
                 dist = math.sqrt((x-i)**2 + (y-j)**2)
                 if dist <= radius:
                     for cell in self.cells[i][j]:
-                        cell.radiate(dose)
+                        cell.radiate(dose**2*gaussian(dist, std_dev))
                 elif dist < radius + bystander_radius:
                     for cell in self.cells[i][j]:
                         cell.bystander_radiation((1/2) *
@@ -121,6 +155,10 @@ class Grid:
                                                      (dist + bystander_radius + radius)
                                                  ))
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
+
+
+def gaussian(dist, std_dev):
+    return (1/(std_dev*sqrt_2_pi)) * math.exp(-dist**2/(2*std_dev**2))
 
 
 def rand_min(neigh):
