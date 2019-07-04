@@ -1,4 +1,3 @@
-import util
 import random
 import math
 from deer.base_classes import Environment
