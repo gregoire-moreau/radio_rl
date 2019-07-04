@@ -30,16 +30,16 @@ class Grid:
         self.sources = [(x, y) for (x, y) in self.sources if len(self.cells[x][y]) < occlusion_number]
         if glucose != 0:
             for (x, y) in self.sources:
-                self.glucose[x][y] = glucose
+                self.glucose[x][y] += glucose
         if oxygen != 0:
             for (x, y) in self.sources:
-                self.oxygen[x][y] = oxygen
+                self.oxygen[x][y] += oxygen
 
     def diffuse_glucose(self, drate):
-        self.glucose = (1-drate)*np.array(self.glucose)+drate*self.neighbors_glucose()
+        self.glucose = (1-drate)*np.array(self.glucose)+(0.125*drate)*self.neighbors_glucose()
 
     def diffuse_oxygen(self, drate):
-        self.oxygen = (1 - drate) * np.array(self.oxygen) + drate * self.neighbors_oxygen()
+        self.oxygen = (1 - drate) * np.array(self.oxygen) + (0.125*drate) * self.neighbors_oxygen()
 
     def neighbors_glucose(self):
         down = np.roll(self.glucose, 1, axis= 0)
@@ -144,7 +144,7 @@ class Grid:
                 dist = math.sqrt((x-i)**2 + (y-j)**2)
                 if dist <= radius:
                     for cell in self.cells[i][j]:
-                        cell.radiate(dose**2*gaussian(dist, std_dev))
+                        cell.radiate(dose*gaussian(dist, std_dev))
                 elif dist < radius + bystander_radius:
                     for cell in self.cells[i][j]:
                         cell.bystander_radiation((1/2) *
@@ -158,7 +158,7 @@ class Grid:
 
 
 def gaussian(dist, std_dev):
-    return (1/(std_dev*sqrt_2_pi)) * math.exp(-dist**2/(2*std_dev**2))
+    return math.exp(-dist**2/(2*std_dev**2))
 
 
 def rand_min(neigh):

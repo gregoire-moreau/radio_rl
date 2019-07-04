@@ -235,9 +235,11 @@ class CancerCell(Cell):
 
 
 class OARCell(Cell):
+    cell_count = 0
+
     def __init__(self, stage):
+        OARCell.cell_count += 1
         Cell.__init__(self, stage)
-        CancerCell.cell_count += 1
 
     def cycle(self, glucose, count, oxygen):
         return 0,0

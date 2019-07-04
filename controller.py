@@ -2,20 +2,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
 from grid import Grid
-from cell import HealthyCell, CancerCell
+from cell import HealthyCell, CancerCell, OARCell
 import random
 
 
 class Controller:
 
     def __init__(self, grid, glucose = False, hcells = 0, oxygen = False, draw_step = 1, draw_mode = 'glucose',
-                 cancercells=False):
+                 cancercells=False, oar=(0,0)):
         self.grid = grid
         self.tick = 0
         self.glucose = glucose
         self.oxygen = oxygen
         self.draw_step = draw_step
         self.draw_mode = draw_mode
+        for i in range(2*oar[0]):
+            for j in range(2*oar[1]):
+                if i+j <= oar[0]+oar[1]:
+                    self.grid.cells[i][j].append(OARCell(0))
         for i in range(hcells):
             new_cell = HealthyCell(random.randint(0, 4))
             self.grid.cells[random.randint(0, grid.xsize-1)][random.randint(0, grid.ysize-1)].append(new_cell)
@@ -23,6 +27,7 @@ class Controller:
             new_cell = CancerCell(random.randint(0, 3))
             self.grid.cells[grid.xsize//2][grid.ysize//2].append(new_cell)
         self.hcells = hcells
+
         if draw_step > 0:
             self.cell_density_plot = None
             self.glucose_plot = None
@@ -59,10 +64,10 @@ class Controller:
         self.tick += 1
         if self.tick >= 500 and self.tick% 24 ==0:
             grid.irradiate(4,50,50,5,3)
-        self.grid.diffuse_glucose(0.9)
-        self.grid.diffuse_oxygen(0.9)
+        self.grid.diffuse_glucose(0.2)
+        self.grid.diffuse_oxygen(0.2)
         print("Tick :", self.tick, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
-              "Blood Vessels : ", len(self.grid.sources))
+              "Blood Vessels : ", len(self.grid.sources), "OAR cells", OARCell.cell_count)
         if self.draw_step > 0 and self.tick % self.draw_step == 0:
             plt.pause(0.02)
             if self.draw_mode == 'cells':
@@ -85,8 +90,9 @@ def patch_type(patch):
 
 if __name__ == '__main__':
     random.seed(9)
-    grid = Grid(10, 10, glucose = True, oxygen = True, cells = False, border = True, sources=250)
-    controller = Controller(grid, glucose = True,  draw_step = 1, hcells = 0, oxygen=True, draw_mode= 'cells', cancercells=False)
+    grid = Grid(100, 100, glucose = True, oxygen = True, cells = True, border = False, sources=150)
+    controller = Controller(grid, glucose = True,  draw_step = 24, hcells = 1000, oxygen=True, draw_mode= 'cells',
+                            cancercells=True, oar = (25,25))
     for i in range(10000):
         controller.go()
     plt.ioff()
