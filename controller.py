@@ -22,7 +22,12 @@ class Controller:
                     self.grid.cells[i][j].append(OARCell(0))
         for i in range(hcells):
             new_cell = HealthyCell(random.randint(0, 4))
-            self.grid.cells[random.randint(0, grid.xsize-1)][random.randint(0, grid.ysize-1)].append(new_cell)
+            x = random.randint(0, grid.xsize - 1)
+            y = random.randint(0, grid.ysize - 1)
+            while x+y <= oar[0]+oar[1]:
+                x = random.randint(0, grid.xsize - 1)
+                y = random.randint(0, grid.ysize - 1)
+            self.grid.cells[x][y].append(new_cell)
         if cancercells:
             new_cell = CancerCell(random.randint(0, 3))
             self.grid.cells[grid.xsize//2][grid.ysize//2].append(new_cell)
@@ -59,11 +64,11 @@ class Controller:
 
     def go(self):
         if self.hcells > 0:
-            self.grid.fill_source(100, 4500)
+            self.grid.fill_source(200, 4500)
             self.grid.cycle_cells()
         self.tick += 1
         if self.tick >= 500 and self.tick% 24 ==0:
-            grid.irradiate(4,50,50,5,3)
+            grid.irradiate(10,50,50,5,3)
         self.grid.diffuse_glucose(0.2)
         self.grid.diffuse_oxygen(0.2)
         print("Tick :", self.tick, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
@@ -90,10 +95,10 @@ def patch_type(patch):
 
 if __name__ == '__main__':
     random.seed(9)
-    grid = Grid(100, 100, glucose = True, oxygen = True, cells = True, border = False, sources=150)
-    controller = Controller(grid, glucose = True,  draw_step = 24, hcells = 1000, oxygen=True, draw_mode= 'cells',
-                            cancercells=True, oar = (25,25))
-    for i in range(10000):
+    grid = Grid(100,100, glucose = True, oxygen = True, cells = True, border = False, sources=150)
+    controller = Controller(grid, glucose = True,  draw_step = 12, hcells = 1000, oxygen=True, draw_mode= 'cells',
+                            cancercells=True, oar = (5,5))
+    for i in range(3000):
         controller.go()
     plt.ioff()
     plt.show()

@@ -17,7 +17,7 @@ class Grid:
         if cells:
             self.cells = [[[] for i in range(self.ysize)] for j in range(self.xsize)]
         if oxygen:
-            self.oxygen = [[100000 for i in range(self.ysize)] for j in range(xsize)]
+            self.oxygen = [[10000 for i in range(self.ysize)] for j in range(xsize)]
         if border:
             self.sources = [(0, i) for i in range(ysize)]+ [(i, 0) for i in range(xsize)]\
                            + [(xsize-1, i) for i in range(ysize)]+ [(i, ysize-1) for i in range(xsize)]
