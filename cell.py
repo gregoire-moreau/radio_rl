@@ -232,3 +232,15 @@ class CancerCell(Cell):
 
     def cell_type(self):
         return 2
+
+
+class OARCell(Cell):
+    def __init__(self, stage):
+        Cell.__init__(self, stage)
+        CancerCell.cell_count += 1
+
+    def cycle(self, glucose, count, oxygen):
+        return 0,0
+
+    def cell_type(self):
+        return 3
