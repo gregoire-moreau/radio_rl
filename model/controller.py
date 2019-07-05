@@ -17,7 +17,7 @@ class Controller:
         for i in range(2*oar[0]):
             for j in range(2*oar[1]):
                 if i+j <= oar[0]+oar[1]:
-                    self.grid.cells[i][j].append(OARCell(0))
+                    self.grid.cells[i][j].append(OARCell(0, 5))
         for i in range(hcells):
             new_cell = HealthyCell(random.randint(0, 4))
             x = random.randint(0, grid.xsize - 1)
@@ -38,6 +38,7 @@ class Controller:
             self.cell_plot = None
             self.fig = None
             self.plot_init()
+
 
     def plot_init(self):
         matplotlib.use("TkAgg")

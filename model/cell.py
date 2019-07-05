@@ -244,10 +244,12 @@ class CancerCell(Cell):
 
 class OARCell(Cell):
     cell_count = 0
+    worth = 0
 
-    def __init__(self, stage):
+    def __init__(self, stage, worth):
         OARCell.cell_count += 1
         Cell.__init__(self, stage)
+        OARCell.worth = worth
 
     # One hour of cell cycle
     # TODO : Should maybe take nutrients and die if no nutrients?

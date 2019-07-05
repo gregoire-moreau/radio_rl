@@ -5,7 +5,6 @@ import math
 
 
 occlusion_number = 10
-sqrt_2_pi = math.sqrt(2*math.pi)
 
 
 class Grid:
