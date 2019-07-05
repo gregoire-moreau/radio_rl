@@ -33,6 +33,8 @@ class Cell:
         self.oxy_efficiency = 0
         self.oxy_transition = 0
 
+    # Irradiate a cell with a specific dose in Gy
+    # TODO : Include oxygen pressure in the survival probability formula
     def radiate(self, dose):
         survival_probability = math.exp(-alpha*dose - beta * (dose ** 2))
         if random.random() < survival_probability:
@@ -41,6 +43,8 @@ class Cell:
             self.alive = False
             self.__class__.cell_count -= 1
 
+    # Bystander effect on non irradiated cells close to the site of irradiation
+    # TODO : Should take number of irradiated cells into account, not area
     def bystander_radiation(self, neigh_rad):
         bystander_dose = min(neigh_rad * bystander_rad, 1.0)
         if bystander_dose*random.random() > bystander_survival_probability:
@@ -62,10 +66,13 @@ class HealthyCell(Cell):
         self.oxy_efficiency = random.normalvariate(average_oxygen_consumption, average_oxygen_consumption/3)
         self.oxy_efficiency = self.oxy_efficiency if self.oxy_efficiency <= max_oxygen_consumption else max_oxygen_consumption
 
+    # Healthy cells repair themselves after surviving irradiation
+    # TODO : Take into account cell stage ?
     def repair_radiation(self):
         if self.radiation > 0:
             self.radiation = self.radiation * (1-repair)
 
+    # Simulate an hour of the cell cycle
     def cycle(self, glucose, count, oxygen):
         if self.stage == 4:  # Quiescent
             if self.age > 3000:
@@ -161,7 +168,7 @@ class HealthyCell(Cell):
                 return self.efficiency, self.oxy_efficiency
 
     def cell_type(self):
-        return 1
+        return 0, 102, 204
 
 
 class CancerCell(Cell):
@@ -176,6 +183,8 @@ class CancerCell(Cell):
         self.oxy_efficiency = random.normalvariate(average_oxygen_consumption, average_oxygen_consumption / 3)
         self.oxy_efficiency = self.oxy_efficiency if self.oxy_efficiency <= max_oxygen_consumption else max_oxygen_consumption
 
+    # Simulate an hour of the cell cycle
+    # TODO : What happens with radiation? Repair? No division
     def cycle(self, glucose, count, oxygen):
         if self.stage == 3:  # Mitosis
             if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
@@ -230,7 +239,7 @@ class CancerCell(Cell):
                 return self.efficiency, self.oxy_efficiency
 
     def cell_type(self):
-        return 2
+        return 104, 24, 24
 
 
 class OARCell(Cell):
@@ -240,8 +249,10 @@ class OARCell(Cell):
         OARCell.cell_count += 1
         Cell.__init__(self, stage)
 
+    # One hour of cell cycle
+    # TODO : Should maybe take nutrients and die if no nutrients?
     def cycle(self, glucose, count, oxygen):
         return 0,0
 
     def cell_type(self):
-        return 3
+        return 255, 255, 153

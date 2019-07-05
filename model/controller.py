@@ -7,14 +7,13 @@ import random
 
 class Controller:
 
-    def __init__(self, grid, glucose = False, hcells = 0, oxygen = False, draw_step = 1, draw_mode = 'glucose',
+    def __init__(self, grid, glucose = False, hcells = 0, oxygen = False, draw_step = 0,
                  cancercells=False, oar=(0,0)):
         self.grid = grid
         self.tick = 0
         self.glucose = glucose
         self.oxygen = oxygen
         self.draw_step = draw_step
-        self.draw_mode = draw_mode
         for i in range(2*oar[0]):
             for j in range(2*oar[1]):
                 if i+j <= oar[0]+oar[1]:
@@ -61,6 +60,7 @@ class Controller:
         self.glucose_plot.imshow(self.grid.glucose)
         self.oxygen_plot.imshow(self.grid.oxygen)
 
+    # Simulates one hour on the grid : Nutrient diffusion and replenishment, cell cycle
     def go(self):
         if self.hcells > 0:
             self.grid.fill_source(200, 4500)
@@ -69,22 +69,24 @@ class Controller:
         self.grid.diffuse_glucose(0.2)
         self.grid.diffuse_oxygen(0.2)
         if self.draw_step > 0 and self.tick % self.draw_step == 0:
-            plt.pause(0.02)
-            if self.draw_mode == 'cells':
-                self.fig.suptitle('Cell proliferation at t = '+str(self.tick))
-                self.glucose_plot.imshow(self.grid.glucose)
-                self.oxygen_plot.imshow(self.grid.oxygen)
-                if self.hcells > 0:
-                    self.cell_plot.imshow(
-                        [[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in
-                         range(self.grid.xsize)])
-                    self.cell_density_plot.imshow(
-                        [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
+            self.update_plots()
+
+    def update_plots(self):
+        plt.pause(0.02)
+        self.fig.suptitle('Cell proliferation at t = ' + str(self.tick))
+        self.glucose_plot.imshow(self.grid.glucose)
+        self.oxygen_plot.imshow(self.grid.oxygen)
+        if self.hcells > 0:
+            self.cell_plot.imshow(
+                [[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in
+                range(self.grid.xsize)])
+            self.cell_density_plot.imshow(
+                [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
 
 
 def patch_type(patch):
     if len(patch) == 0:
-        return 0
+        return 0, 0, 0
     else:
         return patch[0].cell_type()
 
@@ -92,7 +94,7 @@ def patch_type(patch):
 if __name__ == '__main__':
     random.seed(9)
     grid = Grid(100,100, glucose = True, oxygen = True, cells = True, border = False, sources=150)
-    controller = Controller(grid, glucose = True,  draw_step = 12, hcells = 1000, oxygen=True, draw_mode= 'cells',
+    controller = Controller(grid, glucose = True,  draw_step = 12, hcells = 1000, oxygen=True,
                             cancercells=True, oar = (5,5))
     for i in range(3000):
         controller.go()

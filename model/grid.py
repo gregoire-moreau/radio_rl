@@ -26,6 +26,7 @@ class Grid:
             self.num_sources = sources
             self.sources = random_sources(xsize, ysize, sources)
 
+    # Sources of nutrients are refilled
     def fill_source(self, glucose=0, oxygen=0):
         self.sources = [(x, y) for (x, y) in self.sources if len(self.cells[x][y]) < occlusion_number]
         if glucose != 0:
@@ -35,6 +36,7 @@ class Grid:
             for (x, y) in self.sources:
                 self.oxygen[x][y] += oxygen
 
+    # drate = diffusion rate : percentage of glucose that one patch loses to its neighbors
     def diffuse_glucose(self, drate):
         self.glucose = (1-drate)*np.array(self.glucose)+(0.125*drate)*self.neighbors_glucose()
 
@@ -161,6 +163,7 @@ def gaussian(dist, std_dev):
     return math.exp(-dist**2/(2*std_dev**2))
 
 
+# Returns the index of one of the neighboring patches with the lowest density of cells
 def rand_min(neigh):
     v = 1000000
     ind = []
@@ -173,6 +176,7 @@ def rand_min(neigh):
     return random.choice(ind)
 
 
+# Creates a list of random positions in the grid where the sources of nutrients (blood vessels) will be
 def random_sources(xsize, ysize, number):
     src = []
     for _ in range(number):
