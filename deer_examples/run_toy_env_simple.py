@@ -6,7 +6,7 @@ import numpy as np
 
 from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
-from toy_env import MyEnv as Toy_env
+from deer_examples.toy_env import MyEnv as Toy_env
 import deer.experiment.base_controllers as bc
 
 rng = np.random.RandomState(123456)

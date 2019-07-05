@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import matplotlib
-from grid import Grid
-from cell import HealthyCell, CancerCell, OARCell
+from model.grid import Grid
+from model.cell import HealthyCell, CancerCell, OARCell
 import random
 
 
@@ -67,12 +66,8 @@ class Controller:
             self.grid.fill_source(200, 4500)
             self.grid.cycle_cells()
         self.tick += 1
-        if self.tick >= 500 and self.tick% 24 ==0:
-            grid.irradiate(10,50,50,5,3)
         self.grid.diffuse_glucose(0.2)
         self.grid.diffuse_oxygen(0.2)
-        print("Tick :", self.tick, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
-              "Blood Vessels : ", len(self.grid.sources), "OAR cells", OARCell.cell_count)
         if self.draw_step > 0 and self.tick % self.draw_step == 0:
             plt.pause(0.02)
             if self.draw_mode == 'cells':
@@ -85,6 +80,7 @@ class Controller:
                          range(self.grid.xsize)])
                     self.cell_density_plot.imshow(
                         [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
+
 
 def patch_type(patch):
     if len(patch) == 0:
@@ -100,5 +96,7 @@ if __name__ == '__main__':
                             cancercells=True, oar = (5,5))
     for i in range(3000):
         controller.go()
+        print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
+              "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
     plt.ioff()
     plt.show()

@@ -1,4 +1,4 @@
-from cell import HealthyCell, CancerCell, critical_oxygen_level, critical_glucose_level
+from model.cell import HealthyCell, CancerCell, critical_oxygen_level, critical_glucose_level
 import numpy as np
 import random
 import math
