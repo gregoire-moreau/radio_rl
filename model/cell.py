@@ -167,8 +167,11 @@ class HealthyCell(Cell):
                     self.age += 1
                 return self.efficiency, self.oxy_efficiency
 
-    def cell_type(self):
+    def cell_color(self):
         return 0, 102, 204
+
+    def cell_type(self):
+        return -1
 
 
 class CancerCell(Cell):
@@ -238,13 +241,15 @@ class CancerCell(Cell):
                     self.age += 1
                 return self.efficiency, self.oxy_efficiency
 
-    def cell_type(self):
+    def cell_color(self):
         return 104, 24, 24
 
+    def cell_type(self):
+        return 1
 
 class OARCell(Cell):
     cell_count = 0
-    worth = 0
+    worth = 1
 
     def __init__(self, stage, worth):
         OARCell.cell_count += 1
@@ -256,5 +261,8 @@ class OARCell(Cell):
     def cycle(self, glucose, count, oxygen):
         return 0,0
 
-    def cell_type(self):
+    def cell_color(self):
         return 255, 255, 153
+
+    def cell_type(self):
+        return -OARCell.worth

@@ -2,21 +2,23 @@ from cell_environment import CellEnvironment
 import numpy as np
 from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
+from deer.learning_algos.AC_net_keras import MyACNetwork
 import deer.experiment.base_controllers as bc
 
 env = CellEnvironment()
 
 rng = np.random.RandomState(123456)
 
-qnetwork = MyQNetwork(
+Qnetwork = MyQNetwork(
     environment=env,
     random_state=rng)
 
 agent = NeuralAgent(
     env,
-    qnetwork,
+    Qnetwork,
     random_state=rng)
 
+agent.setDiscountFactor(0.7)
 agent.attach(bc.VerboseController())
 
 agent.attach(bc.TrainerController())

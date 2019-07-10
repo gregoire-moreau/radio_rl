@@ -55,7 +55,7 @@ class Controller:
         self.cell_density_plot.set_title('Cell density')
         if self.hcells > 0:
             self.cell_plot.imshow(
-                [[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
+                [[patch_type_color(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
             self.cell_density_plot.imshow(
                 [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
         self.glucose_plot.imshow(self.grid.glucose)
@@ -79,17 +79,17 @@ class Controller:
         self.oxygen_plot.imshow(self.grid.oxygen)
         if self.hcells > 0:
             self.cell_plot.imshow(
-                [[patch_type(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in
+                [[patch_type_color(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in
                 range(self.grid.xsize)])
             self.cell_density_plot.imshow(
                 [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
 
 
-def patch_type(patch):
+def patch_type_color(patch):
     if len(patch) == 0:
         return 0, 0, 0
     else:
-        return patch[0].cell_type()
+        return patch[0].cell_color()
 
 
 if __name__ == '__main__':
@@ -101,5 +101,7 @@ if __name__ == '__main__':
         controller.go()
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
+        if i > 500 and i % 12 == 0:
+            grid.irradiate(4, 50,50,10,2)
     plt.ioff()
     plt.show()

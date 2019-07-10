@@ -5,7 +5,7 @@ import math
 
 
 occlusion_number = 10
-
+sqrt_2_pi = math.sqrt(2*math.pi)
 
 class Grid:
     def __init__(self, xsize, ysize, glucose=False, cells=False, oxygen=False, border=False, sources=0):
@@ -140,12 +140,13 @@ class Grid:
 
     def irradiate(self, dose, x, y, std_dev, bystander_radius):
         radius = 3*std_dev
+        center = gaussian(0, std_dev)
         for i in range(self.xsize):
             for j in range(self.ysize):
                 dist = math.sqrt((x-i)**2 + (y-j)**2)
                 if dist <= radius:
                     for cell in self.cells[i][j]:
-                        cell.radiate(dose*gaussian(dist, std_dev))
+                        cell.radiate(dose*gaussian(dist, std_dev)/center)
                 elif dist < radius + bystander_radius:
                     for cell in self.cells[i][j]:
                         cell.bystander_radiation((1/2) *
@@ -159,7 +160,7 @@ class Grid:
 
 
 def gaussian(dist, std_dev):
-    return math.exp(-dist**2/(2*std_dev**2))
+    return math.exp(-dist**2/(2*std_dev**2))/(std_dev*sqrt_2_pi)
 
 
 # Returns the index of one of the neighboring patches with the lowest density of cells
