@@ -27,7 +27,8 @@ class Controller:
                 y = random.randint(0, grid.ysize - 1)
             self.grid.cells[x][y].append(new_cell)
         if cancercells:
-            new_cell = CancerCell(random.randint(0, 3))
+            new_cell = CancerCell(random.randint(0, 3), grid.xsize//2, grid.ysize//2)
+            CancerCell.center = (grid.xsize//2, grid.ysize//2)
             self.grid.cells[grid.xsize//2][grid.ysize//2].append(new_cell)
         self.hcells = hcells
 
@@ -38,7 +39,6 @@ class Controller:
             self.cell_plot = None
             self.fig = None
             self.plot_init()
-
 
     def plot_init(self):
         matplotlib.use("TkAgg")
@@ -73,7 +73,7 @@ class Controller:
             self.update_plots()
 
     def update_plots(self):
-        plt.pause(0.02)
+
         self.fig.suptitle('Cell proliferation at t = ' + str(self.tick))
         self.glucose_plot.imshow(self.grid.glucose)
         self.oxygen_plot.imshow(self.grid.oxygen)
@@ -83,6 +83,7 @@ class Controller:
                 range(self.grid.xsize)])
             self.cell_density_plot.imshow(
                 [[len(self.grid.cells[i][j]) for j in range(self.grid.ysize)] for i in range(self.grid.xsize)])
+        plt.pause(0.02)
 
 
 def patch_type_color(patch):
@@ -93,15 +94,18 @@ def patch_type_color(patch):
 
 
 if __name__ == '__main__':
-    random.seed(9)
-    grid = Grid(100,100, glucose = True, oxygen = True, cells = True, border = False, sources=150)
-    controller = Controller(grid, glucose = True,  draw_step = 12, hcells = 1000, oxygen=True,
-                            cancercells=True, oar = (5,5))
+    random.seed(96)
+    grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
+    controller = Controller(grid, glucose = True,  draw_step = 12, hcells = 500, oxygen=True,
+                            cancercells=True, oar = (0, 0))
     for i in range(3000):
         controller.go()
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
-        if i > 500 and i % 12 == 0:
-            grid.irradiate(4, 50,50,10,2)
+        if CancerCell.cell_count == 0:
+            break
+        if i > 500 and i % 24 == 0:
+            grid.irradiate(4, 25, 25)
+
     plt.ioff()
     plt.show()

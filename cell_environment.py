@@ -11,15 +11,17 @@ def patch_type(patch):
     if len(patch) == 0:
         return 0
     else:
-        return patch[0].cell_type()
+        return patch[0].cell_type()*len(patch)
 
 
 class CellEnvironment(Environment):
     def __init__(self):
-        print("init")
+        HealthyCell.cell_count = 0
+        CancerCell.cell_count = 0
+        OARCell.cell_count = 0
         self.grid = None
         self.controller = None
-        self.grid = Grid(100, 100, glucose=True, oxygen=True, cells=True, border=False, sources=150)
+        self.grid = Grid(50,  50, glucose=True, oxygen=True, cells=True, border=False, sources=150)
         self.controller = Controller(self.grid, glucose=True, draw_step=0, hcells=1000, oxygen=True,
                                      cancercells=True, oar=(0, 0))
         for i in range(500):
@@ -29,54 +31,62 @@ class CellEnvironment(Environment):
         self.h_cell_reset = HealthyCell.cell_count
         self.c_cell_reset = CancerCell.cell_count
         self.oar_cell_reset = OARCell.cell_count
+        self.draw = False
 
     def reset(self, mode):
-        print(self.num)
         if mode == -1 or True:
-            if self.num+1 % 10 == 0:
-                print('aa')
+            if ((self.num+1) % 25) == 0 and False:
                 self.__init__()
-            '''
-            if hasattr(self.current_controller, 'fig'):
+            if self.draw and hasattr(self.current_controller, 'fig'):
                 # self.current_controller.fig.ioff()
                 self.current_controller.fig.show()
-            '''
+
             self.num += 1
             self.current_controller = copy.deepcopy(self.controller)
-            '''
-            if self.num % 5 == 0:
+            assert(len(CancerCell.cell_list) == CancerCell.cell_count), "Not the same number"
+
+            if self.draw and self.num % 5 == 0:
                 self.current_controller.plot_init()
-            '''
+
             HealthyCell.cell_count = self.h_cell_reset
             CancerCell.cell_count = self.c_cell_reset
             OARCell.cell_count = self.oar_cell_reset
+            self.current_controller.grid.cancer_list_reset()
 
     def act(self, action):
         pre_hcell = HealthyCell.cell_count
         pre_ccell = CancerCell.cell_count
         pre_oarcell = OARCell.cell_count
-        self.current_controller.grid.irradiate(action//10, 50,50, action%10+3, 3)
+        self.current_controller.grid.irradiate(action, 25, 25)
         post_hcell = HealthyCell.cell_count
         post_ccell = CancerCell.cell_count
         post_oarcell = OARCell.cell_count
-        print("Radiation dose :", action // 10, "Gy, std dev =", action % 10 + 3, (pre_ccell - post_ccell),
+        print("Radiation dose :", action, "Gy", (pre_ccell - post_ccell),
               CancerCell.cell_count)
-        self.current_controller.go()
-        '''
-        if self.num % 5 == 0 and (self.inTerminalState() or self.current_controller.tick % 12 ==0) :
+        for _ in range(24):
+            self.current_controller.go()
+
+        if self.draw and self.num % 5 == 0 and (self.inTerminalState() or self.current_controller.tick % 12 == 0):
             self.current_controller.update_plots()
-        '''
+
         if self.inTerminalState():
             if CancerCell.cell_count > HealthyCell.cell_count:
-                return -10000
-            else: return 10000
-        return (pre_ccell-post_ccell)-(pre_hcell-post_hcell)-OARCell.worth*(pre_oarcell-post_oarcell)
+                return -100000
+            else: return 100000
+        return (pre_ccell-post_ccell)-5*(pre_hcell-post_hcell)-OARCell.worth*(pre_oarcell-post_oarcell)
 
     def inTerminalState(self):
-        return CancerCell.cell_count < 10 or HealthyCell.cell_count < 10
+        if CancerCell.cell_count <= 0 :
+            print("No more cancer, healthy cells lost = ", self.h_cell_reset - HealthyCell.cell_count)
+            return True
+        elif HealthyCell.cell_count < 10:
+            print("Cancer wins, healthy cells lost = ",  self.h_cell_reset - HealthyCell.cell_count)
+            return True
+        else:
+            return False
 
     def nActions(self):
-        return 100
+        return [[0, 10]]
 
     def end(self):
         del self.grid
@@ -87,7 +97,7 @@ class CellEnvironment(Environment):
 
     def observe(self):
         cell_types = np.array([[patch_type(self.current_controller.grid.cells[i][j])
-                                                                 for j in range(self.current_controller.grid.ysize)]
+                                                                for j in range(self.current_controller.grid.ysize)]
                                                                 for i in range(self.current_controller.grid.xsize)], dtype=np.float32)
         return [CancerCell.cell_count, HealthyCell.cell_count, cv2.resize(cell_types,
                                                                 dsize=(20,20), interpolation=cv2.INTER_CUBIC)]

@@ -9,16 +9,19 @@ env = CellEnvironment()
 
 rng = np.random.RandomState(123456)
 
-Qnetwork = MyQNetwork(
+# TODO : best algorithm, hyperparameter tuning
+Qnetwork = MyACNetwork(
     environment=env,
     random_state=rng)
+
 
 agent = NeuralAgent(
     env,
     Qnetwork,
     random_state=rng)
 
-agent.setDiscountFactor(0.7)
+# TODO : Find best discount factor
+agent.setDiscountFactor(0.9)
 agent.attach(bc.VerboseController())
 
 agent.attach(bc.TrainerController())
@@ -29,3 +32,5 @@ agent.attach(bc.InterleavedTestEpochController(
 
 # --- Run the experiment ---
 agent.run(n_epochs=100, epoch_length=1000)
+
+agent.dumpNetwork("net")

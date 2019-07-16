@@ -2,10 +2,12 @@ from model.cell import HealthyCell, CancerCell, critical_oxygen_level, critical_
 import numpy as np
 import random
 import math
+import scipy.special
 
 
-occlusion_number = 10
+occlusion_number = 6
 sqrt_2_pi = math.sqrt(2*math.pi)
+
 
 class Grid:
     def __init__(self, xsize, ysize, glucose=False, cells=False, oxygen=False, border=False, sources=0):
@@ -112,7 +114,7 @@ class Grid:
                             self.cells[neigh[downhill][0]][neigh[downhill][1]].append(HealthyCell(0))
                         else:
                             downhill = random.randint(0, len(neigh)-1)
-                            self.cells[neigh[downhill][0]][neigh[downhill][1]].append(CancerCell(0))
+                            self.cells[neigh[downhill][0]][neigh[downhill][1]].append(CancerCell(0, neigh[downhill][0], neigh[downhill][1]))
                         neigh[downhill][2] += 1
                     glucose -= res[0]
                     oxygen -= res[1]
@@ -121,6 +123,7 @@ class Grid:
                 self.glucose[i][j] = glucose
                 self.oxygen[i][j] = oxygen
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
+                self.cells[i][j].sort()
                 # Angiogenesis
                 if (oxygen < len(self.cells[i][j])*critical_oxygen_level
                     or glucose < critical_glucose_level*len(self.cells[i][j]))\
@@ -138,29 +141,40 @@ class Grid:
                 sum.append([i, j, len(self.cells[i][j])])
         return sum
 
-    def irradiate(self, dose, x, y, std_dev, bystander_radius):
-        radius = 3*std_dev
-        center = gaussian(0, std_dev)
+    def irradiate(self, dose, x, y, rad = -1):
+        radius = self.tumor_radius()*1.1 if rad == -1 else rad
+        if radius == 0:
+            return
+        multiplicator = dose/conv(radius, 0)
         for i in range(self.xsize):
             for j in range(self.ysize):
                 dist = math.sqrt((x-i)**2 + (y-j)**2)
-                if dist <= radius:
+                if dist <= 2*radius:
                     for cell in self.cells[i][j]:
-                        cell.radiate(dose*gaussian(dist, std_dev)/center)
-                elif dist < radius + bystander_radius:
-                    for cell in self.cells[i][j]:
-                        cell.bystander_radiation((1/2) *
-                                                 math.sqrt(
-                                                     (-dist+radius+bystander_radius) *
-                                                     (dist+bystander_radius-radius) *
-                                                     (dist - bystander_radius + radius) *
-                                                     (dist + bystander_radius + radius)
-                                                 ))
+                        cell.radiate(conv(radius, dist)*multiplicator)
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
+                self.cells[i][j].sort()
+
+    def tumor_radius(self):
+        if CancerCell.cell_count > 0:
+            return max(CancerCell.cell_list, key=lambda x: x.dist).dist
+        else:
+            return 0
+
+    def cancer_list_reset(self):
+        CancerCell.cell_list = []
+        for i in range(self.xsize):
+            for j in range(self.ysize):
+                for cell in self.cells[i][j]:
+                    if cell.__class__ == CancerCell:
+                        CancerCell.cell_list.append(cell)
+
+# std_dev = 0.4 cm = 1.6 cases
+denom = math.sqrt(2)*3
 
 
-def gaussian(dist, std_dev):
-    return math.exp(-dist**2/(2*std_dev**2))/(std_dev*sqrt_2_pi)
+def conv(rad, x):
+    return scipy.special.erf((rad-x)/denom)-scipy.special.erf((-rad-x)/denom)
 
 
 # Returns the index of one of the neighboring patches with the lowest density of cells
