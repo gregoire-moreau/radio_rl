@@ -43,7 +43,6 @@ class CellEnvironment(Environment):
 
             self.num += 1
             self.current_controller = copy.deepcopy(self.controller)
-            assert(len(CancerCell.cell_list) == CancerCell.cell_count), "Not the same number"
 
             if self.draw and self.num % 5 == 0:
                 self.current_controller.plot_init()
@@ -51,7 +50,6 @@ class CellEnvironment(Environment):
             HealthyCell.cell_count = self.h_cell_reset
             CancerCell.cell_count = self.c_cell_reset
             OARCell.cell_count = self.oar_cell_reset
-            self.current_controller.grid.cancer_list_reset()
 
     def act(self, action):
         pre_hcell = HealthyCell.cell_count

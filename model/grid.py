@@ -26,6 +26,10 @@ class Grid:
         else:
             self.num_sources = sources
             self.sources = random_sources(xsize, ysize, sources)
+        self.neigh_counts = None
+
+    def count_neigbors(self):
+        self.neigh_counts = [[len(self.cells[j][i])+sum(v for x,y, v in self.neighbors(j, i)) for i in range(self.ysize)] for j in range(self.xsize)]
 
     # Sources of nutrients are refilled
     def fill_source(self, glucose=0, oxygen=0):
@@ -105,21 +109,21 @@ class Grid:
                 count = len(self.cells[i][j])
                 glucose = self.glucose[i][j]
                 oxygen = self.oxygen[i][j]
-                neigh = self.neighbors(i, j)
                 for cell in self.cells[i][j]:
-                    res = cell.cycle(self.glucose[i][j] / count,  count + sum(v for x,y,v in neigh), self.oxygen[i][j] / count,)
+                    res = cell.cycle(self.glucose[i][j] / count,  self.neigh_counts[i][j], self.oxygen[i][j] / count,)
                     if len(res) > 2:
                         if res[2] == 0:
-                            downhill = rand_min(neigh)
-                            self.cells[neigh[downhill][0]][neigh[downhill][1]].append(HealthyCell(0))
+                            downhill = self.rand_min(i, j)
+                            self.cells[downhill[0]][downhill[1]].append(HealthyCell(0))
                         else:
-                            downhill = random.randint(0, len(neigh)-1)
-                            self.cells[neigh[downhill][0]][neigh[downhill][1]].append(CancerCell(0, neigh[downhill][0], neigh[downhill][1]))
-                        neigh[downhill][2] += 1
+                            downhill = self.rand_neigh(i, j)
+                            self.cells[downhill[0]][downhill[1]].append(CancerCell(0, downhill[0], downhill[1]))
+                        self.add_neigh_count(downhill[0], downhill[1], 1)
                     glucose -= res[0]
                     oxygen -= res[1]
                     if not cell.alive:
                         count -= 1
+                        self.add_neigh_count(i, j, -1)
                 self.glucose[i][j] = glucose
                 self.oxygen[i][j] = oxygen
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
@@ -135,7 +139,7 @@ class Grid:
 
     def neighbors(self, x, y):
         sum = []
-        for (i, j) in [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
+        for (i, j) in [(x, y), (x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
                        (x + 1, y + 1)]:
             if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
                 sum.append([i, j, len(self.cells[i][j])])
@@ -153,21 +157,52 @@ class Grid:
                     for cell in self.cells[i][j]:
                         cell.radiate(conv(radius, dist)*multiplicator)
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
-                self.cells[i][j].sort()
+        self.count_neigbors()
 
     def tumor_radius(self):
         if CancerCell.cell_count > 0:
-            return max(CancerCell.cell_list, key=lambda x: x.dist).dist
+            max_dist = -1
+            for i in range(self.xsize):
+                for j in range(self.ysize):
+                    if len(self.cells[i][j]) > 0 and self.cells[i][j][0].__class__ == CancerCell:
+                        v = self.dist(i, j, self.xsize//2, self.ysize//2)
+                        if v > max_dist:
+                            max_dist = v
+            return max_dist
         else:
             return 0
 
-    def cancer_list_reset(self):
-        CancerCell.cell_list = []
-        for i in range(self.xsize):
-            for j in range(self.ysize):
-                for cell in self.cells[i][j]:
-                    if cell.__class__ == CancerCell:
-                        CancerCell.cell_list.append(cell)
+    def dist(self, x,y, x_center, y_center):
+        return math.sqrt((x-x_center)**2 + (y-y_center)**2)
+
+    # Returns the index of one of the neighboring patches with the lowest density of cells
+    def rand_min(self, x, y):
+        v = 1000000
+        ind = []
+        for (i, j) in [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
+                       (x + 1, y + 1)]:
+            if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
+                if len(self.cells[i][j]) < v:
+                    v = len(self.cells[i][j])
+                    ind = [(i, j)]
+                elif len(self.cells[i][j]) == v:
+                    ind.append((i, j))
+        return random.choice(ind)
+
+    def rand_neigh(self, x, y):
+        ind = []
+        for (i, j) in [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
+                       (x + 1, y + 1)]:
+            if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
+                    ind.append((i, j))
+        return random.choice(ind)
+
+    def add_neigh_count(self, x, y, v):
+        for (i, j) in [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
+                       (x + 1, y + 1)]:
+            if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
+                self.neigh_counts[i][j] += v
+
 
 # std_dev = 0.4 cm = 1.6 cases
 denom = math.sqrt(2)*3
@@ -175,19 +210,6 @@ denom = math.sqrt(2)*3
 
 def conv(rad, x):
     return scipy.special.erf((rad-x)/denom)-scipy.special.erf((-rad-x)/denom)
-
-
-# Returns the index of one of the neighboring patches with the lowest density of cells
-def rand_min(neigh):
-    v = 1000000
-    ind = []
-    for i in range(len(neigh)):
-        if neigh[i][2] < v:
-            ind = [i]
-            v = neigh[i][2]
-        elif neigh[i][2] == v:
-            ind.append(i)
-    return random.choice(ind)
 
 
 # Creates a list of random positions in the grid where the sources of nutrients (blood vessels) will be

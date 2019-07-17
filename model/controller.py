@@ -32,6 +32,8 @@ class Controller:
             self.grid.cells[grid.xsize//2][grid.ysize//2].append(new_cell)
         self.hcells = hcells
 
+        self.grid.count_neigbors()
+
         if draw_step > 0:
             self.cell_density_plot = None
             self.glucose_plot = None
@@ -96,16 +98,17 @@ def patch_type_color(patch):
 if __name__ == '__main__':
     random.seed(96)
     grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
-    controller = Controller(grid, glucose = True,  draw_step = 12, hcells = 500, oxygen=True,
+    controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
                             cancercells=True, oar = (0, 0))
     for i in range(3000):
         controller.go()
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
-        if CancerCell.cell_count == 0:
+        if CancerCell.cell_count == 0 or HealthyCell.cell_count == 0:
             break
         if i > 500 and i % 24 == 0:
-            grid.irradiate(4, 25, 25)
-
+            grid.irradiate(2, 25, 25)
+    '''
     plt.ioff()
     plt.show()
+    '''

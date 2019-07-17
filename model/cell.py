@@ -165,7 +165,6 @@ class CancerCell(Cell):
             self.radiation += 1.0
         else:
             self.alive = False
-            CancerCell.cell_list.remove(self)
             CancerCell.cell_count -= 1
 
     # Simulate an hour of the cell cycle
@@ -175,7 +174,6 @@ class CancerCell(Cell):
             if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
                 self.alive = False
                 CancerCell.cell_count -= 1
-                CancerCell.cell_list.remove(self)
                 return 0, 0
             else:
                 self.energy += self.efficiency
@@ -185,7 +183,6 @@ class CancerCell(Cell):
             if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
                 self.alive = False
                 CancerCell.cell_count -= 1
-                CancerCell.cell_list.remove(self)
                 return 0, 0
             elif self.age == 4:
                 self.age = 0
@@ -200,7 +197,6 @@ class CancerCell(Cell):
             if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
                 self.alive = False
                 CancerCell.cell_count -= 1
-                CancerCell.cell_list.remove(self)
                 return 0, 0
             elif self.age == 8:
                 self.age = 0
@@ -215,7 +211,6 @@ class CancerCell(Cell):
             if self.age == 13 or glucose < critical_glucose_level or oxygen < critical_oxygen_level:
                 self.alive = False
                 CancerCell.cell_count -= 1
-                CancerCell.cell_list.remove(self)
                 return 0, 0
             else:
                 self.energy += self.efficiency
