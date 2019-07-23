@@ -8,8 +8,10 @@ average_glucose_absorption = .36
 average_cancer_glucose_absorption = .54
 critical_neighbors = 9
 critical_glucose_level = 6.48
-alpha = 0.1012
-beta = 0.0337
+alpha_tumor = 0.38
+beta_tumor = 0.038
+alpha_norm_tissue = 0.03
+beta_norm_tissue = 0.009
 repair = 0.1
 bystander_rad = 0.05
 bystander_survival_probability = 0.95
@@ -129,7 +131,7 @@ class HealthyCell(Cell):
                 return self.efficiency, self.oxy_efficiency
 
     def radiate(self, dose):
-        survival_probability = math.exp(-alpha*dose - beta * (dose ** 2))
+        survival_probability = math.exp(-alpha_norm_tissue*dose - beta_norm_tissue * (dose ** 2))
         if random.random() < survival_probability:
             self.radiation += 1.0
         else:
@@ -160,7 +162,7 @@ class CancerCell(Cell):
         CancerCell.cell_list.append(self)
 
     def radiate(self, dose):
-        survival_probability = math.exp(-alpha*dose - beta * (dose ** 2))
+        survival_probability = math.exp(-alpha_tumor*dose - beta_tumor * (dose ** 2))
         if random.random() < survival_probability:
             self.radiation += 1.0
         else:
@@ -250,7 +252,7 @@ class OARCell(Cell):
         return -OARCell.worth
 
     def radiate(self, dose):
-        survival_probability = math.exp(-alpha*dose - beta * (dose ** 2))
+        survival_probability = math.exp(-alpha_norm_tissue*dose - beta_norm_tissue * (dose ** 2))
         if random.random() < survival_probability:
             self.radiation += 1.0
         else:

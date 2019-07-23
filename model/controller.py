@@ -66,7 +66,7 @@ class Controller:
     # Simulates one hour on the grid : Nutrient diffusion and replenishment, cell cycle
     def go(self):
         if self.hcells > 0:
-            self.grid.fill_source(200, 4500)
+            self.grid.fill_source(100, 4500)
             self.grid.cycle_cells()
         self.tick += 1
         self.grid.diffuse_glucose(0.2)
@@ -96,7 +96,7 @@ def patch_type_color(patch):
 
 
 if __name__ == '__main__':
-    random.seed(96)
+    random.seed(4775)
     grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
     controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
                             cancercells=True, oar = (0, 0))
@@ -106,7 +106,7 @@ if __name__ == '__main__':
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
         if CancerCell.cell_count == 0 or HealthyCell.cell_count == 0:
             break
-        if i > 500 and i % 24 == 0:
+        if i > 400 and i % 24 == 0:
             grid.irradiate(2, 25, 25)
     '''
     plt.ioff()

@@ -10,7 +10,7 @@ env = CellEnvironment()
 rng = np.random.RandomState(123456)
 
 # TODO : best algorithm, hyperparameter tuning
-Qnetwork = MyACNetwork(
+Qnetwork = MyQNetwork(
     environment=env,
     random_state=rng)
 
@@ -21,7 +21,7 @@ agent = NeuralAgent(
     random_state=rng)
 
 # TODO : Find best discount factor
-agent.setDiscountFactor(0.9)
+agent.setDiscountFactor(0.99)
 agent.attach(bc.VerboseController())
 
 agent.attach(bc.TrainerController())

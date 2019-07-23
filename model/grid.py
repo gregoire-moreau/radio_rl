@@ -132,7 +132,7 @@ class Grid:
                 if (oxygen < len(self.cells[i][j])*critical_oxygen_level
                     or glucose < critical_glucose_level*len(self.cells[i][j]))\
                         and (i, j) not in self.sources: # if one nutrient is low and they are still cells
-                    if random.random() < (self.num_sources-len(self.sources))/self.num_sources:
+                    if random.random() < (self.num_sources-len(self.sources))/(self.num_sources*2):
                         self.sources.append((i,j))
                 tot_count += count
         return tot_count
@@ -205,7 +205,7 @@ class Grid:
 
 
 # std_dev = 0.4 cm = 1.6 cases
-denom = math.sqrt(2)*3
+denom = math.sqrt(2)*2.4
 
 
 def conv(rad, x):
