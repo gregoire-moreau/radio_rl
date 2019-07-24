@@ -100,6 +100,7 @@ if __name__ == '__main__':
     grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
     controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
                             cancercells=True, oar = (0, 0))
+
     for i in range(3000):
         controller.go()
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
@@ -108,6 +109,7 @@ if __name__ == '__main__':
             break
         if i > 400 and i % 24 == 0:
             grid.irradiate(2, 25, 25)
+    print(HealthyCell.cell_count)
     '''
     plt.ioff()
     plt.show()
