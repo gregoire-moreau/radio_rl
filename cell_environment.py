@@ -5,6 +5,7 @@ import numpy as np
 from model.cell import CancerCell, HealthyCell, OARCell
 import copy
 import cv2
+import random
 
 
 def patch_type(patch):
@@ -16,6 +17,7 @@ def patch_type(patch):
 
 class CellEnvironment(Environment):
     def __init__(self):
+        random.seed(42)
         HealthyCell.cell_count = 0
         CancerCell.cell_count = 0
         OARCell.cell_count = 0
@@ -42,7 +44,6 @@ class CellEnvironment(Environment):
                 self.current_controller.fig.show()
 
             self.num += 1
-            del self.current_controller
             self.current_controller = copy.deepcopy(self.controller)
 
             if self.draw and self.num % 5 == 0:
@@ -63,17 +64,16 @@ class CellEnvironment(Environment):
         for _ in range(24):
             self.current_controller.go()
         post_hcell = HealthyCell.cell_count
-
+        post_ccell = CancerCell.cell_count
         post_oarcell = OARCell.cell_count
         if self.draw and self.num % 5 == 0 and (self.inTerminalState() or self.current_controller.tick % 12 == 0):
             self.current_controller.update_plots()
-        '''
+        
         if self.inTerminalState():
-            if CancerCell.cell_count > HealthyCell.cell_count:
-                return -100000
-            else: return 100000
-        '''
-        return (post_hcell-pre_hcell)
+            for _ in range(72):
+                self.current_controller.go()
+        
+        return ((pre_ccell - post_hcell) + 5 *(post_hcell-pre_hcell))/1000
 
     def inTerminalState(self):
         if CancerCell.cell_count <= 0 :
@@ -93,17 +93,16 @@ class CellEnvironment(Environment):
         del self.controller
 
     def inputDimensions(self):
-        return [(1, 1), (1, 1)]
-        #return [(1, 1), (1, 1), (1, 20, 20)]
+        #return [(1, 1), (1, 1)]
+        return [(1, 1), (1, 1), (1, 20, 20)]
 
     def observe(self):
-        '''cell_types = np.array([[patch_type(self.current_controller.grid.cells[i][j])
+        cell_types = np.array([[patch_type(self.current_controller.grid.cells[i][j])
                                                                 for j in range(self.current_controller.grid.ysize)]
                                                                 for i in range(self.current_controller.grid.xsize)], dtype=np.float32)
         return [CancerCell.cell_count, HealthyCell.cell_count, cv2.resize(cell_types,
                                                                 dsize=(20,20), interpolation=cv2.INTER_CUBIC)]
-        '''
-        return [CancerCell.cell_count, HealthyCell.cell_count]
+        #return [CancerCell.cell_count, HealthyCell.cell_count]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):
         print(test_data_set)

@@ -12,7 +12,7 @@ rng = np.random.RandomState(123456)
 # TODO : best algorithm, hyperparameter tuning
 Qnetwork = MyQNetwork(
     environment=env,
-    batch_size=1,
+    batch_size=8,
     random_state=rng)
 
 
@@ -20,26 +20,24 @@ train_pol = EpsilonGreedyPolicy(
     Qnetwork,
     9,
     rng,
-    0.8
+    0.
 )
 
 agent = NeuralAgent(
     env,
     Qnetwork,
-    batch_size=1,
+    batch_size=8,
     train_policy = train_pol,
     random_state=rng)
 
-agent.setDiscountFactor(0.99)
+agent.setDiscountFactor(0.95)
 agent.attach(bc.VerboseController())
-agent.attach(bc.LearningRateController(0.00005, 0.5, 1))
 agent.attach(bc.TrainerController())
 agent.attach(bc.EpsilonController())
+agent.attach(bc.LearningRateController(0.000000125, 0.5, 1))
 agent.attach(bc.InterleavedTestEpochController(
     epoch_length=500,
     controllers_to_disable=[0, 1]))
-
-# --- Run the experiment ---
-agent.run(n_epochs=100, epoch_length=1000)
-
-agent.dumpNetwork("net")
+agent.setNetwork("net_afternoon", nEpoch=10)
+agent.run(n_epochs=5, epoch_length=1000)
+agent.dumpNetwork("net_afternoon", nEpoch = 5)
