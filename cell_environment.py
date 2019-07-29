@@ -75,16 +75,21 @@ class CellEnvironment(Environment):
             self.current_controller.update_plots()
         
         if self.inTerminalState():
-            for _ in range(72):
-                self.current_controller.go()
+            if CancerCell.cell_count > 0 :
+                return -1000
+            elif self.current_controller.tick > 2000:
+                return -500
+            else:
+                return 1000
         return self.adjust_reward(pre_ccell - post_hcell, pre_hcell-post_hcell)
 
     def adjust_reward(self, ccell_killed, hcell_lost):
-        factor = 1.05**((self.current_controller.tick - 400)//24) 
+        #factor = 1.05**((self.current_controller.tick - 400)//24) 
+        factor = 1
         if ccell_killed > hcell_lost:
-            return ((ccell_killed-hcell_lost)/factor)/1000
+            return ((-hcell_lost)/factor)/1000
         else :
-            return ((ccell_killed-hcell_lost)*factor)/1000
+            return ((-hcell_lost)*factor)/1000
 
 
     def inTerminalState(self):
@@ -93,6 +98,8 @@ class CellEnvironment(Environment):
             return True
         elif HealthyCell.cell_count < 10:
             print("Cancer wins, healthy cells lost = ",  self.h_cell_reset - HealthyCell.cell_count)
+            return True
+        elif self.current_controller.tick > 2000:
             return True
         else:
             return False

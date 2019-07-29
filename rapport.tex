@@ -1,44 +1,54 @@
 \documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{url}
+\def\refname{Références}%
 
-\title{Rapport}
+\title{Rapport sur mon job d'étudiant:\\
+Utilisation du deep reinforcement learning dans le cadre de la radiothérapie}
 \author{Moreau Grégoire}
 \date{Juin-Juillet 2019}
 \begin{document}
 \maketitle
 
 \section{Introduction}
-Qu'est ce que j'essaye de faire,
+L'objet du travail que j'ai accompli lors de ce job étudiant était d'utiliser le reinforcement learning afin de trouver un meilleur planning de traitement (treatment schedule) pour la radiothérapie.\\
 Quest ce que le cancer
 Radiothérapie
-Le reinforcement learning
-Mémoire
+Le reinforcement learning\\
+
+Actuellement, pour planifier un traitement de radiothérapie, on détermine la dose totale en Gray à délivrer à la tumeur afin d'obtenir un haut pourcentage de Tumor Control Probability (probabilité que toutes les cellules cancéreuses composant la tumeur soient mortes après le traitement). La TCP augmente avec la dose totale délivrée, mais cette dernière ne peut pas être trop haute afin de limiter la normal tissue complication probability (NTCP).
+Une fois que la dose totale est déterminée, le traitement est généralement délivré sous forme de fractions journalières de 2 Gray. Par exemple, 35 doses de 2 Gray pour 80\% TCP.\\
+
+Le travail que j'ai accompli au cours des dernières semaines est en fait la première partie du travail de fin d'études que je vais accomplir l'année scolaire prochaine dans le cadre de ma dernière année de master d'ingénieur informaticien à l'Ecole Polytechnique de Louvain.\\
+Dans ce rapport, je vais d'abord détailler les différentes étapes du travail que j'ai accompli et motiver les décisions que j'ai prises au cours de ces étapes. Ensuite, je vais présenterai les résultats que j'ai obtenus. Je terminerai par les pistes de futures améliorations du modèle actuel et les autres approches que je pourrai utiliser.\\
 
 
 \section{Approche}
+\citep{jalalimanesh}
 Création de simulation
 Utiliser DeeR de vincent françois pour les algs de deep rl utilisés
 
 \section{Simulation de prolifération des cellules tumorales}
 Explication d'automate cellulaire
-Types de cellule
-Cycle cellulaire
-Nutriments et équation
-Angiogenèse et obstruction
+\subsection{Types de cellules}
+\subsection{Cycle cellulaire}
+\subsection{Nutriments et réaction}
+\subsection{Angiogenèse et obstruction}
 
 
 \section{Simulation de la radiation}
-LQ
+\subsection{Equation LQ}
 Valeurs de alpha beta pour le cancer
 Valeurs alpha beta pour tissu normal
-isodose
-Rayn
+\subsection{Isodose}
+Rayon
 
 \section{Deep Reinforcement Learning (DeeR)}
-Actions
-Observations
-Rewards
-Algorithmes
+\subsection{Actions}
+\subsection{Observations}
+\subsection{Rewards}
+\subsection{Algorithmes}
 
 \section{Entrainement des neural networks et résultats}
 Hyperparamètres
@@ -47,10 +57,13 @@ Tests
 
 \section{Améliorations futures}
 Bystander effect
+Better rewards
+Oxygen effect on survival
 + d'epochs
 multi agent
 oar
 radiomics
 
-
+\bibliographystyle{unsrt}
+\bibliography{ref}
 \end{document}

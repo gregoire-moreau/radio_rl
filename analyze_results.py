@@ -29,7 +29,6 @@ for line in f:
 count_eps /= 2
 print("Number of steps :", count_steps)
 print("Number of episodes played :" , count_eps)
-print(count_losses)
 f.close()
 plt.plot(x, y)
 plt.yscale("log")
