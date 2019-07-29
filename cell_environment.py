@@ -42,7 +42,7 @@ class CellEnvironment(Environment):
             if self.draw and hasattr(self.current_controller, 'fig'):
                 # self.current_controller.fig.ioff()
                 self.current_controller.fig.show()
-
+            del self.current_controller
             self.num += 1
             self.current_controller = copy.deepcopy(self.controller)
 
@@ -57,10 +57,15 @@ class CellEnvironment(Environment):
         pre_hcell = HealthyCell.cell_count
         pre_ccell = CancerCell.cell_count
         pre_oarcell = OARCell.cell_count
-        self.current_controller.grid.irradiate((action/2)+1, 25, 25)
+        #self.current_controller.grid.irradiate(action, 25, 25)
+        self.current_controller.grid.irradiate(1+(action/2), 25, 25)
         post_ccell = CancerCell.cell_count
-        print("Radiation dose :", (action/2)+1, "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
-              CancerCell.cell_count, "remaining")
+        '''
+        print("Radiation dose :", action, "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
+              CancerCell.cell_count, "remaining", "time =", self.rand_time)
+        '''
+        print("Radiation dose :", 1+(action/2), "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
+              CancerCell.cell_count, "remaining", "time =", self.rand_time)
         for _ in range(24):
             self.current_controller.go()
         post_hcell = HealthyCell.cell_count
@@ -72,8 +77,15 @@ class CellEnvironment(Environment):
         if self.inTerminalState():
             for _ in range(72):
                 self.current_controller.go()
-        
-        return ((pre_ccell - post_hcell) + 5 *(post_hcell-pre_hcell))/1000
+        return self.adjust_reward(pre_ccell - post_hcell, pre_hcell-post_hcell)
+
+    def adjust_reward(self, ccell_killed, hcell_lost):
+        factor = 1.05**((self.current_controller.tick - 400)//24) 
+        if ccell_killed > hcell_lost:
+            return ((ccell_killed-hcell_lost)/factor)/1000
+        else :
+            return ((ccell_killed-hcell_lost)*factor)/1000
+
 
     def inTerminalState(self):
         if CancerCell.cell_count <= 0 :
@@ -87,20 +99,22 @@ class CellEnvironment(Environment):
 
     def nActions(self):
         return 9
-
+        #return [[1,5]]
+ 
     def end(self):
         del self.grid
         del self.controller
 
     def inputDimensions(self):
         #return [(1, 1), (1, 1)]
-        return [(1, 1), (1, 1), (1, 20, 20)]
+        return [(1, 1), (1, 1), (1,1), (1, 20, 20)]
 
     def observe(self):
+        self.rand_time = random.randint(1,48)
         cell_types = np.array([[patch_type(self.current_controller.grid.cells[i][j])
                                                                 for j in range(self.current_controller.grid.ysize)]
                                                                 for i in range(self.current_controller.grid.xsize)], dtype=np.float32)
-        return [CancerCell.cell_count, HealthyCell.cell_count, cv2.resize(cell_types,
+        return [CancerCell.cell_count, HealthyCell.cell_count, self.current_controller.tick//24, cv2.resize(cell_types,
                                                                 dsize=(20,20), interpolation=cv2.INTER_CUBIC)]
         #return [CancerCell.cell_count, HealthyCell.cell_count]
 
