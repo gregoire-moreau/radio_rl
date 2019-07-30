@@ -57,15 +57,15 @@ class CellEnvironment(Environment):
         pre_hcell = HealthyCell.cell_count
         pre_ccell = CancerCell.cell_count
         pre_oarcell = OARCell.cell_count
-        #self.current_controller.grid.irradiate(action, 25, 25)
-        self.current_controller.grid.irradiate(1+(action/2), 25, 25)
+        self.current_controller.grid.irradiate(action, 25, 25)
+        #self.current_controller.grid.irradiate(1+(action/2), 25, 25)
         post_ccell = CancerCell.cell_count
-        '''
         print("Radiation dose :", action, "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
               CancerCell.cell_count, "remaining", "time =", self.rand_time)
         '''
         print("Radiation dose :", 1+(action/2), "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
               CancerCell.cell_count, "remaining", "time =", self.rand_time)
+        '''
         for _ in range(24):
             self.current_controller.go()
         post_hcell = HealthyCell.cell_count
@@ -105,8 +105,8 @@ class CellEnvironment(Environment):
             return False
 
     def nActions(self):
-        return 9
-        #return [[1,5]]
+        #return 9
+        return [[1,5]]
  
     def end(self):
         del self.grid

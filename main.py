@@ -10,7 +10,7 @@ env = CellEnvironment()
 rng = np.random.RandomState(123456)
 
 # TODO : best algorithm, hyperparameter tuning
-Qnetwork = MyQNetwork(
+Qnetwork = MyACNetwork(
     environment=env,
     batch_size=8,
     random_state=rng)
@@ -25,11 +25,11 @@ agent = NeuralAgent(
 agent.setDiscountFactor(0.99)
 agent.attach(bc.VerboseController())
 agent.attach(bc.TrainerController())
-agent.attach(bc.EpsilonController(initial_e=0.4, e_decays=5000, e_min=0.))
-agent.attach(bc.LearningRateController(0.0005, 0.5, 1))
+agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=5000, e_min=0.))
+agent.attach(bc.LearningRateController(0.0000000000000001, 0.5, 1))
 agent.attach(bc.InterleavedTestEpochController(
-    epoch_length=500,
+    epoch_length=100,
     controllers_to_disable=[0, 1, 2,3]))
 #agent.setNetwork("net_Q3", nEpoch=10)
 agent.run(n_epochs=5, epoch_length=1000)
-agent.dumpNetwork("net_Q4", nEpoch = 5)
+agent.dumpNetwork("net_AC4", nEpoch = 5)
