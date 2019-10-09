@@ -105,33 +105,35 @@ class Grid:
     def cycle_cells(self):
         tot_count = 0
         for i in range(self.xsize):
-            for j in range(self.ysize):
+            for j in range(self.ysize): #For every tile
                 count = len(self.cells[i][j])
-                glucose = self.glucose[i][j]
+                glucose = self.glucose[i][j] #We keep local glucose and oxygen variables that are updated after every cell
                 oxygen = self.oxygen[i][j]
                 for cell in self.cells[i][j]:
                     res = cell.cycle(self.glucose[i][j] / count,  self.neigh_counts[i][j], self.oxygen[i][j] / count,)
-                    if len(res) > 2:
-                        if res[2] == 0:
+                    if len(res) > 2: #If there are more than two arguments, a new cell must be created
+                        if res[2] == 0: # Mitosis of a healthy cell
                             downhill = self.rand_min(i, j)
                             self.cells[downhill[0]][downhill[1]].append(HealthyCell(0))
-                        else:
+                        else: #Mitosis of a cancer cell
                             downhill = self.rand_neigh(i, j)
                             self.cells[downhill[0]][downhill[1]].append(CancerCell(0, downhill[0], downhill[1]))
-                        self.add_neigh_count(downhill[0], downhill[1], 1)
-                    glucose -= res[0]
+                        self.add_neigh_count(downhill[0], downhill[1], 1) #We add 1 to every neigbouring tile's neigbours counter
+                    glucose -= res[0] #The local variables are updated according to the cell's consumption
                     oxygen -= res[1]
                     if not cell.alive:
                         count -= 1
-                        self.add_neigh_count(i, j, -1)
-                self.glucose[i][j] = glucose
+                        self.add_neigh_count(i, j, -1) #We remove 1 from every neigbouring tile's neigbours counter
+                self.glucose[i][j] = glucose #The global glucose and oxygen variables are updated after we cycled every cell on the tile
                 self.oxygen[i][j] = oxygen
-                self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
-                self.cells[i][j].sort()
+                #TODO what do I do with dead cells? Should I consider that they take up space? Should they only disappear after some time?
+                self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive] #Removes all the dead cells from the tile so that the objects are deleted
+                self.cells[i][j].sort() #sort so that the cancer cells are first
                 # Angiogenesis
+                #TODO favor angiogenesis
                 if (oxygen < len(self.cells[i][j])*critical_oxygen_level
                     or glucose < critical_glucose_level*len(self.cells[i][j]))\
-                        and (i, j) not in self.sources: # if one nutrient is low and they are still cells
+                        and (i, j) not in self.sources: # if one nutrient is low and they are still cells on the tile
                     if random.random() < (self.num_sources-len(self.sources))/(self.num_sources*2):
                         self.sources.append((i,j))
                 tot_count += count

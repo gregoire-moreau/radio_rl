@@ -100,17 +100,43 @@ if __name__ == '__main__':
     grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
     controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
                             cancercells=True, oar = (0, 0))
-
+    k = 1
     for i in range(3000):
         controller.go()
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
-        if CancerCell.cell_count == 0 or HealthyCell.cell_count == 0:
+        if i == 2000:
             break
+
+
         if i > 400 and i % 24 == 0:
-            grid.irradiate(2, 25, 25)
+            grid.irradiate(2,25,25)
+
+
+
+        # DQN
+        '''
+        if i == 408:
+            grid.irradiate(4.5,25,25)
+        if i == 432 or i == 456 or i == 480:
+            grid.irradiate(5,25,25)
+        if i > 500 and i % 24 == 0:
+            grid.irradiate(2,25,25)
+        '''
+
+
+        # DDPG
+        '''
+        if i > 400 and i % 24 == 0:
+            if k % 5 == 0:
+                grid.irradiate(3.5,25,25)
+            else :
+                grid.irradiate(1.5,25,25)
+            k+=1
+        '''
+
+
     print(HealthyCell.cell_count)
-    '''
+
     plt.ioff()
     plt.show()
-    '''
