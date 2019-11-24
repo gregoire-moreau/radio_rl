@@ -117,11 +117,11 @@ class CellEnvironment(Environment):
         return [(1, 1), (1, 1), (1,1), (1, 20, 20)]
 
     def observe(self):
-        self.rand_time = random.randint(1,48)
+        self.rand_time = random.randint(1,6) * 12
         cell_types = np.array([[patch_type(self.current_controller.grid.cells[i][j])
                                                                 for j in range(self.current_controller.grid.ysize)]
                                                                 for i in range(self.current_controller.grid.xsize)], dtype=np.float32)
-        return [CancerCell.cell_count, HealthyCell.cell_count, self.current_controller.tick//24, cv2.resize(cell_types,
+        return [self.rand_time, CancerCell.cell_count, HealthyCell.cell_count, cv2.resize(cell_types,
                                                                 dsize=(20,20), interpolation=cv2.INTER_CUBIC)]
         #return [CancerCell.cell_count, HealthyCell.cell_count]
 

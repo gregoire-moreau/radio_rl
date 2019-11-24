@@ -98,7 +98,7 @@ def patch_type_color(patch):
 if __name__ == '__main__':
     random.seed(4775)
     grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
-    controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
+    controller = Controller(grid, glucose = True,  draw_step=12, hcells = 500, oxygen=True,
                             cancercells=True, oar = (0, 0))
     k = 1
     for i in range(3000):

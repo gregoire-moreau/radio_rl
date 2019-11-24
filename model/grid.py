@@ -33,7 +33,7 @@ class Grid:
 
     # Sources of nutrients are refilled
     def fill_source(self, glucose=0, oxygen=0):
-        self.sources = [(x, y) for (x, y) in self.sources if len(self.cells[x][y]) < occlusion_number]
+        # self.sources = [(x, y) for (x, y) in self.sources if len(self.cells[x][y]) < occlusion_number]
         if glucose != 0:
             for (x, y) in self.sources:
                 self.glucose[x][y] += glucose
@@ -131,11 +131,13 @@ class Grid:
                 self.cells[i][j].sort() #sort so that the cancer cells are first
                 # Angiogenesis
                 #TODO favor angiogenesis
+                '''
                 if (oxygen < len(self.cells[i][j])*critical_oxygen_level
                     or glucose < critical_glucose_level*len(self.cells[i][j]))\
                         and (i, j) not in self.sources: # if one nutrient is low and they are still cells on the tile
                     if random.random() < (self.num_sources-len(self.sources))/(self.num_sources*2):
                         self.sources.append((i,j))
+                '''
                 tot_count += count
         return tot_count
 
