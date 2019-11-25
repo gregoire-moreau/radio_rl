@@ -132,14 +132,11 @@ class HealthyCell(Cell):
 
 class CancerCell(Cell):
     cell_count = 0
-    cell_list = []
     center = (0, 0)
 
     def __init__(self, stage, x, y):
         Cell.__init__(self, stage)
         CancerCell.cell_count += 1
-        self.dist = math.sqrt((CancerCell.center[0]-x)**2 + (CancerCell.center[1]-y)**2)
-        CancerCell.cell_list.append(self)
 
     def radiate(self, dose):
         survival_probability = math.exp(-alpha_tumor*dose - beta_tumor * (dose ** 2))
