@@ -153,9 +153,9 @@ agent_dose.attach(bc.LearningRateController(0.0001, 0.5, 1))
 agent_dose.attach(bc.InterleavedTestEpochController(
     epoch_length=8,
     controllers_to_disable=[0, 1, 2,3]))
-agent_dose.run(n_epochs=1, epoch_length=1000)
+agent_dose.run(n_epochs=5, epoch_length=1000)
 agent_dose.dumpNetwork("net_dose_1st_step", nEpoch = 5)
-
+print("DONE DOSE")
 dose_env.set_hour_agent(agent_hour)
 hour_env.set_dose_agent(agent_dose)
 
@@ -168,9 +168,9 @@ agent_hour.attach(bc.LearningRateController(0.0001, 0.5, 1))
 agent_hour.attach(bc.InterleavedTestEpochController(
     epoch_length=8,
     controllers_to_disable=[0, 1, 2,3]))
-agent_hour.run(n_epochs=1, epoch_length=1000)
+agent_hour.run(n_epochs=5, epoch_length=1000)
 agent_hour.dumpNetwork("net_hour_2nd_step", nEpoch = 5)
-
+print("DONE HOUR")
 for _ in range(100):
     agent_dose._mode = -1
     agent_hour._mode = 0
@@ -181,3 +181,4 @@ for _ in range(100):
 
 agent_dose.dumpNetwork("net_dose_3rd_step", nEpoch = 5)
 agent_hour.dumpNetwork("net_hour_3rd_step", nEpoch = 5)
+print("DONE")
