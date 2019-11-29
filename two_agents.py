@@ -46,7 +46,8 @@ class DoseAgentEnvironment(Environment):
         return 9
 
     def end(self):
-        del self.base_env
+        # del self.base_env
+        pass
 
     def inputDimensions(self):
         return self.base_env.inputDimensions()
@@ -88,6 +89,7 @@ class HourAgentEnvironment(Environment):
         post_oarcell = OARCell.cell_count
         print("Radiation dose :", self.dose, "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
               CancerCell.cell_count, "remaining", "time =", (action+1)*12)
+        self.dose = 0
         return (post_hcell - pre_hcell)/1000
 
     def inTerminalState(self):
@@ -97,7 +99,8 @@ class HourAgentEnvironment(Environment):
         return 6
 
     def end(self):
-        del self.base_env
+        # del self.base_env
+        pass
 
     def inputDimensions(self):
         return self.base_env.inputDimensions()
@@ -105,12 +108,11 @@ class HourAgentEnvironment(Environment):
     def observe(self):
         self.pre_hcell = HealthyCell.cell_count
         self.pre_ccell = CancerCell.cell_count
-        obs = self.base_env.observe()
         if self.dose == 0: #Hour agent is the agent currently being trained
             self.dose = self.dose_agent._chooseAction()[0]
             self.base_env.current_controller.grid.irradiate(self.dose, 25, 25)
+        obs = self.base_env.observe()
         obs[0] = self.dose
-        self.dose = 0
         return obs
 
 
@@ -125,61 +127,67 @@ hour_env = HourAgentEnvironment(env)
 
 Qnetwork_dose = MyQNetwork(
     environment=dose_env,
-    batch_size=8,
+    batch_size=32,
     random_state=rng)
 
 Qnetwork_hour = MyQNetwork(
     environment=hour_env,
-    batch_size=8,
+    batch_size=32,
     random_state=rng)
 
 agent_dose = NeuralAgent(
     dose_env,
     Qnetwork_dose,
-    batch_size=8,
+    batch_size=32,
     random_state=rng)
 
 agent_hour = NeuralAgent(
     hour_env,
     Qnetwork_hour,
-    batch_size=8,
+    batch_size=32,
     random_state=rng)
 
 
 agent_dose.setDiscountFactor(0.99)
 agent_dose.attach(bc.VerboseController())
 agent_dose.attach(bc.TrainerController())
-agent_dose.attach(bc.EpsilonController(initial_e=0.8, e_decays=5000, e_min=0.))
+agent_dose.attach(bc.EpsilonController(initial_e=0.9, e_decays=5000, e_min=0.1))
 agent_dose.attach(bc.LearningRateController(0.0001, 0.5, 1))
 agent_dose.attach(bc.InterleavedTestEpochController(
-    epoch_length=8,
+    epoch_length=500,
     controllers_to_disable=[0, 1, 2,3]))
+
 print("START DOSE", file=sys.stderr)
 print("START DOSE")
 agent_dose.run(n_epochs=5, epoch_length=1000)
-agent_dose.dumpNetwork("net_dose_1st_step", nEpoch = 5)
+agent_dose.dumpNetwork("net_dose_only", nEpoch = 5)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
+
 dose_env.set_hour_agent(agent_hour)
 hour_env.set_dose_agent(agent_dose)
-
 agent_dose._mode =0
+
 agent_hour.setDiscountFactor(0.99)
 agent_hour.attach(bc.VerboseController())
 agent_hour.attach(bc.TrainerController())
-agent_hour.attach(bc.EpsilonController(initial_e=0.8, e_decays=5000, e_min=0.))
+agent_hour.attach(bc.EpsilonController(initial_e=0.9, e_decays=5000, e_min=0.1))
 agent_hour.attach(bc.LearningRateController(0.0001, 0.5, 1))
 agent_hour.attach(bc.InterleavedTestEpochController(
-    epoch_length=8,
+    epoch_length=500,
     controllers_to_disable=[0, 1, 2,3]))
+
 print("START HOUR", file=sys.stderr)
 print("START HOUR")
 agent_hour.run(n_epochs=5, epoch_length=1000)
-agent_hour.dumpNetwork("net_hour_2nd_step", nEpoch = 5)
+agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
+
 print("START BOTH",file=sys.stderr)
 print("START BOTH")
+agent_dose.detach(4)
+agent_hour.detach(4)
 for _ in range(100):
     agent_dose._mode = -1
     agent_hour._mode = 0
