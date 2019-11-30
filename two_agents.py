@@ -159,8 +159,8 @@ agent_dose.attach(bc.InterleavedTestEpochController(
 
 print("START DOSE", file=sys.stderr)
 print("START DOSE")
-agent_dose.run(n_epochs=5, epoch_length=1000)
-agent_dose.dumpNetwork("net_dose_only", nEpoch = 5)
+#agent_dose.run(n_epochs=5, epoch_length=1000)
+#agent_dose.dumpNetwork("net_dose_only", nEpoch = 5)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
 
@@ -179,8 +179,8 @@ agent_hour.attach(bc.InterleavedTestEpochController(
 
 print("START HOUR", file=sys.stderr)
 print("START HOUR")
-agent_hour.run(n_epochs=5, epoch_length=1000)
-agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
+#agent_hour.run(n_epochs=5, epoch_length=1000)
+#agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
 
@@ -191,12 +191,12 @@ agent_hour.detach(4)
 for _ in range(100):
     agent_dose._mode = -1
     agent_hour._mode = 0
-    agent_dose.run(n_epochs=1, epoch_length=64)
+    agent_dose.run(n_epochs=1, epoch_length=100)
     agent_dose._mode = 0
     agent_hour._mode = -1
-    agent_hour.run(n_epochs=1, epoch_length=64)
+    agent_hour.run(n_epochs=1, epoch_length=100)
 
-agent_dose.dumpNetwork("net_dose_3rd_step", nEpoch = 5)
-agent_hour.dumpNetwork("net_hour_3rd_step", nEpoch = 5)
+agent_dose.dumpNetwork("net_dose_3rd_step_elen", nEpoch = 5)
+agent_hour.dumpNetwork("net_hour_3rd_step_elen", nEpoch = 5)
 print("DONE BOTH",file=sys.stderr)
 print("DONE BOTH")
