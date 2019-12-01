@@ -1,6 +1,6 @@
 from deer.base_classes import Environment
 from model.grid import Grid
-from model.controller import Controller
+from model.controller import Controller, MultiThreadController
 import numpy as np
 from model.cell import CancerCell, HealthyCell, OARCell
 import copy
@@ -24,10 +24,9 @@ class CellEnvironment(Environment):
         self.grid = None
         self.controller = None
         self.grid = Grid(50,  50, glucose=True, oxygen=True, cells=True, border=False, sources=150)
-        self.controller = Controller(self.grid, glucose=True, draw_step=0, hcells=1000, oxygen=True,
-                                     cancercells=True, oar=(0, 0))
-        for i in range(400):
-            self.controller.go()
+        self.controller = MultiThreadController(self.grid, hcells=1000, thread_number=2)
+        #for i in range(400):
+        self.controller.go(400)
         self.current_controller = copy.deepcopy(self.controller)
         self.num = 0
         self.h_cell_reset = HealthyCell.cell_count
@@ -66,8 +65,8 @@ class CellEnvironment(Environment):
         print("Radiation dose :", 1+(action/2), "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
               CancerCell.cell_count, "remaining", "time =", self.rand_time)
         '''
-        for _ in range(24):
-            self.current_controller.go()
+        #for _ in range(24):
+        self.current_controller.go(24)
         post_hcell = HealthyCell.cell_count
         post_ccell = CancerCell.cell_count
         post_oarcell = OARCell.cell_count

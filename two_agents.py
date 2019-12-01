@@ -25,13 +25,13 @@ class DoseAgentEnvironment(Environment):
         pre_ccell = CancerCell.cell_count
         pre_oarcell = OARCell.cell_count
         self.base_env.current_controller.grid.irradiate(1+(action/2), 25, 25)
+        self.dose = 1+(action/2)
         if (self.hour_agent):
             self.hour_agent.dose = 1+(action/2)
             self.rest = (self.hour_agent._chooseAction()[0] +1)*12
         else:
             self.rest = self.base_env.rand_time
-        for _ in range(self.rest):
-            self.base_env.current_controller.go()
+        self.base_env.current_controller.go(self.rest)
         post_hcell = HealthyCell.cell_count
         post_ccell = CancerCell.cell_count
         post_oarcell = OARCell.cell_count
@@ -81,8 +81,7 @@ class HourAgentEnvironment(Environment):
         #self.base_env.current_controller.grid.irradiate(2, 25, 25)
         # self.current_controller.grid.irradiate(1+(action/2), 25, 25)
 
-        for _ in range((action+1)*12):
-            self.base_env.current_controller.go()
+        self.base_env.current_controller.go((action+1)*12)
         self.dose_agent.rest = (action+1)*12
         post_hcell = HealthyCell.cell_count
         post_ccell = CancerCell.cell_count
@@ -159,8 +158,8 @@ agent_dose.attach(bc.InterleavedTestEpochController(
 
 print("START DOSE", file=sys.stderr)
 print("START DOSE")
-#agent_dose.run(n_epochs=5, epoch_length=1000)
-#agent_dose.dumpNetwork("net_dose_only", nEpoch = 5)
+agent_dose.run(n_epochs=10, epoch_length=1000)
+agent_dose.dumpNetwork("net_dose_only", nEpoch = 10)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
 
@@ -179,8 +178,8 @@ agent_hour.attach(bc.InterleavedTestEpochController(
 
 print("START HOUR", file=sys.stderr)
 print("START HOUR")
-#agent_hour.run(n_epochs=5, epoch_length=1000)
-#agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
+agent_hour.run(n_epochs=10, epoch_length=1000)
+agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
 
@@ -188,15 +187,20 @@ print("START BOTH",file=sys.stderr)
 print("START BOTH")
 agent_dose.detach(4)
 agent_hour.detach(4)
-for _ in range(100):
+for i in range(100):
     agent_dose._mode = -1
     agent_hour._mode = 0
-    agent_dose.run(n_epochs=1, epoch_length=100)
+    print("START DOSE \d"%i, file=sys.stderr)
+    print("START DOSE \d"%i)
+    agent_dose.run(n_epochs=1, epoch_length=200)
     agent_dose._mode = 0
     agent_hour._mode = -1
-    agent_hour.run(n_epochs=1, epoch_length=100)
+    print("START HOUR \d" % i, file=sys.stderr)
+    print("START HOUR \d" % i)
+    agent_hour.run(n_epochs=1, epoch_length=200)
 
-agent_dose.dumpNetwork("net_dose_3rd_step_elen", nEpoch = 5)
-agent_hour.dumpNetwork("net_hour_3rd_step_elen", nEpoch = 5)
+
+agent_dose.dumpNetwork("net_dose_3rd_step")
+agent_hour.dumpNetwork("net_hour_3rd_step" )
 print("DONE BOTH",file=sys.stderr)
 print("DONE BOTH")
