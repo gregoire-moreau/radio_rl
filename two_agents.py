@@ -180,8 +180,8 @@ print("START HOUR", file=sys.stderr)
 print("START HOUR")
 agent_hour.run(n_epochs=10, epoch_length=1000)
 agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
-print("DONE DOSE",file=sys.stderr)
-print("DONE DOSE")
+print("DONE HOUR",file=sys.stderr)
+print("DONE HOUR")
 
 print("START BOTH",file=sys.stderr)
 print("START BOTH")
@@ -190,13 +190,13 @@ agent_hour.detach(4)
 for i in range(100):
     agent_dose._mode = -1
     agent_hour._mode = 0
-    print("START DOSE \d"%i, file=sys.stderr)
-    print("START DOSE \d"%i)
+    print("START DOSE %d"%i, file=sys.stderr)
+    print("START DOSE %d"%i)
     agent_dose.run(n_epochs=1, epoch_length=200)
     agent_dose._mode = 0
     agent_hour._mode = -1
-    print("START HOUR \d" % i, file=sys.stderr)
-    print("START HOUR \d" % i)
+    print("START HOUR %d" % i, file=sys.stderr)
+    print("START HOUR %d" % i)
     agent_hour.run(n_epochs=1, epoch_length=200)
 
 

@@ -237,13 +237,17 @@ class MultiThreadController:
 if __name__ == '__main__':
     random.seed(4775)
     grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
-    controller = Controller(grid, glucose = True,  draw_step=12, hcells = 500, oxygen=True,
-                            cancercells=True, oar = (0, 0))
+    #controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
+     #                       cancercells=True, oar = (0, 0))
+    controller = MultiThreadController(grid,1000,1)
+    controller.go(1000)
     k = 1
-    for i in range(3000):
-        controller.go()
+    for i in range(1000):
+        #controller.go()
+        '''
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
+        
         if i == 2000:
             break
 
@@ -251,7 +255,7 @@ if __name__ == '__main__':
         if i > 400 and i % 24 == 0:
             grid.irradiate(2,25,25)
 
-
+        '''
 
         # DQN
         '''
@@ -274,8 +278,9 @@ if __name__ == '__main__':
             k+=1
         '''
 
-
+    '''
     print(HealthyCell.cell_count)
 
     plt.ioff()
     plt.show()
+    '''

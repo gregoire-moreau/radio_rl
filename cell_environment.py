@@ -24,7 +24,7 @@ class CellEnvironment(Environment):
         self.grid = None
         self.controller = None
         self.grid = Grid(50,  50, glucose=True, oxygen=True, cells=True, border=False, sources=150)
-        self.controller = MultiThreadController(self.grid, hcells=1000, thread_number=2)
+        self.controller = MultiThreadController(self.grid, hcells=1000, thread_number=8)
         #for i in range(400):
         self.controller.go(400)
         self.current_controller = copy.deepcopy(self.controller)
