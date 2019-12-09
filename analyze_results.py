@@ -1,5 +1,6 @@
 import sys
 import matplotlib.pyplot as plt
+import pickle
 f = open(sys.argv[1])
 count_steps = 0
 count_eps = 0
@@ -36,3 +37,6 @@ plt.ylabel("Erreur : échelle logarithmique")
 plt.xlabel("Time steps : Doses envoyées")
 plt.title("Evolution de l'erreur pour :"+ sys.argv[2])
 plt.show()
+f = open("start_"+sys.argv[3], 'wb')
+pickle.dump((x, y), f)
+f.close()

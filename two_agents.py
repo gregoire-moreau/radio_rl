@@ -1,3 +1,7 @@
+import os
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'  # GPU cluster
+
 from cell_environment import CellEnvironment
 from deer.base_classes import Environment
 from model.cell import CancerCell, HealthyCell, OARCell
@@ -25,9 +29,9 @@ class DoseAgentEnvironment(Environment):
         pre_ccell = CancerCell.cell_count
         pre_oarcell = OARCell.cell_count
         self.base_env.current_controller.grid.irradiate(1+(action/2), 25, 25)
-        self.dose = 1+(action/2)
+        self.dose = 2+(action/2)
         if (self.hour_agent):
-            self.hour_agent.dose = 1+(action/2)
+            self.hour_agent.dose = 2+(action/2)
             self.rest = (self.hour_agent._chooseAction()[0] +1)*12
         else:
             self.rest = self.base_env.rand_time
@@ -35,7 +39,7 @@ class DoseAgentEnvironment(Environment):
         post_hcell = HealthyCell.cell_count
         post_ccell = CancerCell.cell_count
         post_oarcell = OARCell.cell_count
-        print("Radiation dose :", 1 + (action / 2), "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
+        print("Radiation dose :", 2 + (action / 2), "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
               CancerCell.cell_count, "remaining", "time =", self.rest)
         return (post_hcell-pre_hcell)/1000
 
@@ -108,7 +112,7 @@ class HourAgentEnvironment(Environment):
         self.pre_hcell = HealthyCell.cell_count
         self.pre_ccell = CancerCell.cell_count
         if self.dose == 0: #Hour agent is the agent currently being trained
-            self.dose = self.dose_agent._chooseAction()[0]
+            self.dose = 2+(self.dose_agent._chooseAction()[0] *2)
             self.base_env.current_controller.grid.irradiate(self.dose, 25, 25)
         obs = self.base_env.observe()
         obs[0] = self.dose
@@ -158,8 +162,8 @@ agent_dose.attach(bc.InterleavedTestEpochController(
 
 print("START DOSE", file=sys.stderr)
 print("START DOSE")
-agent_dose.run(n_epochs=10, epoch_length=1000)
-agent_dose.dumpNetwork("net_dose_only", nEpoch = 10)
+#agent_dose.run(n_epochs=10, epoch_length=1000)
+#agent_dose.dumpNetwork("net_dose_only", nEpoch = 10)
 print("DONE DOSE",file=sys.stderr)
 print("DONE DOSE")
 
@@ -178,15 +182,13 @@ agent_hour.attach(bc.InterleavedTestEpochController(
 
 print("START HOUR", file=sys.stderr)
 print("START HOUR")
-agent_hour.run(n_epochs=10, epoch_length=1000)
-agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
+#agent_hour.run(n_epochs=10, epoch_length=1000)
+#agent_hour.dumpNetwork("net_hour_only", nEpoch = 5)
 print("DONE HOUR",file=sys.stderr)
 print("DONE HOUR")
 
 print("START BOTH",file=sys.stderr)
 print("START BOTH")
-agent_dose.detach(4)
-agent_hour.detach(4)
 for i in range(100):
     agent_dose._mode = -1
     agent_hour._mode = 0
@@ -200,7 +202,7 @@ for i in range(100):
     agent_hour.run(n_epochs=1, epoch_length=200)
 
 
-agent_dose.dumpNetwork("net_dose_3rd_step")
-agent_hour.dumpNetwork("net_hour_3rd_step" )
+agent_dose.dumpNetwork("net_dose_post")
+agent_hour.dumpNetwork("net_hour_post" )
 print("DONE BOTH",file=sys.stderr)
 print("DONE BOTH")
