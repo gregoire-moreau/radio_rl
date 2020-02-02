@@ -19,7 +19,7 @@ class Controller:
         for i in range(2*oar[0]):
             for j in range(2*oar[1]):
                 if i+j <= oar[0]+oar[1]:
-                    self.grid.cells[i][j].append(OARCell(0, 5))
+                    self.grid.cells[i][j].append(OARCell(4, 5))
         for i in range(hcells):
             new_cell = HealthyCell(random.randint(0, 4))
             x = random.randint(0, grid.xsize - 1)
@@ -236,15 +236,15 @@ class MultiThreadController:
 
 if __name__ == '__main__':
     random.seed(4775)
-    grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50)
-    #controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
-     #                       cancercells=True, oar = (0, 0))
-    controller = MultiThreadController(grid,1000,1)
-    controller.go(1000)
+    grid = Grid(50,50, glucose=True, oxygen=True, cells= True, border = False, sources=50, oar=(15,15))
+    controller = Controller(grid, glucose = True,  draw_step=0, hcells = 500, oxygen=True,
+                            cancercells=True, oar = (15, 15))
+    #controller = MultiThreadController(grid, 1000, 1)
+    #controller.go(1000)
     k = 1
-    for i in range(1000):
-        #controller.go()
-        '''
+    for i in range(2000):
+        controller.go()
+
         print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
         
@@ -255,7 +255,7 @@ if __name__ == '__main__':
         if i > 400 and i % 24 == 0:
             grid.irradiate(2,25,25)
 
-        '''
+
 
         # DQN
         '''

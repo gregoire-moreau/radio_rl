@@ -12,7 +12,7 @@ def patch_type(patch):
     if len(patch) == 0:
         return 0
     else:
-        return patch[0].cell_type()*len(patch)
+        return sum([c.cell_type() for c in patch])
 
 
 class CellEnvironment(Environment):
@@ -23,10 +23,11 @@ class CellEnvironment(Environment):
         OARCell.cell_count = 0
         self.grid = None
         self.controller = None
-        self.grid = Grid(50,  50, glucose=True, oxygen=True, cells=True, border=False, sources=150)
-        self.controller = MultiThreadController(self.grid, hcells=1000, thread_number=8)
-        #for i in range(400):
-        self.controller.go(400)
+        self.grid = Grid(50,  50, glucose=True, oxygen=True, cells=True, border=False, sources=50, oar=(15,15))
+        self.controller = Controller(self.grid, glucose=True, draw_step=0, hcells=500, oxygen=True,
+                                cancercells=True, oar=(15, 15))
+        for i in range(400):
+            self.controller.go()
         self.current_controller = copy.deepcopy(self.controller)
         self.num = 0
         self.h_cell_reset = HealthyCell.cell_count
@@ -36,18 +37,20 @@ class CellEnvironment(Environment):
 
     def reset(self, mode):
         if mode == -1 or True:
+            '''
             if ((self.num+1) % 25) == 0 and False:
                 self.__init__()
             if self.draw and hasattr(self.current_controller, 'fig'):
                 # self.current_controller.fig.ioff()
                 self.current_controller.fig.show()
+            '''
             del self.current_controller
             self.num += 1
             self.current_controller = copy.deepcopy(self.controller)
-
+            '''
             if self.draw and self.num % 5 == 0:
                 self.current_controller.plot_init()
-
+            '''
             HealthyCell.cell_count = self.h_cell_reset
             CancerCell.cell_count = self.c_cell_reset
             OARCell.cell_count = self.oar_cell_reset
@@ -56,20 +59,14 @@ class CellEnvironment(Environment):
         pre_hcell = HealthyCell.cell_count
         pre_ccell = CancerCell.cell_count
         pre_oarcell = OARCell.cell_count
-        self.current_controller.grid.irradiate(action[0], 25, 25)
-        #self.current_controller.grid.irradiate(1+(action/2), 25, 25)
-        post_ccell = CancerCell.cell_count
-        print("Radiation dose :", action[0], "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
-              CancerCell.cell_count, "remaining", "time =", int(action[1]))
-        '''
-        print("Radiation dose :", 1+(action/2), "Gy", (pre_ccell - post_ccell), "Cancer cell killed",
-              CancerCell.cell_count, "remaining", "time =", self.rand_time)
-        '''
-        #for _ in range(24):
-        self.current_controller.go(int(action[1]))
+        radius = self.current_controller.grid.irradiate(action / 2, 25, 25)
+        for _ in range(24):
+            self.current_controller.go()
         post_hcell = HealthyCell.cell_count
         post_ccell = CancerCell.cell_count
         post_oarcell = OARCell.cell_count
+        print("Radiation dose :", action / 2, "Gy , radius : ", radius,
+              "remaining :", CancerCell.cell_count,  "time =", 24)
         if self.draw and self.num % 5 == 0 and (self.inTerminalState() or self.current_controller.tick % 12 == 0):
             self.current_controller.update_plots()
         '''
@@ -81,11 +78,11 @@ class CellEnvironment(Environment):
             else:
                 return 1000
         '''
-        return self.adjust_reward(pre_ccell - post_ccell, pre_hcell-post_hcell)
+        return self.adjust_reward(pre_ccell - post_ccell, pre_hcell-post_hcell, pre_oarcell-post_oarcell)
 
-    def adjust_reward(self, ccell_killed, hcell_lost):
+    def adjust_reward(self, ccell_killed, hcell_lost, oarcell_lost):
         #factor = 1.05**((self.current_controller.tick - 400)//24) 
-        return (ccell_killed - 5 * hcell_lost)/1000
+        return (ccell_killed - 5 * hcell_lost - 25 * oarcell_lost)/1000
 
 
     def inTerminalState(self):
@@ -102,7 +99,7 @@ class CellEnvironment(Environment):
 
     def nActions(self):
         #return 9
-        return [[1, 5], [12, 60]]
+        return 9
  
     def end(self):
         del self.grid
@@ -110,14 +107,13 @@ class CellEnvironment(Environment):
 
     def inputDimensions(self):
         #return [(1, 1), (1, 1)]
-        return [(1, 1), (1,1), (1, 20, 20)]
+        return [(1, 25, 25)]
 
     def observe(self):
         cell_types = np.array([[patch_type(self.current_controller.grid.cells[i][j])
                                                                 for j in range(self.current_controller.grid.ysize)]
                                                                 for i in range(self.current_controller.grid.xsize)], dtype=np.float32)
-        return [CancerCell.cell_count, HealthyCell.cell_count, cv2.resize(cell_types,
-                                                                dsize=(20,20), interpolation=cv2.INTER_CUBIC)]
+        return [cv2.resize(cell_types, dsize=(25,25), interpolation=cv2.INTER_CUBIC)]
         #return [CancerCell.cell_count, HealthyCell.cell_count]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):

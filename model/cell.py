@@ -206,7 +206,7 @@ class CancerCell(Cell):
 
 class OARCell(Cell):
     cell_count = 0
-    worth = 1
+    worth = 5
 
     def __init__(self, stage, worth):
         OARCell.cell_count += 1
@@ -216,7 +216,64 @@ class OARCell(Cell):
     # One hour of cell cycle
     # TODO : Should maybe take nutrients and die if no nutrients?
     def cycle(self, glucose, count, oxygen):
-        return 0,0
+        self.age += 1
+        if self.stage == 4:  # Quiescent
+            if self.age > 3000:
+                self.alive = False
+                OARCell.cell_count -= 1
+                return 0, 0, 2
+            else:
+                if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
+                    self.alive = False
+                    OARCell.cell_count -= 1
+                    return 0, 0, 2
+                else:
+                    return self.efficiency * .75, self.oxy_efficiency * .75
+        elif self.stage == 3:  # Mitosis
+            if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
+                self.alive = False
+                OARCell.cell_count -= 1
+                return 0, 0, 2
+            else:
+                self.stage = 0
+                self.age = 0
+                return self.efficiency, self.oxy_efficiency, 3
+        elif self.stage == 2:  # Gap 2
+            if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
+                self.alive = False
+                OARCell.cell_count -= 1
+                return 0, 0,2
+            elif self.age == 4:
+                self.age = 0
+                self.stage = 3
+                return self.efficiency, self.oxy_efficiency
+            else:
+                return self.efficiency, self.oxy_efficiency
+        elif self.stage == 1:  # Synthesis
+            if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
+                self.alive = False
+                OARCell.cell_count -= 1
+                return 0, 0,2
+            elif self.age == 8:
+                self.age = 0
+                self.stage = 2
+                return self.efficiency, self.oxy_efficiency
+            else:
+                return self.efficiency, self.oxy_efficiency
+        elif self.stage == 0:  # Gap 1
+            if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
+                self.alive = False
+                OARCell.cell_count -= 1
+                return 0, 0, 2
+            elif glucose < quiescent_glucose_level or count > critical_neighbors or oxygen < quiescent_oxygen_level:
+                self.age = 0
+                self.stage = 4
+                return self.efficiency, self.oxy_efficiency
+            else:
+                if self.age == 11:
+                    self.age = 0
+                    self.stage = 1
+                return self.efficiency, self.oxy_efficiency
 
     def cell_color(self):
         return 255, 255, 153
