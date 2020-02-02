@@ -77,6 +77,7 @@ class HealthyCell(Cell):
                 return 0, 0
             else:
                 self.stage = 0
+                self.age = 0
                 return self.efficiency, self.oxy_efficiency, 0
         elif self.stage == 2:  # Gap 2
             if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
@@ -160,8 +161,8 @@ class CancerCell(Cell):
                 CancerCell.cell_count -= 1
                 return 0, 0
             else:
-                self.energy += self.efficiency
                 self.stage = 0
+                self.age = 0
                 return self.efficiency, self.oxy_efficiency, 1
         elif self.stage == 2:  # Gap 2
             if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
@@ -193,7 +194,6 @@ class CancerCell(Cell):
             else:
                 if self.age == 11:
                     self.age = 0
-                    self.energy = 0
                     self.stage = 1
                 return self.efficiency, self.oxy_efficiency
 
