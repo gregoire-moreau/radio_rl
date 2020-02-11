@@ -12,6 +12,7 @@ struct CellNode
 {
     Cell * cell;
     CellNode *next;
+    char type;
 };
 
 
@@ -19,13 +20,13 @@ struct CellNode
 class CellList
 {
 public:
-     CellNode *head, *tail;
-     int size;
+    CellNode *head, *tail;
+    int size;
     CellList();
     ~CellList();
-    void add(Cell * cell);
-    void sort();
-    void deleteDead();
+    void add(Cell * cell, char type);
+    void deleteDeadAndSort();
+    int CellTypeSum();
 };
 
 struct Source{
@@ -46,19 +47,26 @@ class Grid {
 public:
     Grid(int xsize, int ysize, int sources_num);
     ~Grid();
-    void addCell(int x, int y, Cell * cell);
+    void addCell(int x, int y, Cell * cell, char type);
     void fill_sources(double glu, double oxy);
     void cycle_cells();
     void diffuse(double diff_factor);
+    void irradiate(double dose);
+    int cell_types(int x, int y);
 private:
     void change_neigh_counts(int x, int y, int val);
+    int rand_min(int x, int y);
+    void min_helper(int x, int y, int& curr_min, int * pos, int& counter);
     int xsize;
     int ysize;
     CellList ** cells;
     double ** glucose;
     double ** oxygen;
+    double ** glucose_helper;
+    double ** oxygen_helper;
     int ** neigh_counts;
     SourceList * sources;
+    double tumor_radius(int center_x, int center_y);
 };
 
 

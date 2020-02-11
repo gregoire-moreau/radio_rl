@@ -7,16 +7,22 @@
 
 
 #include "grid.h"
+#include "cell.h"
 
 class Controller {
 public:
     Controller(Grid * grid, int hcells, int xsize, int ysize);
+    Controller(int hcells, int xsize, int ysize, int sources_num);
     ~Controller();
+    void irradiate(double dose);
     void go();
+    int cell_types(int x, int y);
+    int xsize, ysize;
 private:
+    int tick;
+    bool self_grid;
     Grid * grid;
-    int tick = 0;
 };
 
 
-#endif RADIO_RL_CONTROLLER_H
+#endif //RADIO_RL_CONTROLLER_H

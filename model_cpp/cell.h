@@ -12,17 +12,15 @@ typedef struct {
 } cell_cycle_res;
 
 class Cell {
+protected:
+    short age;
+    char stage;
 public:
     bool alive;
     Cell(char stage);
     virtual ~Cell()=default;
     virtual cell_cycle_res cycle(double glucose, double oxygen, int count) = 0;
     virtual void radiate(double dose) = 0;
-
-protected:
-    short age;
-    char stage;
-
 };
 
 class HealthyCell : public Cell{
@@ -30,7 +28,7 @@ public:
     static int count;
     HealthyCell(char stage);
     //~HealthyCell();
-    cell_cycle_res cycle(double glucose, double oxygen, int count) override;
+    cell_cycle_res cycle(double glucose, double oxygen, int neigh_count) override;
     void radiate(double dose) override;
 private:
     double glu_efficiency;
@@ -42,7 +40,7 @@ public:
     static int count;
     CancerCell(char stage);
     //~CancerCell();
-    cell_cycle_res cycle(double glucose, double oxygen, int count) override;
+    cell_cycle_res cycle(double glucose, double oxygen, int neigh_count) override;
     void radiate(double dose) override;
 };
 

@@ -245,7 +245,7 @@ if __name__ == '__main__':
     for i in range(2000):
         controller.go()
 
-        print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
+        #print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
               "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
         
         if i == 2000:
