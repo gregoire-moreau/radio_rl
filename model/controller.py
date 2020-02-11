@@ -246,7 +246,7 @@ if __name__ == '__main__':
         controller.go()
 
         #print("Tick :", i, "HealthyCells : ", HealthyCell.cell_count, "CancerCells : ", CancerCell.cell_count,
-              "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
+        #     "Blood Vessels : ", len(grid.sources), "OAR cells", OARCell.cell_count)
         
         if i == 2000:
             break

@@ -1,4 +1,4 @@
-from cell_environment import CellEnvironment
+from model_cpp.model_env_cpp import CellEnvironment
 import numpy as np
 from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
@@ -32,4 +32,4 @@ agent.attach(bc.InterleavedTestEpochController(
     controllers_to_disable=[0, 1, 2, 3]))
 #agent.setNetwork("net_Q3", nEpoch=10)
 agent.run(n_epochs=5, epoch_length=1000)
-agent.dumpNetwork("net_OAR", nEpoch = 5)
+agent.dumpNetwork("net", nEpoch = 5)

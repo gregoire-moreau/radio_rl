@@ -211,7 +211,7 @@ void Grid::cycle_cells() {
                     addCell(downhill / ysize, downhill % ysize, new HealthyCell('1'), 'h');
                 }
                 if (result.new_cell == 'c'){
-                    int downhill = rand_min(i, j);
+                    int downhill = rand_adj(i, j);
                     addCell(downhill / ysize, downhill % ysize, new CancerCell('1'), 'c');
                 }
                 current = current -> next;
@@ -222,6 +222,8 @@ void Grid::cycle_cells() {
         }
     }
 }
+
+
 
 int Grid::rand_min(int x, int y){
     int counter = 0;
@@ -250,6 +252,28 @@ void Grid::min_helper(int x, int y, int&  curr_min, int * pos, int& counter){
             pos[counter] = x*ysize+y;
             counter++;
         }
+    }
+}
+
+int Grid::rand_adj(int x,  int y){
+    int counter = 0;
+    int pos[8];
+
+    adj_helper(x-1, y-1, pos, counter);
+    adj_helper(x-1, y,  pos, counter);
+    adj_helper(x-1, y+1, pos, counter);
+    adj_helper(x, y-1,  pos, counter);
+    adj_helper(x, y+1, pos, counter);
+    adj_helper(x+1, y-1, pos, counter);
+    adj_helper(x+1, y, pos, counter);
+    adj_helper(x+1, y+1,  pos, counter);
+
+    return pos[rand() % counter];
+}
+
+void Grid::adj_helper(int x, int y, int * pos, int& counter){
+    if (x >= 0 && x < xsize && y >= 0 && y < ysize){
+        pos[counter++] = x*ysize + y;
     }
 }
 
@@ -357,4 +381,12 @@ double Grid::tumor_radius(int center_x, int center_y){
 
 int Grid::cell_types(int x, int y){
     return cells[x][y].CellTypeSum();
+}
+
+double ** Grid::currentGlucose(){
+    return glucose;
+}
+
+double ** Grid::currentOxygen(){
+    return oxygen;
 }

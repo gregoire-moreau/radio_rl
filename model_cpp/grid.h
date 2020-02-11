@@ -53,10 +53,14 @@ public:
     void diffuse(double diff_factor);
     void irradiate(double dose);
     int cell_types(int x, int y);
+    double ** currentGlucose();
+    double ** currentOxygen();
 private:
     void change_neigh_counts(int x, int y, int val);
     int rand_min(int x, int y);
+    int rand_adj(int x, int y);
     void min_helper(int x, int y, int& curr_min, int * pos, int& counter);
+    void adj_helper(int x, int y, int * pos, int& counter);
     int xsize;
     int ysize;
     CellList ** cells;

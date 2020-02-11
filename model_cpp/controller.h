@@ -17,9 +17,11 @@ public:
     void irradiate(double dose);
     void go();
     int cell_types(int x, int y);
+    double ** currentGlucose();
+    double ** currentOxygen();
     int xsize, ysize;
-private:
     int tick;
+private:
     bool self_grid;
     Grid * grid;
 };

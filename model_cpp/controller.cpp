@@ -51,6 +51,14 @@ int Controller::cell_types(int x, int y){
     return grid->cell_types(x, y);
 }
 
+double ** Controller::currentGlucose(){
+    return grid->currentGlucose();
+}
+
+double ** Controller::currentOxygen(){
+    return grid->currentOxygen();
+}
+
 int main(){
     srand(42);
     Grid * grid = new Grid(50, 50, 50);
