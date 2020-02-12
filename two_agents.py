@@ -189,17 +189,17 @@ print("DONE HOUR")
 
 print("START BOTH",file=sys.stderr)
 print("START BOTH")
-for i in range(100):
+for i in range(50):
     agent_dose._mode = -1
     agent_hour._mode = 0
     print("START DOSE %d"%i, file=sys.stderr)
     print("START DOSE %d"%i)
-    agent_dose.run(n_epochs=1, epoch_length=200)
+    agent_dose.run(n_epochs=1, epoch_length=100)
     agent_dose._mode = 0
     agent_hour._mode = -1
     print("START HOUR %d" % i, file=sys.stderr)
     print("START HOUR %d" % i)
-    agent_hour.run(n_epochs=1, epoch_length=200)
+    agent_hour.run(n_epochs=1, epoch_length=100)
 
 
 agent_dose.dumpNetwork("net_dose_post")

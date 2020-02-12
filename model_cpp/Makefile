@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -std=gnu++11
 
 main: controller.o cell.o grid.o
 	$(CXX) $(CXXFLAGS) -o main controller.o cell.o grid.o
