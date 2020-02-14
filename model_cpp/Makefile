@@ -15,5 +15,6 @@ grid.o: grid.h cell.h
 clean :
 	rm -f *.o
 	rm -f main
+	rm -rf build
 
 
