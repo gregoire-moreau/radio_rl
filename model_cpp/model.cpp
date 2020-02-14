@@ -4,7 +4,7 @@
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <Python.h>
-#include "condensed.h"
+#include "controller.h"
 #include <numpy/npy_common.h>
 #include <numpy/arrayobject.h>
 #include <iostream>
