@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import cv2
 try:
-    import cppModel
+    import cppCellModel
 except:
     strErr = "\n\n`cppModel` module not found, "
     raise RuntimeError(strErr)
