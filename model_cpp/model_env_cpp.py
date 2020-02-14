@@ -15,9 +15,13 @@ class CellEnvironment(Environment):
         self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
     
     def reset(self, mode):
-        if mode == -1 or True:
-            cppCellModel.delete_controller(self.controller_capsule)
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+        cppCellModel.delete_controller(self.controller_capsule)
+        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+        if mode == -1:
+            self.verbose = False
+        else :
+            self.verbose = True
+            
     
     def act(self, action):
         pre_hcell = cppCellModel.HCellCount()
@@ -26,7 +30,8 @@ class CellEnvironment(Environment):
         cppCellModel.go(self.controller_capsule, 24)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
-        print("Radiation dose :", action / 2, "Gy ",
+        if self.verbose:
+            print("Radiation dose :", action / 2, "Gy ",
               "remaining :", post_ccell,  "time =", 24)
         if self.inTerminalState():
             if post_ccell > 0 :
