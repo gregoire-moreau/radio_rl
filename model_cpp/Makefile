@@ -18,3 +18,7 @@ clean :
 	rm -rf build
 
 
+condense:
+	cat cell.h grid.h controller.h > condensed.h
+	echo "#include \"condensed.h\"" > condensed.cpp
+	cat cell.cpp grid.cpp controller.cpp >> condensed.cpp
