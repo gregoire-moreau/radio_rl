@@ -5,7 +5,7 @@ except:
 
 # Definition of extension modules
 cppCellModel = Extension('cppCellModel',
-                 sources = ['cell.cpp', 'grid.cpp', 'controller.cpp' 'model.cpp'], extra_compile_args=['-std=gnu++11'])
+                 sources = ['cell.cpp', 'grid.cpp', 'controller.cpp', 'model.cpp'], extra_compile_args=['-std=gnu++11'])
 
 # Compile Python module
 setup (ext_modules = [cppCellModel],
