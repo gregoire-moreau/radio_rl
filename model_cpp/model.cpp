@@ -238,7 +238,7 @@ PyObject* observeOxygen(PyObject* self, PyObject* args){
 
 
 
-PyMethodDef cppModelFunctions[] =
+PyMethodDef cppCellModelFunctions[] =
 {
 
     {"controller_constructor", 
@@ -285,17 +285,17 @@ PyMethodDef cppModelFunctions[] =
 };
 
 
-struct PyModuleDef cppModelModule =
+struct PyModuleDef cppCellModelModule =
 {
    PyModuleDef_HEAD_INIT,
-   "cppModel",
+   "cppCellModel",
    NULL,
    -1,
-   cppModelFunctions
+   cppCellModelFunctions
 };
 
-PyMODINIT_FUNC PyInit_cppModel(void)
+PyMODINIT_FUNC PyInit_cppCellModel(void)
 {
     import_array();
-    return PyModule_Create(&cppModelModule);
+    return PyModule_Create(&cppCellModelModule);
 }
