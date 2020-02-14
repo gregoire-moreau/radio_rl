@@ -63,12 +63,12 @@ int main(){
     srand(42);
     Grid * grid = new Grid(50, 50, 50);
     Controller * controller = new Controller(grid, 1000, 50, 50);
-    //cout << "Tick : " << 0 << " HCells : " << HealthyCell::count << " CCells : " << CancerCell::count << endl;
+    cout << "Tick : " << 0 << " HCells : " << HealthyCell::count << " CCells : " << CancerCell::count << endl;
     for (int i = 1; i <= 2000; i++){
         controller->go();
         if (i > 400 && i % 24 == 0)
             grid -> irradiate(2.0);
-        //cout << "Tick : " << i << " HCells : " << HealthyCell::count << " CCells : " << CancerCell::count << endl;
+        cout << "Tick : " << i << " HCells : " << HealthyCell::count << " CCells : " << CancerCell::count << endl;
     }
     delete controller;
     delete grid;

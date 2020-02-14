@@ -10,3 +10,10 @@ controller.o: controller.cpp controller.h grid.h cell.h
 cell.o: cell.h grid.h
 
 grid.o: grid.h cell.h
+
+.PHONY : clean
+clean :
+	rm -f *.o
+	rm -f main
+
+
