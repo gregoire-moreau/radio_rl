@@ -13,6 +13,7 @@ class Controller {
 public:
     Controller(Grid * grid, int hcells, int xsize, int ysize);
     Controller(int hcells, int xsize, int ysize, int sources_num);
+    Controller(int hcells, int xsize, int ysize, int sources_num, int x1, int x2, int y1, int y2);
     ~Controller();
     void irradiate(double dose);
     void go();
@@ -24,6 +25,7 @@ public:
 private:
     bool self_grid;
     Grid * grid;
+    OARZone * oar;
 };
 
 

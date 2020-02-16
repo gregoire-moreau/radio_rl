@@ -8,7 +8,7 @@
 #include <math.h> 
 #include <iostream>
 
-CellList::CellList():head(nullptr), tail(nullptr), size(0) {}
+CellList::CellList():head(nullptr), tail(nullptr), size(0), oar_count(0) {}
 CellList::~CellList() {
     CellNode * current = head;
     CellNode * next;
@@ -34,7 +34,11 @@ void CellList::add(Cell *cell, char type) {
         tail -> next = newNode;
         tail = newNode;
         newNode -> next = nullptr;
-        
+    } else if (type == 'o'){
+        tail -> next = newNode;
+        tail = newNode;
+        newNode -> next = nullptr;
+        oar_count++;
     } else if(type == 'c'){
         newNode -> next = head;
         head = newNode;
@@ -49,6 +53,8 @@ void CellList::deleteDeadAndSort(){
     while(current){
         if (!(current -> cell -> alive)){
             delete current->cell;
+            if (current -> type == 'o')
+                oar_count--;
             CellNode * toDel = current;
             current = current -> next;
             delete toDel;
@@ -86,9 +92,22 @@ int CellList::CellTypeSum(){
             to_ret++;
         else if (current -> type == 'c')
             to_ret--;
+        else if (current -> type == 'o')
+            to_ret += OARCell::worth;
         current = current -> next;
     }
     return to_ret;
+}
+
+void CellList::wake_oar(){
+    if (oar_count == 0)
+        return;
+    CellNode * current = head;
+    while(current){
+        if (current -> type == 'o')
+            current -> cell -> wake();
+        current = current -> next;
+    }
 }
 
 SourceList::SourceList():head(nullptr), tail(nullptr), size(0) {}
@@ -117,7 +136,7 @@ void SourceList::add(int x, int y) {
 }
 
 
-Grid::Grid(int xsize, int ysize, int sources_num):xsize(xsize), ysize(ysize){
+Grid::Grid(int xsize, int ysize, int sources_num):xsize(xsize), ysize(ysize), oar(nullptr){
     cells = new CellList*[xsize];
     glucose = new double*[xsize];
     glucose_helper = new double*[xsize];
@@ -138,6 +157,10 @@ Grid::Grid(int xsize, int ysize, int sources_num):xsize(xsize), ysize(ysize){
     for (int i = 0; i < sources_num; i++){
         sources->add(rand() % xsize, rand() % ysize);
     }
+}
+
+Grid::Grid(int xsize, int ysize, int sources_num, OARZone * oarZone):Grid(xsize, ysize, sources_num){
+    oar = oarZone;
 }
 
 Grid::~Grid() {
@@ -214,6 +237,17 @@ void Grid::cycle_cells() {
                     int downhill = rand_adj(i, j);
                     addCell(downhill / ysize, downhill % ysize, new CancerCell('1'), 'c');
                 }
+                if (result.new_cell == 'o'){
+                    int downhill = find_missing_oar(i, j);
+                    if (downhill >= 0){
+                        addCell(downhill / ysize, downhill % ysize, new OARCell('1'), 'o');
+                    } else{
+                        current -> cell -> sleep();
+                    }
+                }
+                if (result.new_cell == 'w'){
+                    wake_surrounding_oar(i, j);
+                }
                 current = current -> next;
             }
             int init_count = cells[i][j].size;
@@ -222,7 +256,6 @@ void Grid::cycle_cells() {
         }
     }
 }
-
 
 
 int Grid::rand_min(int x, int y){
@@ -243,6 +276,8 @@ int Grid::rand_min(int x, int y){
 }
 
 void Grid::min_helper(int x, int y, int&  curr_min, int * pos, int& counter){
+    if (oar && x >= oar->x1 && x < oar->x2 && y >= oar -> y1 && y < oar -> y2)
+        return;
     if (x >= 0 && x < xsize && y >= 0 && y < ysize){
         if (cells[x][y].size < curr_min){
             pos[0] = x*ysize+y;
@@ -275,6 +310,53 @@ void Grid::adj_helper(int x, int y, int * pos, int& counter){
     if (x >= 0 && x < xsize && y >= 0 && y < ysize){
         pos[counter++] = x*ysize + y;
     }
+}
+
+
+int Grid::find_missing_oar(int x, int y){
+    int counter = 0;
+    int curr_min = 100000;
+    int pos[8];
+
+    missing_oar_helper(x-1, y-1, curr_min, pos, counter);
+    missing_oar_helper(x-1, y, curr_min, pos, counter);
+    missing_oar_helper(x-1, y+1, curr_min, pos, counter);
+    missing_oar_helper(x, y-1, curr_min, pos, counter);
+    missing_oar_helper(x, y+1, curr_min, pos, counter);
+    missing_oar_helper(x+1, y-1, curr_min, pos, counter);
+    missing_oar_helper(x+1, y, curr_min, pos, counter);
+    missing_oar_helper(x+1, y+1, curr_min, pos, counter);
+
+    return (counter > 0)? pos[rand() % counter] : -1;
+}
+
+void Grid::missing_oar_helper(int x, int y, int&  curr_min, int * pos, int& counter){
+    if (oar && x >= oar->x1 && x < oar->x2 && y >= oar -> y1 && y < oar -> y2  && cells[x][y].oar_count == 0){
+        if (cells[x][y].size < curr_min){
+            pos[0] = x*ysize+y;
+            counter = 1;
+            curr_min = cells[x][y].size;
+        } else if(cells[x][y].size == curr_min){
+            pos[counter] = x*ysize+y;
+            counter++;
+        }
+    }
+}
+
+void Grid::wake_surrounding_oar(int x, int y){
+    wake_helper(x-1, y-1);
+    wake_helper(x-1, y);
+    wake_helper(x-1, y+1);
+    wake_helper(x, y-1);
+    wake_helper(x, y+1);
+    wake_helper(x+1, y-1);
+    wake_helper(x+1, y);
+    wake_helper(x+1, y+1);
+}
+
+void Grid::wake_helper(int x, int y){
+    if (oar && x >= oar->x1 && x < oar-> x2 && y >= oar->y1 && y < oar -> y2)
+        cells[x][y].wake_oar();
 }
 
 void diffuse_helper(double** src, double** dest, int xsize, int ysize, double diff_factor){
@@ -349,10 +431,16 @@ void Grid::irradiate(double dose){
             double dist = distance(i, j, xsize / 2, ysize / 2);
             if (dist <= 2*radius && cells[i][j].size){
                 CellNode * current = cells[i][j].head;
+                bool oar_dead = false;
                 while (current){
                     current -> cell -> radiate(conv(radius, dist) * multiplicator);
+                    if (!(current -> cell ->alive) && current->type == 'o'){
+                        oar_dead = true;
+                    }
                     current = current -> next;
                 }
+                if(oar_dead)
+                    wake_surrounding_oar(i, j);
                 int init_count = cells[i][j].size;
                 cells[i][j].deleteDeadAndSort();
                 change_neigh_counts(i, j, cells[i][j].size - init_count);

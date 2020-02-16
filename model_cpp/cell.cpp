@@ -9,12 +9,14 @@ static float quiescent_glucose_level = 17.28;
 //static float max_glucose_absorption = .72;
 static float average_glucose_absorption = .36;
 static float average_cancer_glucose_absorption = .54;
-static int critical_neighbors = 9;
+static int critical_neighbors = 8;
 static float critical_glucose_level = 6.48;
 static float alpha_tumor = 0.38;
 static float beta_tumor = 0.038;
 static float alpha_norm_tissue = 0.03;
 static float beta_norm_tissue = 0.009;
+static float alpha_oar = 0.03;
+static float beta_oar = 0.009;
 //static float repair = 0.1;
 //static float bystander_rad = 0.05;
 //static float bystander_survival_probability = 0.95;
@@ -29,9 +31,22 @@ uniform_real_distribution<double> uni_distribution(0.0, 1.0);
 
 int HealthyCell::count = 0;
 int CancerCell::count  = 0;
+int OARCell::count     = 0;
+int OARCell::worth     = 5;
 
 
 Cell::Cell(char stage):age(0), stage(stage), alive(true)  {}
+void Cell::sleep(){
+    stage = 'q';
+    age = 0;
+}
+
+void Cell::wake(){
+    if (stage == 'q'){
+        stage = '1';
+        age = 0;
+    }
+}
 
 HealthyCell::HealthyCell(char stage): Cell(stage) {
     count++;
@@ -43,6 +58,14 @@ HealthyCell::HealthyCell(char stage): Cell(stage) {
 
 CancerCell::CancerCell(char stage): Cell(stage) {
     count++;
+    alive = true;
+}
+
+OARCell::OARCell(char stage) : Cell(stage) {
+    count++;
+    double factor = max(min(norm_distribution(generator), 2.0), 0.0);
+    glu_efficiency = factor * average_glucose_absorption;
+    oxy_efficiency = factor * average_oxygen_consumption;
     alive = true;
 }
 
@@ -168,4 +191,68 @@ cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count)
             break;
     }
     return result;
+}
+
+
+cell_cycle_res OARCell::cycle(double glucose, double oxygen, int neigh_count) {
+    cell_cycle_res result = {.glucose=.0,.oxygen=.0, .new_cell='\0'};
+    age++;
+    if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) {
+        alive = false;
+        count--;
+        result.new_cell = 'w';
+        return result;
+    }
+    switch(stage){
+        case 'q': //Quiescence
+            result.glucose = glu_efficiency * .75;
+            result.oxygen  = oxy_efficiency * .75;
+            break;
+        case 'm': //Mitosis
+            stage = '1';
+            age = 0;
+            result.glucose = glu_efficiency;
+            result.oxygen = oxy_efficiency;
+            result.new_cell = 'o';
+            break;
+        case '2': //Gap 2
+            result.glucose = glu_efficiency;
+            result.oxygen = oxy_efficiency;
+            if (age == 4){
+                age = 0;
+                stage = 'm';
+            }
+            break;
+        case 's': //Synthesis
+            result.glucose = glu_efficiency;
+            result.oxygen = oxy_efficiency;
+            if (age == 8){
+                age = 0;
+                stage = '2';
+            }
+            break;
+        case '1': //Gap 1
+            result.glucose = glu_efficiency;
+            result.oxygen = oxy_efficiency;
+            if (glucose < quiescent_glucose_level || neigh_count > critical_neighbors || oxygen < quiescent_oxygen_level){
+                age = 0;
+                stage = 'q';
+            } else if(age >= 11) {
+                age = 0;
+                stage = 's';
+            }
+            break;
+        default:
+            cout << "INCORRECT CELL STAGE " << stage << endl;
+            break;
+    }
+    return result;
+}
+
+void OARCell::radiate(double dose) {
+    double survival_probability = exp( - (alpha_oar * dose) - (beta_oar * dose * dose));
+    if (uni_distribution(generator) > survival_probability){
+        alive = false;
+        count--;
+    }
 }

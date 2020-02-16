@@ -78,7 +78,7 @@ if __name__ == '__main__':
     import matplotlib
     matplotlib.use("TkAgg")
     plt.ion()
-    controller = cppCellModel.controller_constructor(50,50,50,0)
+    controller = cppCellModel.controller_constructor_oar(50,50,50,0, 5,15,5,15)
     fig, axs = plt.subplots(2,2, constrained_layout=True)
     fig.suptitle('Cell proliferation at t = 0')
     glucose_plot = axs[0][0]
@@ -87,10 +87,17 @@ if __name__ == '__main__':
     cell_plot.set_title('Types of cells')
     oxygen_plot = axs[0][1]
     oxygen_plot.set_title('Oxygen density')
+    cancer_count_plot = axs[1][1]
+    cancer_count_plot.set_title('Number of cancer cells')
+    ccount_ticks = []
+    ccount_vals = []
 
     glucose_plot.imshow(cppCellModel.observeGlucose(controller))
     oxygen_plot.imshow(cppCellModel.observeOxygen(controller))
     cell_plot.imshow(cppCellModel.observeGrid(controller))
+    ccount_ticks.append(cppCellModel.controllerTick(controller))
+    ccount_vals.append(cppCellModel.CCellCount())
+    cancer_count_plot.plot(ccount_ticks, ccount_vals)
 
     for i in range(200):
         cppCellModel.go(controller, 12)
@@ -100,5 +107,8 @@ if __name__ == '__main__':
         glucose_plot.imshow(cppCellModel.observeGlucose(controller))
         oxygen_plot.imshow(cppCellModel.observeOxygen(controller))
         cell_plot.imshow(cppCellModel.observeGrid(controller))
+        ccount_ticks.append(cppCellModel.controllerTick(controller))
+        ccount_vals.append(cppCellModel.CCellCount())
+        cancer_count_plot.plot(ccount_ticks, ccount_vals)
         plt.pause(0.02)
     cppCellModel.delete_controller(controller)

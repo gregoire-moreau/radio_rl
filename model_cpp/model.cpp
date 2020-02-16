@@ -36,6 +36,36 @@ PyObject* controller_constructor(PyObject* self, PyObject* args){
     return Py_BuildValue("O", controllerCapsule);
 }
 
+PyObject* controller_constructor_oar(PyObject* self, PyObject* args){
+    // Arguments passed from Python
+    int xsize;
+    int ysize;
+    int source_nums;
+    int init_steps;
+    int x1, x2, y1, y2;
+
+    // Process arguments passes from Python
+    PyArg_ParseTuple(args, "iiiiiiii",
+                     &xsize,
+                     &ysize,
+                     &source_nums,
+                     &init_steps,
+                     &x1,
+                     &x2,
+                     &y1,
+                     &y2);
+
+    Controller * controller = new Controller(1000, xsize, ysize, source_nums, x1, x2, y1, y2);
+
+    PyObject* controllerCapsule = PyCapsule_New((void *)controller, "ControllerPtr", NULL);
+    PyCapsule_SetPointer(controllerCapsule, (void *)controller);
+
+    for (int i = 0; i < init_steps; i++)
+        controller -> go();
+
+    return Py_BuildValue("O", controllerCapsule);
+}
+
 
 PyObject* go(PyObject* self, PyObject* args){
     PyObject* controllerCapsule;
@@ -88,6 +118,10 @@ PyObject *HCellCount(PyObject *self) {
 
 PyObject *CCellCount(PyObject *self) {
    return Py_BuildValue("i", CancerCell::count);
+}
+
+PyObject *OARCellCount(PyObject *self) {
+   return Py_BuildValue("i", OARCell::count);
 }
 
 PyObject* controllerTick(PyObject* self, PyObject* args){
@@ -245,6 +279,10 @@ PyMethodDef cppCellModelFunctions[] =
       controller_constructor, METH_VARARGS,
      "Create Controller"},
 
+    {"controller_constructor_oar", 
+      controller_constructor_oar, METH_VARARGS,
+     "Create Controller with oar zone"},
+
     {"go",
       go, METH_VARARGS,
      "Simulate a number of steps"},
@@ -263,6 +301,10 @@ PyMethodDef cppCellModelFunctions[] =
     
     {"CCellCount",
       (PyCFunction)CCellCount, METH_NOARGS,
+     "Number of cancer cells"},
+
+    {"OARCellCount",
+      (PyCFunction)OARCellCount, METH_NOARGS,
      "Number of cancer cells"},
 
     {"observeGrid",

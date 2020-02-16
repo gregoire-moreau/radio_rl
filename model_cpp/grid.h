@@ -15,6 +15,9 @@ struct CellNode
     char type;
 };
 
+struct OARZone{
+    int x1, x2, y1, y2;
+};
 
 
 class CellList
@@ -22,11 +25,13 @@ class CellList
 public:
     CellNode *head, *tail;
     int size;
+    int oar_count;
     CellList();
     ~CellList();
     void add(Cell * cell, char type);
     void deleteDeadAndSort();
     int CellTypeSum();
+    void wake_oar();
 };
 
 struct Source{
@@ -46,6 +51,7 @@ public:
 class Grid {
 public:
     Grid(int xsize, int ysize, int sources_num);
+    Grid(int xsize, int ysize, int sources_num, OARZone * oar);
     ~Grid();
     void addCell(int x, int y, Cell * cell, char type);
     void fill_sources(double glu, double oxy);
@@ -59,8 +65,12 @@ private:
     void change_neigh_counts(int x, int y, int val);
     int rand_min(int x, int y);
     int rand_adj(int x, int y);
+    int find_missing_oar(int x, int y);
     void min_helper(int x, int y, int& curr_min, int * pos, int& counter);
     void adj_helper(int x, int y, int * pos, int& counter);
+    void missing_oar_helper(int x, int y, int&  curr_min, int * pos, int& counter);
+    void wake_surrounding_oar(int x, int y);
+    void wake_helper(int x, int y);
     int xsize;
     int ysize;
     CellList ** cells;
@@ -70,6 +80,7 @@ private:
     double ** oxygen_helper;
     int ** neigh_counts;
     SourceList * sources;
+    OARZone * oar;
     double tumor_radius(int center_x, int center_y);
 };
 

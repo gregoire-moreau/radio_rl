@@ -179,7 +179,7 @@ class Grid:
                 if l[i][2] < minimum:
                     minimum = l[i][2]
                     ind = i
-            return l[i]
+            return l[ind]
 
 
     def neighbors(self, x, y):

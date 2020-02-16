@@ -21,6 +21,8 @@ public:
     virtual ~Cell()=default;
     virtual cell_cycle_res cycle(double glucose, double oxygen, int count) = 0;
     virtual void radiate(double dose) = 0;
+    void sleep();
+    void wake();
 };
 
 class HealthyCell : public Cell{
@@ -42,6 +44,19 @@ public:
     //~CancerCell();
     cell_cycle_res cycle(double glucose, double oxygen, int neigh_count) override;
     void radiate(double dose) override;
+};
+
+class OARCell : public Cell{
+public:
+    static int count;
+    static int worth;
+    OARCell(char stage);
+    //~CancerCell();
+    cell_cycle_res cycle(double glucose, double oxygen, int neigh_count) override;
+    void radiate(double dose) override;
+private:
+    double glu_efficiency;
+    double oxy_efficiency;
 };
 
 #endif //RADIO_RL_CELL_H
