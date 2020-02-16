@@ -12,11 +12,11 @@ from deer.base_classes import Environment
 
 class CellEnvironment(Environment):
     def __init__(self):
-        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+        self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, 5, 15,5, 15)
     
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
-        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+        self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, 5, 15, 5, 15)
         if mode == -1:
             self.verbose = False
         else :
@@ -26,11 +26,13 @@ class CellEnvironment(Environment):
     def act(self, action):
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
+	pre_oar_cell = cppCellModel.OARCellCount()
         cppCellModel.irradiate(self.controller_capsule, action / 2)
         cppCellModel.go(self.controller_capsule, 24)
         post_hcell = cppCellModel.HCellCount()
-        post_ccell = cppCellModel.CCellCount()
-        if self.verbose:
+	post_ccell = cppCellModel.CCellCount()
+	post_oar_cell = cppCellModel.OARCellCount()
+	if self.verbose:
             print("Radiation dose :", action / 2, "Gy ",
               "remaining :", post_ccell,  "time =", 24)
         if self.inTerminalState():
@@ -40,7 +42,7 @@ class CellEnvironment(Environment):
                 return -1
             else:
                 return 1
-        return -action / 100
+        return (post_oar_cell - pre_oar_cell) / 100
 
     def adjust_reward(self, ccell_killed, hcell_lost): 
         return (ccell_killed - 5 * hcell_lost)/1000
