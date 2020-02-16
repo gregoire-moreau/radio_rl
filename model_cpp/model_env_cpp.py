@@ -16,7 +16,7 @@ class CellEnvironment(Environment):
     
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
-        self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350)
+        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
         if mode == -1:
             self.verbose = False
         else :
