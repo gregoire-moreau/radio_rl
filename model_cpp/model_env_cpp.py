@@ -12,11 +12,11 @@ from deer.base_classes import Environment
 
 class CellEnvironment(Environment):
     def __init__(self):
-        self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, 5, 15,5, 15)
+        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
     
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
-        self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, 5, 15, 5, 15)
+        self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350)
         if mode == -1:
             self.verbose = False
         else :
@@ -38,11 +38,11 @@ class CellEnvironment(Environment):
         if self.inTerminalState():
             if post_ccell > 0:
                 return -1
-            elif cppCellModel.controllerTick(self.controller_capsule) > 2000:
+            elif cppCellModel.controllerTick(self.controller_capsule) > 1350:
                 return -1
             else:
                 return 1
-        return (post_oar_cell - pre_oar_cell) / 100
+        return action / 500
 
     def adjust_reward(self, ccell_killed, hcell_lost): 
         return (ccell_killed - 5 * hcell_lost)/1000
@@ -54,7 +54,7 @@ class CellEnvironment(Environment):
         elif cppCellModel.HCellCount() < 10:
             #print("Cancer wins, healthy cells lost = ",  self.h_cell_reset - HealthyCell.cell_count)
             return True
-        elif cppCellModel.controllerTick(self.controller_capsule) > 2000:
+        elif cppCellModel.controllerTick(self.controller_capsule) > 1350:
             return True
         else:
             return False
@@ -66,11 +66,11 @@ class CellEnvironment(Environment):
         cppCellModel.delete_controller(self.controller_capsule)
 
     def inputDimensions(self):
-        return [(1, 25, 25)]
+        return [(1, 50, 50)]
 
     def observe(self):
         cell_types = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
-        return [cv2.resize(cell_types, dsize=(25,25), interpolation=cv2.INTER_CUBIC)]
+        return [cv2.resize(cell_types, dsize=(50,50), interpolation=cv2.INTER_CUBIC)]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):
         print(test_data_set)

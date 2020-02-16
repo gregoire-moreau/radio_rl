@@ -26,7 +26,7 @@ agent.setDiscountFactor(0.95)
 agent.attach(bc.VerboseController())
 agent.attach(bc.TrainerController())
 agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=100000, e_min=0.01))
-agent.attach(bc.LearningRateController(0.001, 0.8, 1))
+agent.attach(bc.LearningRateController(0.001, 0.8, 5))
 agent.attach(bc.InterleavedTestEpochController(
     epoch_length=100,
     controllers_to_disable=[0, 1, 2, 3]))
