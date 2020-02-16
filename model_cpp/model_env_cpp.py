@@ -70,7 +70,7 @@ class CellEnvironment(Environment):
 
     def observe(self):
         cell_types = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
-        return [cv2.resize(cell_types, dsize=(50,50), interpolation=cv2.INTER_CUBIC)]
+        return [cell_types]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):
         print(test_data_set)
