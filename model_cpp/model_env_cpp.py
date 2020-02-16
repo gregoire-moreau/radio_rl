@@ -34,13 +34,13 @@ class CellEnvironment(Environment):
             print("Radiation dose :", action / 2, "Gy ",
               "remaining :", post_ccell,  "time =", 24)
         if self.inTerminalState():
-            if post_ccell > 0 :
+            if post_ccell > 0:
                 return -1
             elif cppCellModel.controllerTick(self.controller_capsule) > 2000:
-                return -0.5
+                return -1
             else:
                 return 1
-        return self.adjust_reward(pre_ccell - post_ccell, pre_hcell-post_hcell)
+        return -action / 100
 
     def adjust_reward(self, ccell_killed, hcell_lost): 
         return (ccell_killed - 5 * hcell_lost)/1000

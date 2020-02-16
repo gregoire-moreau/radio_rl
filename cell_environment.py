@@ -93,6 +93,7 @@ class CellEnvironment(Environment):
             print("Cancer wins, healthy cells lost = ",  self.h_cell_reset - HealthyCell.cell_count)
             return True
         elif self.current_controller.tick > 2000:
+            print("Timeout")
             return True
         else:
             return False
