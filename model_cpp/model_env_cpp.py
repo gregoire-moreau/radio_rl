@@ -26,13 +26,13 @@ class CellEnvironment(Environment):
     def act(self, action):
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
-	pre_oar_cell = cppCellModel.OARCellCount()
+        pre_oar_cell = cppCellModel.OARCellCount()
         cppCellModel.irradiate(self.controller_capsule, action / 2)
         cppCellModel.go(self.controller_capsule, 24)
         post_hcell = cppCellModel.HCellCount()
-	post_ccell = cppCellModel.CCellCount()
-	post_oar_cell = cppCellModel.OARCellCount()
-	if self.verbose:
+        post_ccell = cppCellModel.CCellCount()
+        post_oar_cell = cppCellModel.OARCellCount()
+        if self.verbose:
             print("Radiation dose :", action / 2, "Gy ",
               "remaining :", post_ccell,  "time =", 24)
         if self.inTerminalState():
