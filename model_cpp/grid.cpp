@@ -471,6 +471,21 @@ int Grid::cell_types(int x, int y){
     return cells[x][y].CellTypeSum();
 }
 
+int Grid::type_head(int x, int y){
+    if (cells[x][y].head){
+        char t = cells[x][y].head -> type;
+        if (t == 'c'){
+            return -1; 
+        } else if (t == 'h'){
+            return 1;
+        } else {
+            return 2;
+        }
+    } else {
+        return 0;
+    }
+}
+
 double ** Grid::currentGlucose(){
     return glucose;
 }

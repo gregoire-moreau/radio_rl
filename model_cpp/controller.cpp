@@ -93,12 +93,20 @@ int Controller::cell_types(int x, int y){
     return grid->cell_types(x, y);
 }
 
+int Controller::type_head(int x, int y){
+    return grid -> type_head(x, y);
+}
+
 double ** Controller::currentGlucose(){
     return grid->currentGlucose();
 }
 
 double ** Controller::currentOxygen(){
     return grid->currentOxygen();
+}
+
+double Controller::tumor_radius(){
+    return grid -> tumor_radius(xsize / 2, ysize /2);
 }
 
 int main(){

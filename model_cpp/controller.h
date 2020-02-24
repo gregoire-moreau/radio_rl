@@ -18,8 +18,10 @@ public:
     void irradiate(double dose);
     void go();
     int cell_types(int x, int y);
+    int type_head(int x, int y);
     double ** currentGlucose();
     double ** currentOxygen();
+    double tumor_radius();
     int xsize, ysize;
     int tick;
 private:

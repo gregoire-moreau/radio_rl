@@ -59,8 +59,10 @@ public:
     void diffuse(double diff_factor);
     void irradiate(double dose);
     int cell_types(int x, int y);
+    int type_head(int x, int y);
     double ** currentGlucose();
     double ** currentOxygen();
+    double tumor_radius(int center_x, int center_y);
 private:
     void change_neigh_counts(int x, int y, int val);
     int rand_min(int x, int y);
@@ -81,7 +83,6 @@ private:
     int ** neigh_counts;
     SourceList * sources;
     OARZone * oar;
-    double tumor_radius(int center_x, int center_y);
 };
 
 

@@ -11,9 +11,16 @@ except:
 from deer.base_classes import Environment
 
 class CellEnvironment(Environment):
-    def __init__(self):
+    def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward):
         self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
-    
+        self.obs_type = obs_type
+        self.resize = resize
+        self.reward = reward
+        self.action_type = action_type
+        self.tumor_radius = tumor_radius
+        self.special_reward = special_reward
+
+
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
         self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
@@ -24,53 +31,80 @@ class CellEnvironment(Environment):
             
     
     def act(self, action):
+        dose = action / 2 if self.action_type == 'DQN' else action[0]
+        rest = 24 if self.action_type == 'DQN' else int(round(action[1]))
+
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
         pre_oar_cell = cppCellModel.OARCellCount()
-        cppCellModel.irradiate(self.controller_capsule, action / 2)
-        cppCellModel.go(self.controller_capsule, 24)
+        
+        cppCellModel.irradiate(self.controller_capsule, dose)
+        cppCellModel.go(self.controller_capsule, rest)
+        
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         post_oar_cell = cppCellModel.OARCellCount()
+        
         if self.verbose:
-            print("Radiation dose :", action / 2, "Gy ",
-              "remaining :", post_ccell,  "time =", 24)
-        if self.inTerminalState():
-            if post_ccell > 0:
-                return -1
-            elif cppCellModel.controllerTick(self.controller_capsule) > 1350:
+            print("Radiation dose :", dose, "Gy ",
+              "remaining :", post_ccell,  "time =", rest)
+        
+        return self.adjust_reward(dose, post_ccell - pre_ccell, post_hcell - pre_hcell, post_oar_cell - pre_oar_cell)
+
+    def adjust_reward(self, dose, ccell_killed, hcell_lost, oar_lost): 
+        if self.special_reward and self.inTerminalState():
+            if self.end_type == "L" or self.end_type == "T" :
                 return -1
             else:
                 return 1
-        return action / 500
-
-    def adjust_reward(self, ccell_killed, hcell_lost): 
-        return (ccell_killed - 5 * hcell_lost)/1000
+        else:
+            if self.reward == 'dose':
+                return dose / 500
+            elif self.reward == 'killed':
+                return (ccell_killed - 5 * hcell_lost)/1000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
-            #print("No more cancer, healthy cells lost = ", self.h_cell_reset - HealthyCell.cell_count)
+            if self.verbose:
+                print("No more cancer")
+            self.end_type = 'W'
             return True
         elif cppCellModel.HCellCount() < 10:
-            #print("Cancer wins, healthy cells lost = ",  self.h_cell_reset - HealthyCell.cell_count)
+            if self.verbose:
+                print("Cancer wins")
+            self.end_type = "L"
             return True
-        elif cppCellModel.controllerTick(self.controller_capsule) > 1350:
+        elif cppCellModel.controllerTick(self.controller_capsule) > 1550:
+            if self.verbose:
+                print("Time out!")
+            self.end_type = "T"
             return True
         else:
             return False
 
     def nActions(self):
-        return 9
+        return 9 if self.action_type == 'DQN' else [[1, 4], [12, 72]]
  
     def end(self):
         cppCellModel.delete_controller(self.controller_capsule)
 
     def inputDimensions(self):
-        return [(1, 50, 50)]
+        if self.resize:
+            tab = [(1, 25, 25)]
+        else:
+            tab = [(1, 50, 50)]
+        if self.tumor_radius:
+            tab.append((1,1))
+        return tab
 
     def observe(self):
-        cell_types = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
-        return [cell_types]
+        if self.obs_type == 'types':
+            cells = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
+        else:
+            cells = np.array(cppCellModel.observeType(self.controller_capsule), dtype=np.float32)
+        if self.resize:
+            cells = cv2.resize(cells, dsize=(25,25), interpolation=cv2.INTER_CUBIC)
+        return [cells, cppCellModel.tumor_radius(self.controller_capsule)] if self.tumor_radius else [cells]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):
         print(test_data_set)

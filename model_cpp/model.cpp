@@ -134,6 +134,16 @@ PyObject* controllerTick(PyObject* self, PyObject* args){
     return Py_BuildValue("i", controller -> tick);
 }
 
+PyObject* tumor_radius(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    PyArg_ParseTuple(args, "O",
+                     &controllerCapsule);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+
+    return Py_BuildValue("f", controller -> tumor_radius());
+}
+
 PyObject* observeGrid(PyObject* self, PyObject* args){
     PyObject* controllerCapsule;
     int ** out_dataptr;
@@ -165,6 +175,49 @@ PyObject* observeGrid(PyObject* self, PyObject* args){
     out_dataptr = (int **) NpyIter_GetDataPtrArray(out_iter);
     do {
         **out_dataptr = controller->cell_types(x / controller->ysize, x % controller->ysize);
+        x++;
+    } while(out_iternext(out_iter));
+
+    Py_INCREF(out_array);
+    NpyIter_Deallocate(out_iter);
+    return out_array;
+
+    fail:
+        Py_XDECREF(out_array);
+        return NULL;
+}
+
+PyObject* observeType(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    int ** out_dataptr;
+    NpyIter *out_iter;
+    int x = 0;
+    NpyIter_IterNextFunc *out_iternext;
+    PyObject* out_array;
+
+    PyArg_ParseTuple(args, "O",
+                     &controllerCapsule);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+    npy_intp dims[2] = {controller->xsize, controller->ysize};
+    out_array = PyArray_SimpleNew(2, dims, NPY_INT);
+    if (out_array == NULL)
+        return NULL;
+    
+    out_iter = NpyIter_New((PyArrayObject *)out_array, NPY_ITER_READWRITE,
+                          NPY_KEEPORDER, NPY_NO_CASTING, NULL);
+    if (out_iter == NULL) {
+        NpyIter_Deallocate(out_iter);
+        goto fail;
+    }
+    out_iternext = NpyIter_GetIterNext(out_iter, NULL);
+    if (out_iternext == NULL) {
+        NpyIter_Deallocate(out_iter);
+        goto fail;
+    }
+    out_dataptr = (int **) NpyIter_GetDataPtrArray(out_iter);
+    do {
+        **out_dataptr = controller->type_head(x / controller->ysize, x % controller->ysize);
         x++;
     } while(out_iternext(out_iter));
 
@@ -317,6 +370,13 @@ PyMethodDef cppCellModelFunctions[] =
 
      {"observeOxygen",
       observeOxygen, METH_VARARGS,
+     "Observation of oxygen"},
+
+     {"observeType",
+      observeType, METH_VARARGS,
+     "Observation of heads of lists' types"},
+     {"tumor_radius",
+      tumor_radius, METH_VARARGS,
      "Observation of oxygen"},
 
      {"controllerTick",
