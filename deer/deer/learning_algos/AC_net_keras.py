@@ -64,7 +64,7 @@ class MyACNetwork(ACNetwork):
         self._nActions=environment.nActions()
         self.update_counter = 0
         
-        self.sess = tf.v1.compat.Session()
+        self.sess = tf.compat.v1.Session()
         K.set_session(self.sess)
         
         Q_net = neural_network_critic(self._batch_size, self._input_dimensions, self._n_actions, self._random_state, True)
