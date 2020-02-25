@@ -75,5 +75,5 @@ elif args.network == 'AC':
 
 
 
-agent.attach(bc.FindBestController(validationID=0, testID=0, unique_fname='nnet'))
+# agent.attach(bc.FindBestController(validationID=0, testID=0, unique_fname='nnet'))
 agent.run(n_epochs=100, epoch_length=1000)
