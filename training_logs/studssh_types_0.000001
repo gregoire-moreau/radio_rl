@@ -1,0 +1,50 @@
+Namespace(canicula=False, learning_rate=[1e-06, 0.8, 1.0], network='DQN', obs_type='types', resize=False, reward='dose', simulation='c++', special=True, tumor_radius=False)
+AGENT
+Average (on the epoch) training loss: 0.4127161502838135
+Episode average V value: 0.117960665995876
+Average (on the epoch) training loss: 0.36083126068115234
+Episode average V value: 0.15043874736875296
+Average (on the epoch) training loss: 0.34259650111198425
+Episode average V value: 0.21989427913318982
+Average (on the epoch) training loss: 0.3081268072128296
+Episode average V value: 0.1068663260056859
+Average (on the epoch) training loss: 0.2898503541946411
+Episode average V value: 0.05564036722793136
+Average (on the epoch) training loss: 0.2727506160736084
+Episode average V value: 0.058486731836990435
+Average (on the epoch) training loss: 0.26128432154655457
+Episode average V value: 0.06926270922025045
+Average (on the epoch) training loss: 0.2516476511955261
+Episode average V value: 0.07457699038480457
+Average (on the epoch) training loss: 0.2429002970457077
+Episode average V value: 0.17113737834662926
+Average (on the epoch) training loss: 0.23531359434127808
+Episode average V value: 0.05045268436272939
+Average (on the epoch) training loss: 0.23033253848552704
+Episode average V value: 0.030496062710881233
+Average (on the epoch) training loss: 0.2239372730255127
+Episode average V value: 0.06137847064471826
+Average (on the epoch) training loss: 0.21992641687393188
+Episode average V value: 0.10107848942279815
+Average (on the epoch) training loss: 0.21678252518177032
+Episode average V value: 0.05375636462122202
+Average (on the epoch) training loss: 0.21286162734031677
+Episode average V value: 0.0638424176722765
+Average (on the epoch) training loss: 0.2097148597240448
+Episode average V value: 0.2294788907985298
+Average (on the epoch) training loss: 0.2066684514284134
+Episode average V value: 0.11747624542978075
+Average (on the epoch) training loss: 0.20499198138713837
+Episode average V value: 0.14936371743679047
+Average (on the epoch) training loss: 0.20414580404758453
+Episode average V value: 0.2864624559879303
+Average (on the epoch) training loss: 0.20160193741321564
+Episode average V value: 0.046180701090229884
+Average (on the epoch) training loss: 0.19955112040042877
+Episode average V value: 0.2806674361228943
+Average (on the epoch) training loss: 0.1989183872938156
+Episode average V value: 0.12380916118621826
+epoch 1:
+Learning rate: 1e-06
+Discount factor: 0.95
+Epsilon: 0.7921079000000504
