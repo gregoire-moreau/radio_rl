@@ -314,7 +314,7 @@ class NeuralAgent(object):
                     self._state[i][-1] = obs[i]
                 
                 V, action, reward = self._step()
-                
+                #print("Value :", V, "Reward", reward )
                 self._Vs_on_last_episode.append(V)
                 if self._mode != -1:
                     self._total_mode_reward += reward

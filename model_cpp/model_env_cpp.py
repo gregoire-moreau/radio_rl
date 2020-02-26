@@ -28,7 +28,7 @@ class CellEnvironment(Environment):
             self.verbose = False
         else :
             self.verbose = True
-            
+        return self.observe()
     
     def act(self, action):
         dose = action / 2 if self.action_type == 'DQN' else action[0]
