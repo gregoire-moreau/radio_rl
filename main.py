@@ -40,6 +40,7 @@ if args.network == 'DQN':
     network = MyQNetwork(
         environment=env,
         batch_size=32,
+        double_Q=True,
         random_state=rng)
     agent = NeuralAgent(
         env,
@@ -79,4 +80,4 @@ elif args.network == 'AC':
 
 
 
-agent.run(n_epochs=50, epoch_length=5000)
+agent.run(n_epochs=20, epoch_length=5000)
