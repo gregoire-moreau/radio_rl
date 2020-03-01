@@ -65,8 +65,12 @@ class CellEnvironment(Environment):
         post_oar_cell = cppCellModel.OARCellCount()
         
         if self.verbose:
-            print("Radiation dose :", dose, "Gy ",
-              "remaining :", post_ccell,  "time =", rest)
+            if self.reward != 'oar':
+                print("Radiation dose :", dose, "Gy ",
+                "remaining :", post_ccell,  "time =", rest)
+            else:
+                print("Radiation dose :", dose, "Gy ",
+                      "remaining :", post_ccell, "time =", rest, "radius =", cppCellModel.tumor_radius(self.controller_capsule))
         
         return self.adjust_reward(dose, post_ccell - pre_ccell, post_hcell - pre_hcell, post_oar_cell - pre_oar_cell)
 
@@ -83,7 +87,7 @@ class CellEnvironment(Environment):
             if self.reward == 'dose' or self.reward == 'oar':
                 return - dose / 500
             elif self.reward == 'killed':
-                return (ccell_killed - 5 * hcell_lost)/1000
+                return (ccell_killed - 3 * hcell_lost)/5000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :

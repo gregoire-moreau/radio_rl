@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-
+import datetime
+print(datetime.datetime.now())
 parser = argparse.ArgumentParser(description='Start training of an agent')
 parser.add_argument('--canicula', action='store_true')
 parser.add_argument('-s', '--simulation', choices=['py', 'c++'], dest="simulation", default='c++')
@@ -16,6 +17,7 @@ parser.add_argument('--fname', default='nnet')
 
 args = parser.parse_args()
 print(args)
+
 if args.canicula:
     import os
     os.environ['CUDA_VISIBLE_DEVICES'] = '2'  # GPU cluster
