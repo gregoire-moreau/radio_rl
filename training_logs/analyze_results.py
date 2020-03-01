@@ -1,7 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import pickle
-f = open("oarlong.log")
+f = open("")
 count_steps = 0
 count_eps = 0
 count_losses = 0

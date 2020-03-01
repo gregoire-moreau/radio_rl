@@ -1,1 +1,0 @@
-Namespace(canicula=True, fname='nnet', learning_rate=[0.0001, 0.8, 1.0], network='AC', obs_type='types', resize=False, reward='dose', simulation='c++', special=True, tumor_radius=False)

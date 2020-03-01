@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 epoch_nums = []
 avg_scores = []
-with open('studssh_head_0.001', 'r') as f:
+with open('canicula/types_tumor_0.9', 'r') as f:
     for line in f:
         epoch_test = re.match(r'epoch (\d+):', line)
         if epoch_test:
