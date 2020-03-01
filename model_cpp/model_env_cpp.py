@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+import random
 import cv2
 try:
     import cppCellModel
@@ -12,7 +13,16 @@ from deer.base_classes import Environment
 
 class CellEnvironment(Environment):
     def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward):
-        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+        if reward == 'oar':
+            x1 = random.randint(1, 10)
+            x2 = random.randint(11, 20)
+            y1 = random.randint(1, 10)
+            y2 = random.randint(11, 20)
+            print("Start with oar x1=", x1, "x2=", x2, "y1=", y1, "y2=", y2)
+            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, x1, x2, y1, y2)
+            self.init_oar_count = cppCellModel.OARCellCount()
+        else:
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
         self.obs_type = obs_type
         self.resize = resize
         self.reward = reward
@@ -23,7 +33,16 @@ class CellEnvironment(Environment):
 
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
-        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+        if self.reward == 'oar':
+            x1 = random.randint(1, 10)
+            x2 = random.randint(11, 20)
+            y1 = random.randint(1, 10)
+            y2 = random.randint(11, 20)
+            print("Start with oar x1=", x1, "x2=", x2, "y1=", y1, "y2=", y2)
+            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, x1, x2, y1, y2)
+            self.init_oar_count = cppCellModel.OARCellCount()
+        else:
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
         if mode == -1:
             self.verbose = False
         else :
@@ -53,13 +72,16 @@ class CellEnvironment(Environment):
 
     def adjust_reward(self, dose, ccell_killed, hcell_lost, oar_lost): 
         if self.special_reward and self.inTerminalState():
-            if self.end_type == "L" or self.end_type == "T" :
+            if self.end_type == "L" or self.end_type == "T":
                 return -1
             else:
-                return 1
+                if self.reward == 'oar':
+                    return cppCellModel.OARCellCount() / self.init_oar_count
+                else:
+                    return 1
         else:
-            if self.reward == 'dose':
-                return dose / 500
+            if self.reward == 'dose' or self.reward == 'oar':
+                return - dose / 500
             elif self.reward == 'killed':
                 return (ccell_killed - 5 * hcell_lost)/1000
 
