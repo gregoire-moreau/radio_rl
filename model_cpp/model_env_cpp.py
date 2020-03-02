@@ -23,6 +23,7 @@ class CellEnvironment(Environment):
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
             self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+            self.init_hcell_count = cppCellModel.HCellCount()
         self.obs_type = obs_type
         self.resize = resize
         self.reward = reward
@@ -43,6 +44,7 @@ class CellEnvironment(Environment):
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
             self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+            self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
             self.verbose = False
         else :
@@ -81,13 +83,15 @@ class CellEnvironment(Environment):
             else:
                 if self.reward == 'oar':
                     return cppCellModel.OARCellCount() / self.init_oar_count
+                elif self.reward == 'dose':
+                    return cppCellModel.HCellCount() / self.init_hcell_count
                 else:
                     return 1
         else:
             if self.reward == 'dose' or self.reward == 'oar':
-                return - dose / 500
+                return - dose / 100
             elif self.reward == 'killed':
-                return (ccell_killed - 3 * hcell_lost)/5000
+                return (ccell_killed - 5 * hcell_lost)/500
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
