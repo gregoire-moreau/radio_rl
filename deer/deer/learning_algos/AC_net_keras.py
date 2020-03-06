@@ -168,13 +168,9 @@ class MyACNetwork(ACNetwork):
         not_terminals=np.invert(terminals_val).astype(float)
         
         target = rewards_val + not_terminals * self._df * next_q_vals.reshape((-1))
-        
-        actions_list = np.empty(shape=(self._batch_size, len(self._nActions)), dtype=np.float64)
-        for i in range(self._batch_size):
-            for j in range(len(self._nActions)):
-                actions_list[i, j] = actions_val[i][j]
+
         s_list=states_val.tolist()
-        s_list.append( actions_list  )
+        s_list.append( np.array(actions_val.tolist()))
         
         # In order to obtain the individual losses, we predict the current Q_vals and calculate the diff
         q_vals=self.q_vals.predict( s_list ).reshape((-1))
