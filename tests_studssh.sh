@@ -1,7 +1,7 @@
 #!/bin/bash
 
-lrs=(0.0001)
-adapt=(0.8)
+lrs=(0.001 0.00001)
+adapt=(0.8 0.65 0.5)
 mkdir -p training_logs/studssh
 for lr in ${lrs[@]}; do
   for a in ${adapt[@]}; do
