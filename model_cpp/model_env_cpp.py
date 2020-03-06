@@ -52,8 +52,8 @@ class CellEnvironment(Environment):
         return self.observe()
     
     def act(self, action):
-        dose = action / 2 if self.action_type == 'DQN' else action[0]
-        rest = 24 if self.action_type == 'DQN' else int(round(action[1]))
+        dose = action / 2 if self.action_type == 'DQN' else action[0] * 4 + 1
+        rest = 24 if self.action_type == 'DQN' else int(round(action[1]) * 60 + 12)
 
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
@@ -113,7 +113,7 @@ class CellEnvironment(Environment):
             return False
 
     def nActions(self):
-        return 9 if self.action_type == 'DQN' else [[1, 4], [12, 72]]
+        return 9 if self.action_type == 'DQN' else [[0, 1], [0, 1]]
  
     def end(self):
         cppCellModel.delete_controller(self.controller_capsule)
