@@ -74,7 +74,7 @@ elif args.network == 'AC':
     agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
-    agent.attach(bc.GaussianNoiseController(initial_std_dev=0.5, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
+    agent.attach(bc.GaussianNoiseController(initial_std_dev=0.3, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
     # agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=100000, e_min=0.01))
     agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
