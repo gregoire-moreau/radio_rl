@@ -26,6 +26,7 @@ public:
     CellNode *head, *tail;
     int size;
     int oar_count;
+    int ccell_count;
     CellList();
     ~CellList();
     void add(Cell * cell, char type);
@@ -58,6 +59,8 @@ public:
     void cycle_cells();
     void diffuse(double diff_factor);
     void irradiate(double dose);
+    void irradiate(double dose, double radius);
+    void irradiate(double dose, double radius, double center_x, double center_y);
     int cell_types(int x, int y);
     int type_head(int x, int y);
     double ** currentGlucose();
@@ -68,11 +71,14 @@ private:
     int rand_min(int x, int y);
     int rand_adj(int x, int y);
     int find_missing_oar(int x, int y);
+    void compute_center();
     void min_helper(int x, int y, int& curr_min, int * pos, int& counter);
     void adj_helper(int x, int y, int * pos, int& counter);
     void missing_oar_helper(int x, int y, int&  curr_min, int * pos, int& counter);
     void wake_surrounding_oar(int x, int y);
     void wake_helper(int x, int y);
+    int rand_cycle_x(int num);
+    int rand_cycle_y(int num);
     int xsize;
     int ysize;
     CellList ** cells;
@@ -83,6 +89,10 @@ private:
     int ** neigh_counts;
     SourceList * sources;
     OARZone * oar;
+    double center_x;
+    double center_y;
+    int * rand_helper_x;
+    int * rand_helper_y;
 };
 
 
