@@ -23,7 +23,7 @@ if __name__ == '__main__':
         zipdir(args.folder_name, zipf)
         zipf.close()
     elif args.dezip:
-        zipf = zipfile.ZipFile(args.folder_name+'.zip', 'r', zipfile.ZIP_DEFLATED, compresslevel=9)
+        zipf = zipfile.ZipFile(args.folder_name+'.zip', 'r', zipfile.ZIP_DEFLATED)
         zipf.extractall(path=args.folder_name)
         zipf.close()
     else:

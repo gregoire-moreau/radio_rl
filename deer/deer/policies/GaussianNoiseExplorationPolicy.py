@@ -30,3 +30,8 @@ class GaussianNoiseExplorationPolicy(Policy):
 
     def stdDev(self):
         return self._std_dev
+
+    def epsilon(self):
+        """ Get the epsilon for :math:`\epsilon`-greedy exploration
+        """
+        return self._std_dev

@@ -158,12 +158,9 @@ Grid::Grid(int xsize, int ysize, int sources_num):xsize(xsize), ysize(ysize), oa
     for (int i = 0; i < sources_num; i++){
         sources->add(rand() % xsize, rand() % ysize);
     }
-    rand_helper_x = new int[xsize];
-    for(int i = 0; i < xsize; i++)
-        rand_helper_x[i] = i;
-    rand_helper_y = new int[ysize];
-    for (int j = 0; j < ysize; j++)
-        rand_helper_y[j] = j;
+    rand_helper = new int[xsize * ysize];
+    for(int i = 0; i < xsize * ysize; i++)
+        rand_helper[i] = i;
 }
 
 Grid::Grid(int xsize, int ysize, int sources_num, OARZone * oarZone):Grid(xsize, ysize, sources_num){
@@ -186,8 +183,7 @@ Grid::~Grid() {
     delete[] oxygen_helper;
     delete[] glucose_helper;
     delete[] neigh_counts;
-    delete[] rand_helper_x;
-    delete[] rand_helper_y;
+    delete[] rand_helper;
 }
 
 void Grid::change_neigh_counts(int x, int y, int val) {
@@ -231,40 +227,39 @@ void Grid::fill_sources(double glu, double oxy) {
 }
 
 void Grid::cycle_cells() { 
-    for (int x = 0; x < xsize; x++){
-        int i = rand_cycle_x(x);
-        for (int y = 0; y < ysize; y++){
-            int j = rand_cycle_y(y);
-            CellNode * current = cells[i][j].head;
-            while(current){
-                cell_cycle_res result = current->cell->cycle(glucose[i][j], oxygen[i][j], neigh_counts[i][j]);
-                glucose[i][j] -= result.glucose;
-                oxygen[i][j] -= result.oxygen;
-                if (result.new_cell == 'h'){
-                    int downhill = rand_min(i, j);
-                    addCell(downhill / ysize, downhill % ysize, new HealthyCell('1'), 'h');
-                }
-                if (result.new_cell == 'c'){
-                    int downhill = rand_adj(i, j);
-                    addCell(downhill / ysize, downhill % ysize, new CancerCell('1'), 'c');
-                }
-                if (result.new_cell == 'o'){
-                    int downhill = find_missing_oar(i, j);
-                    if (downhill >= 0){
-                        addCell(downhill / ysize, downhill % ysize, new OARCell('1'), 'o');
-                    } else{
-                        current -> cell -> sleep();
-                    }
+    for (int x = 0; x < xsize * ysize; x++){
+        int ind = rand_cycle(x);
+        int i = ind / ysize;
+        int j = ind % ysize;
+        CellNode * current = cells[i][j].head;
+        while(current){
+            cell_cycle_res result = current->cell->cycle(glucose[i][j], oxygen[i][j], neigh_counts[i][j]);
+            glucose[i][j] -= result.glucose;
+            oxygen[i][j] -= result.oxygen;
+            if (result.new_cell == 'h'){
+                int downhill = rand_min(i, j);
+                addCell(downhill / ysize, downhill % ysize, new HealthyCell('1'), 'h');
+            }
+            if (result.new_cell == 'c'){
+                int downhill = rand_adj(i, j);
+                addCell(downhill / ysize, downhill % ysize, new CancerCell('1'), 'c');
+            }
+            if (result.new_cell == 'o'){
+                int downhill = find_missing_oar(i, j);
+                if (downhill >= 0){
+                    addCell(downhill / ysize, downhill % ysize, new OARCell('1'), 'o');
+                } else{
+                    current -> cell -> sleep();
                 }
                 if (result.new_cell == 'w'){
                     wake_surrounding_oar(i, j);
                 }
-                current = current -> next;
             }
-            int init_count = cells[i][j].size;
-            cells[i][j].deleteDeadAndSort();
-            change_neigh_counts(i, j, cells[i][j].size - init_count);
+            current = current -> next;
         }
+        int init_count = cells[i][j].size;
+        cells[i][j].deleteDeadAndSort();
+        change_neigh_counts(i, j, cells[i][j].size - init_count);
     }
 }
 
@@ -533,18 +528,11 @@ void Grid::compute_center(){
     center_y /= count;
 }
 
-int Grid::rand_cycle_x(int num){
-    int index = rand() % (xsize - num);
-    int to_ret = rand_helper_x[index];
-    rand_helper_x[index] = rand_helper_x[xsize - num - 1];
-    rand_helper_x[xsize - num - 1] = rand_helper_x[index];
-    return to_ret;
-}
-
-int Grid::rand_cycle_y(int num){
-    int index = rand() % (ysize - num);
-    int to_ret = rand_helper_y[index];
-    rand_helper_y[index] = rand_helper_y[ysize - num - 1];
-    rand_helper_y[ysize - num - 1] = rand_helper_y[index];
+int Grid::rand_cycle(int num){
+    int end = xsize * ysize - num;
+    int index = rand() % (end);
+    int to_ret = rand_helper[index];
+    rand_helper[index] = rand_helper[end - 1];
+    rand_helper[end - 1] = to_ret;
     return to_ret;
 }

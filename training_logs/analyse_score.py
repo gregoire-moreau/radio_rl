@@ -1,9 +1,10 @@
+import sys
 import re
 import matplotlib.pyplot as plt
 
 epoch_nums = []
 avg_scores = []
-with open('canicula/types-oar-0.0001-0.8', 'r') as f:
+with open(sys.argv[1], 'r') as f:
     for line in f:
         epoch_test = re.match(r'epoch (\d+):', line)
         if epoch_test:

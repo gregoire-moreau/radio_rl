@@ -77,8 +77,7 @@ private:
     void missing_oar_helper(int x, int y, int&  curr_min, int * pos, int& counter);
     void wake_surrounding_oar(int x, int y);
     void wake_helper(int x, int y);
-    int rand_cycle_x(int num);
-    int rand_cycle_y(int num);
+    int rand_cycle(int num);
     int xsize;
     int ysize;
     CellList ** cells;
@@ -91,8 +90,7 @@ private:
     OARZone * oar;
     double center_x;
     double center_y;
-    int * rand_helper_x;
-    int * rand_helper_y;
+    int * rand_helper;
 };
 
 
