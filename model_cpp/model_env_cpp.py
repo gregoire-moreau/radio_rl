@@ -52,8 +52,9 @@ class CellEnvironment(Environment):
         return self.observe()
     
     def act(self, action):
-        dose = action / 2 if self.action_type == 'DQN' else action[0] * 4 + 1
-        rest = 24 if self.action_type == 'DQN' else int(round(action[1]) * 60 + 12)
+        dose = action / 2 if self.action_type == 'DQN' else action[0] # * 4 + 1
+        rest = 24 if self.action_type == 'DQN' else int(round(action[1] #* 60 + 12
+                                                                        ))
 
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
@@ -91,7 +92,7 @@ class CellEnvironment(Environment):
             if self.reward == 'dose' or self.reward == 'oar':
                 return - dose / 100
             elif self.reward == 'killed':
-                return (ccell_killed - 5 * hcell_lost)/500
+                return (ccell_killed - 3 * hcell_lost)/500
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
@@ -113,7 +114,7 @@ class CellEnvironment(Environment):
             return False
 
     def nActions(self):
-        return 9 if self.action_type == 'DQN' else [[0, 1], [0, 1]]
+        return 9 if self.action_type == 'DQN' else [[1, 5], [12, 72]]
  
     def end(self):
         cppCellModel.delete_controller(self.controller_capsule)
