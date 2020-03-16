@@ -40,15 +40,17 @@ class CellEnvironment(Environment):
             y1 = random.randint(1, 10)
             y2 = random.randint(11, 20)
             print("Start with oar x1=", x1, "x2=", x2, "y1=", y1, "y2=", y2)
-            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, x1, x2, y1, y2)
+            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 338, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 338)
             self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
             self.verbose = False
         else :
             self.verbose = True
+        self.past_obs = self.observe2()
+        cppCellModel.go(self.controller_capsule, 12)
         return self.observe()
     
     def act(self, action):
@@ -61,8 +63,9 @@ class CellEnvironment(Environment):
         pre_oar_cell = cppCellModel.OARCellCount()
         
         cppCellModel.irradiate(self.controller_capsule, dose)
-        cppCellModel.go(self.controller_capsule, rest)
-        
+        cppCellModel.go(self.controller_capsule, rest//2)
+        self.past_obs = self.observe2()
+        cppCellModel.go(self.controller_capsule, rest - rest//2)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         post_oar_cell = cppCellModel.OARCellCount()
@@ -85,7 +88,7 @@ class CellEnvironment(Environment):
                 if self.reward == 'oar':
                     return cppCellModel.OARCellCount() / self.init_oar_count
                 elif self.reward == 'dose':
-                    return cppCellModel.HCellCount() / self.init_hcell_count
+                    return (cppCellModel.HCellCount() / self.init_hcell_count) ** 2 - dose / 100
                 else:
                     return 1
         else:
@@ -121,14 +124,17 @@ class CellEnvironment(Environment):
 
     def inputDimensions(self):
         if self.resize:
-            tab = [(1, 25, 25)]
+            tab = [(2, 25, 25)]
         else:
-            tab = [(1, 50, 50)]
+            tab = [(1, 50, 50), (1, 50, 50)]
         if self.tumor_radius:
             tab.append((1,1))
         return tab
 
     def observe(self):
+        return self.past_obs +  self.observe2()
+
+    def observe2(self):
         if self.obs_type == 'types':
             cells = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
         else:
