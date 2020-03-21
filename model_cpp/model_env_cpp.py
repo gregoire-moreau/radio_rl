@@ -49,7 +49,6 @@ class CellEnvironment(Environment):
             self.verbose = False
         else :
             self.verbose = True
-        self.past_obs = self.observe2()
         cppCellModel.go(self.controller_capsule, 12)
         return self.observe()
     
@@ -63,9 +62,7 @@ class CellEnvironment(Environment):
         pre_oar_cell = cppCellModel.OARCellCount()
         
         cppCellModel.irradiate(self.controller_capsule, dose)
-        cppCellModel.go(self.controller_capsule, rest//2)
-        self.past_obs = self.observe2()
-        cppCellModel.go(self.controller_capsule, rest - rest//2)
+        cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         post_oar_cell = cppCellModel.OARCellCount()
@@ -124,17 +121,15 @@ class CellEnvironment(Environment):
 
     def inputDimensions(self):
         if self.resize:
-            tab = [(2, 25, 25)]
+            tab = [(1, 25, 25)]
         else:
-            tab = [(1, 50, 50), (1, 50, 50)]
+            tab = [(1, 50, 50)]
         if self.tumor_radius:
             tab.append((1,1))
         return tab
 
-    def observe(self):
-        return self.past_obs +  self.observe2()
 
-    def observe2(self):
+    def observe(self):
         if self.obs_type == 'types':
             cells = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
         else:
