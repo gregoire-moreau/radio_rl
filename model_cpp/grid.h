@@ -10,6 +10,7 @@
 //https://www.codementor.io/@codementorteam/a-comprehensive-guide-to-implementation-of-singly-linked-list-using-c_plus_plus-ondlm5azr
 struct CellNode
 {
+    int x, y;
     Cell * cell;
     CellNode *next;
     char type;
@@ -33,6 +34,8 @@ public:
     void deleteDeadAndSort();
     int CellTypeSum();
     void wake_oar();
+    void add(Cell *cell, char type, int x, int y);
+    void add(CellNode * toAdd, char type);
 };
 
 struct Source{
@@ -78,6 +81,7 @@ private:
     void wake_surrounding_oar(int x, int y);
     void wake_helper(int x, int y);
     int rand_cycle(int num);
+    void addToGrid(CellList * newCells);
     int xsize;
     int ysize;
     CellList ** cells;
