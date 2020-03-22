@@ -170,11 +170,11 @@ if __name__ == '__main__':
     for i in range(200):
         cppCellModel.go(controller, 12)
         if i > 30 and i % 2 == 0:
-            cppCellModel.irradiate(controller, 3.0)
+            cppCellModel.irradiate(controller, 2.0)
         fig.suptitle('Cell proliferation at t = ' + str((i+1)*12))
         glucose_plot.imshow(cppCellModel.observeGlucose(controller))
         oxygen_plot.imshow(cppCellModel.observeOxygen(controller))
-        cell_plot.imshow(cppCellModel.observeGrid(controller))
+        cell_plot.imshow(cppCellModel.observeType(controller))
         ccount_ticks.append(cppCellModel.controllerTick(controller))
         ccount_vals.append(cppCellModel.CCellCount())
         cancer_count_plot.plot(ccount_ticks, ccount_vals)

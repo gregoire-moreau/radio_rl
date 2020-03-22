@@ -237,9 +237,32 @@ void Grid::fill_sources(double glu, double oxy) {
     while(current){
         glucose[current->x][current->y] += glu;
         oxygen[current->x][current->y] += oxy;
+        if ((rand() % 100) < 5){
+            int newPos = sourceMove(current->x, current->y);
+            current -> x = newPos / ysize;
+            current -> y = newPos % ysize;
+        }
         current = current -> next;
     }
 }
+
+int Grid::sourceMove(int x, int y){
+    if (rand() % 5000 < CancerCell::count){ // Move towards tumour center
+        if (x < center_x)
+            x++;
+        else if (x > center_x)
+            x--;
+        if (y < center_y)
+            y++;
+        else if(y > center_y)
+            y--; 
+        return x * ysize + y;
+    } else{ // Move in random direction
+        return rand_adj(x, y);
+    }
+}
+
+
 
 void Grid::cycle_cells() { 
     CellList * toAdd = new CellList();

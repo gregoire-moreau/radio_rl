@@ -83,6 +83,8 @@ void Controller::go() {
     grid -> cycle_cells();
     grid -> diffuse(0.2);
     tick++;
+    if(tick % 30 == 0)
+        grid -> compute_center();
 }
 
 void Controller::irradiate(double dose){
