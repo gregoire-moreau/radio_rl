@@ -20,11 +20,8 @@ CellList::~CellList() {
     }
 }
 
-void CellList::add(Cell *cell, char type) {
-    CellNode * newNode = new CellNode;
-    assert(cell);
-    newNode -> cell = cell;
-    newNode -> type = type;
+void CellList::add(CellNode * newNode, char type){
+    assert(newNode);
     if (size == 0){
         head = newNode;
         tail = newNode;
@@ -43,6 +40,24 @@ void CellList::add(Cell *cell, char type) {
     if (type == 'c')
         ccell_count++;
     size++;
+}
+
+void CellList::add(Cell *cell, char type) {
+    CellNode * newNode = new CellNode;
+    assert(cell);
+    newNode -> cell = cell;
+    newNode -> type = type;
+    add(newNode, type);
+}
+
+void CellList::add(Cell *cell, char type, int x, int y) {
+    CellNode * newNode = new CellNode;
+    assert(cell);
+    newNode -> cell = cell;
+    newNode -> type = type;
+    newNode -> x = x;
+    newNode -> y = y;
+    add(newNode, type);
 }
 
 void CellList::deleteDeadAndSort(){
@@ -213,7 +228,7 @@ void Grid::change_neigh_counts(int x, int y, int val) {
 
 
 void Grid::addCell(int x, int y, Cell *cell, char type) {
-    cells[x][y].add(cell, type);
+    cells[x][y].add(cell, type,x, y);
     change_neigh_counts(x, y, 1);
 }
 
@@ -222,13 +237,37 @@ void Grid::fill_sources(double glu, double oxy) {
     while(current){
         glucose[current->x][current->y] += glu;
         oxygen[current->x][current->y] += oxy;
+        if ((rand() % 100) < 5){
+            int newPos = sourceMove(current->x, current->y);
+            current -> x = newPos / ysize;
+            current -> y = newPos % ysize;
+        }
         current = current -> next;
     }
 }
 
+int Grid::sourceMove(int x, int y){
+    if (rand() % 5000 < CancerCell::count){ // Move towards tumour center
+        if (x < center_x)
+            x++;
+        else if (x > center_x)
+            x--;
+        if (y < center_y)
+            y++;
+        else if(y > center_y)
+            y--; 
+        return x * ysize + y;
+    } else{ // Move in random direction
+        return rand_adj(x, y);
+    }
+}
+
+
+
 void Grid::cycle_cells() { 
+    CellList * toAdd = new CellList();
     for (int x = 0; x < xsize * ysize; x++){
-        int ind = rand_cycle(x);
+        int ind = rand_helper[x];
         int i = ind / ysize;
         int j = ind % ysize;
         CellNode * current = cells[i][j].head;
@@ -238,16 +277,16 @@ void Grid::cycle_cells() {
             oxygen[i][j] -= result.oxygen;
             if (result.new_cell == 'h'){
                 int downhill = rand_min(i, j);
-                addCell(downhill / ysize, downhill % ysize, new HealthyCell('1'), 'h');
+                toAdd -> add(new HealthyCell('1'), 'h', downhill / ysize, downhill % ysize);
             }
             if (result.new_cell == 'c'){
                 int downhill = rand_adj(i, j);
-                addCell(downhill / ysize, downhill % ysize, new CancerCell('1'), 'c');
+                toAdd -> add(new CancerCell('1'), 'c', downhill / ysize, downhill % ysize);
             }
             if (result.new_cell == 'o'){
                 int downhill = find_missing_oar(i, j);
                 if (downhill >= 0){
-                    addCell(downhill / ysize, downhill % ysize, new OARCell('1'), 'o');
+                    toAdd -> add(new OARCell('1'), 'o', downhill / ysize, downhill % ysize);
                 } else{
                     current -> cell -> sleep();
                 }
@@ -261,6 +300,20 @@ void Grid::cycle_cells() {
         cells[i][j].deleteDeadAndSort();
         change_neigh_counts(i, j, cells[i][j].size - init_count);
     }
+    addToGrid(toAdd);
+}
+
+void Grid::addToGrid(CellList * newCells){
+    CellNode * current = newCells -> head;
+    while(current){
+        CellNode * next = current -> next;
+        cells[current -> x][current -> y].add(current, current -> type);
+        current = next;
+    }
+    newCells -> head = nullptr;
+    newCells -> tail = nullptr;
+    newCells -> size = 0;
+    delete newCells;
 }
 
 
@@ -439,7 +492,8 @@ void Grid::irradiate(double dose, double radius, double center_x, double center_
                 CellNode * current = cells[i][j].head;
                 bool oar_dead = false;
                 while (current){
-                    current -> cell -> radiate(conv(radius, dist) * multiplicator);
+                    double omf = (1.0 / 3.0) * (oxygen[i][j] * 3.0 + 3.0) / (oxygen[i][j] + 3.0);
+                    current -> cell -> radiate(conv(radius, dist) * multiplicator * omf);
                     if (!(current -> cell ->alive) && current->type == 'o'){
                         oar_dead = true;
                     }

@@ -49,7 +49,6 @@ class CellEnvironment(Environment):
             self.verbose = False
         else :
             self.verbose = True
-        self.past_obs = self.observe2()
         cppCellModel.go(self.controller_capsule, 12)
         return self.observe()
     
@@ -63,9 +62,7 @@ class CellEnvironment(Environment):
         pre_oar_cell = cppCellModel.OARCellCount()
         
         cppCellModel.irradiate(self.controller_capsule, dose)
-        cppCellModel.go(self.controller_capsule, rest//2)
-        self.past_obs = self.observe2()
-        cppCellModel.go(self.controller_capsule, rest - rest//2)
+        cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         post_oar_cell = cppCellModel.OARCellCount()
@@ -124,17 +121,15 @@ class CellEnvironment(Environment):
 
     def inputDimensions(self):
         if self.resize:
-            tab = [(2, 25, 25)]
+            tab = [(1, 25, 25)]
         else:
-            tab = [(1, 50, 50), (1, 50, 50)]
+            tab = [(1, 50, 50)]
         if self.tumor_radius:
             tab.append((1,1))
         return tab
 
-    def observe(self):
-        return self.past_obs +  self.observe2()
 
-    def observe2(self):
+    def observe(self):
         if self.obs_type == 'types':
             cells = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
         else:
@@ -175,11 +170,11 @@ if __name__ == '__main__':
     for i in range(200):
         cppCellModel.go(controller, 12)
         if i > 30 and i % 2 == 0:
-            cppCellModel.irradiate(controller, 3.0)
+            cppCellModel.irradiate(controller, 2.0)
         fig.suptitle('Cell proliferation at t = ' + str((i+1)*12))
         glucose_plot.imshow(cppCellModel.observeGlucose(controller))
         oxygen_plot.imshow(cppCellModel.observeOxygen(controller))
-        cell_plot.imshow(cppCellModel.observeGrid(controller))
+        cell_plot.imshow(cppCellModel.observeType(controller))
         ccount_ticks.append(cppCellModel.controllerTick(controller))
         ccount_vals.append(cppCellModel.CCellCount())
         cancer_count_plot.plot(ccount_ticks, ccount_vals)

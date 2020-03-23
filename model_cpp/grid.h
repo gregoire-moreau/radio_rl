@@ -10,6 +10,7 @@
 //https://www.codementor.io/@codementorteam/a-comprehensive-guide-to-implementation-of-singly-linked-list-using-c_plus_plus-ondlm5azr
 struct CellNode
 {
+    int x, y;
     Cell * cell;
     CellNode *next;
     char type;
@@ -33,6 +34,8 @@ public:
     void deleteDeadAndSort();
     int CellTypeSum();
     void wake_oar();
+    void add(Cell *cell, char type, int x, int y);
+    void add(CellNode * toAdd, char type);
 };
 
 struct Source{
@@ -66,18 +69,21 @@ public:
     double ** currentGlucose();
     double ** currentOxygen();
     double tumor_radius(int center_x, int center_y);
+    void compute_center();
 private:
     void change_neigh_counts(int x, int y, int val);
     int rand_min(int x, int y);
     int rand_adj(int x, int y);
     int find_missing_oar(int x, int y);
-    void compute_center();
+    
     void min_helper(int x, int y, int& curr_min, int * pos, int& counter);
     void adj_helper(int x, int y, int * pos, int& counter);
     void missing_oar_helper(int x, int y, int&  curr_min, int * pos, int& counter);
     void wake_surrounding_oar(int x, int y);
     void wake_helper(int x, int y);
     int rand_cycle(int num);
+    void addToGrid(CellList * newCells);
+    int sourceMove(int x, int y);
     int xsize;
     int ysize;
     CellList ** cells;
