@@ -1,4 +1,4 @@
-from ..base_classes import Policy
+from deer.base_classes import Policy
 from numpy.random import normal
 import numpy as np
 

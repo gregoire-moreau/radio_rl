@@ -33,7 +33,9 @@ from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
 from deer.learning_algos.AC_net_keras import MyACNetwork
 import deer.experiment.base_controllers as bc
-from deer.policies import EpsilonGreedyPolicy, GaussianNoiseExplorationPolicy
+from deer.policies import EpsilonGreedyPolicy
+from other_controllers import GaussianNoiseController, GridSearchController
+from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.tumor_radius, args.special)
 
 rng = np.random.RandomState(123456)
@@ -43,6 +45,7 @@ if args.network == 'DQN':
     network = MyQNetwork(
         environment=env,
         batch_size=32,
+        freeze_interval=args.epochs[1],
         double_Q=True,
         random_state=rng)
     agent = NeuralAgent(
@@ -51,11 +54,11 @@ if args.network == 'DQN':
         batch_size=32,
         random_state=rng)
     agent.setDiscountFactor(0.95)
-    agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
+    agent.attach(GridSearchController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
     agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.01))
-    agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
+    #agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
     epoch_length=500,
     controllers_to_disable=[1, 2, 3, 4]))
@@ -63,6 +66,7 @@ elif args.network == 'AC':
     network = MyACNetwork(
         environment=env,
         batch_size=32,
+        freeze_interval=args.epochs[1],
         random_state=rng)
     agent = NeuralAgent(
         env,
@@ -74,7 +78,7 @@ elif args.network == 'AC':
     agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
-    #agent.attach(bc.GaussianNoiseController(initial_std_dev=0.0, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
+    #agent.attach(GaussianNoiseController(initial_std_dev=0.0, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
     # agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=100000, e_min=0.01))
     agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
