@@ -1,5 +1,5 @@
 from deer.experiment.base_controllers import Controller, EpsilonController
-
+import numpy as np
 
 class GaussianNoiseController(EpsilonController):
     def __init__(self, initial_std_dev=1.0, n_decays=10000, final_std_dev=0.0, evaluate_on='action', periodicity=1, reset_every='none'):
@@ -21,8 +21,8 @@ class GridSearchController(Controller):
 
     def __init__(self, validationID=0, testID=None, unique_fname="nnet"):
         super(self.__class__, self).__init__()
-        self.first_epoch = [0.1, 0.01, 0.001, 0.0001, 0.00001]
-        self.multiplicator = [0.8, 0.6, 0.4]
+        self.first_epoch = [0.01, 0.001, 0.0001, 0.00001]
+        self.multiplicator = [1, .75, .5]
         self._validationScores = []
         self._testScores = []
         self._epochNumbers = []

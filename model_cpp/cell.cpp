@@ -70,7 +70,7 @@ OARCell::OARCell(char stage) : Cell(stage) {
 }
 
 cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count) {
-    cell_cycle_res result = {.glucose=.0,.oxygen=.0, .new_cell='\0'};
+    cell_cycle_res result = {.0,.0,'\0'};
     age++;
     if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) {
         alive = false;
@@ -144,7 +144,7 @@ void CancerCell::radiate(double dose) {
 }
 
 cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count) {
-    cell_cycle_res result = {.glucose=.0, .oxygen=.0, .new_cell='\0'};
+    cell_cycle_res result = {.0, .0, '\0'};
     age++;
     if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) {
         alive = false;
@@ -195,7 +195,7 @@ cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count)
 
 
 cell_cycle_res OARCell::cycle(double glucose, double oxygen, int neigh_count) {
-    cell_cycle_res result = {.glucose=.0,.oxygen=.0, .new_cell='\0'};
+    cell_cycle_res result = {.0,.0,'\0'};
     age++;
     if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) {
         alive = false;
