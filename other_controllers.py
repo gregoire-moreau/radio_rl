@@ -1,6 +1,6 @@
 from deer.experiment.base_controllers import Controller, EpsilonController
 import numpy as np
-
+import joblib
 class GaussianNoiseController(EpsilonController):
     def __init__(self, initial_std_dev=1.0, n_decays=10000, final_std_dev=0.0, evaluate_on='action', periodicity=1, reset_every='none'):
         super().__init__(initial_e=initial_std_dev, e_decays=n_decays, e_min=final_std_dev,
