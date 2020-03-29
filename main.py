@@ -51,7 +51,7 @@ if args.network == 'DQN':
     agent = NeuralAgent(
         env,
         network,
-        replay_memory_size=args.epochs[0]*args.epochs[1] * 2,
+        replay_memory_size=min(args.epochs[0]*args.epochs[1] * 2, 500000),
         batch_size=32,
         random_state=rng)
     agent.setDiscountFactor(0.95)
@@ -73,7 +73,7 @@ elif args.network == 'AC':
         env,
         network,
         train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5),
-        replay_memory_size=args.epochs[0] * args.epochs[1] * 2,
+        replay_memory_size=min(args.epochs[0]*args.epochs[1] * 2, 500000),
         batch_size=32,
         random_state=rng)
     agent.setDiscountFactor(0.95)
