@@ -28,21 +28,23 @@ class CellEnvironment(Environment):
         CancerCell.cell_count = 0
         OARCell.cell_count = 0
         self.grid = Grid(50, 50, glucose=True, oxygen=True, cells=True, border=False, sources=50, oar=(15, 15))
-        self.controller = Controller(self.grid, glucose=True, draw_step=0, hcells=500, oxygen=True,
-                                     cancercells=True, oar=(15, 15))
-        for i in range(400):
-            self.controller.go()
+        self.controller = None
         self.init_hcell_count = HealthyCell.cell_count
+        self.map = False
+
+    def set_map_patient(self, map):
+        self.controller = None
 
     def reset(self, mode):
-        HealthyCell.cell_count = 0
-        CancerCell.cell_count = 0
-        OARCell.cell_count = 0
-        self.grid = Grid(50, 50, glucose=True, oxygen=True, cells=True, border=False, sources=50, oar=(15, 15))
-        self.controller = Controller(self.grid, glucose=True, draw_step=0, hcells=500, oxygen=True,
+        if not self.map:
+            HealthyCell.cell_count = 0
+            CancerCell.cell_count = 0
+            OARCell.cell_count = 0
+            self.grid = Grid(50, 50, glucose=True, oxygen=True, cells=True, border=False, sources=50, oar=(15, 15))
+            self.controller = Controller(self.grid, glucose=True, draw_step=0, hcells=500, oxygen=True,
                                  cancercells=True, oar=(15, 15))
-        for i in range(400):
-            self.controller.go()
+            for i in range(400):
+                self.controller.go()
         self.init_hcell_count = HealthyCell.cell_count
         if mode == -1:
             self.verbose = True
