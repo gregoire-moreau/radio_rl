@@ -67,6 +67,7 @@ elif args.network == 'AC':
     network = MyACNetwork(
         environment=env,
         batch_size=32,
+        double_Q=True,
         freeze_interval=args.epochs[1],
         random_state=rng)
     agent = NeuralAgent(

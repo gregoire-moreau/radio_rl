@@ -5,9 +5,9 @@
 
 using namespace std;
 
-static float quiescent_glucose_level = 17.28;
+static float quiescent_glucose_level = 17.28; // Glucose consumed by cells in quiescent phase every hour
 //static float max_glucose_absorption = .72;
-static float average_glucose_absorption = .36;
+static float average_glucose_absorption = .36; //
 static float average_cancer_glucose_absorption = .54;
 static int critical_neighbors = 8;
 static float critical_glucose_level = 6.48;
@@ -35,12 +35,25 @@ int OARCell::count     = 0;
 int OARCell::worth     = 5;
 
 
+/**
+ * Constructor of the abstract class Cell
+ *
+ * @param stage Current stage of the cell in the cell cycle
+ */
 Cell::Cell(char stage):age(0), stage(stage), alive(true)  {}
+
+/**
+ * Sets a cell's stage to "quiescent" and resets its time counter
+ */
 void Cell::sleep(){
     stage = 'q';
     age = 0;
 }
 
+
+/**
+ * Sets a cell's stage to Gap 1 and resets its time counter
+ */
 void Cell::wake(){
     if (stage == 'q'){
         stage = '1';
@@ -48,6 +61,11 @@ void Cell::wake(){
     }
 }
 
+/**
+ * Constructor of the class HealthyCell, representing normal tissue in the tumor proliferation model
+ *
+ * @param stage Current stage of the cell in the cell cycle
+ */
 HealthyCell::HealthyCell(char stage): Cell(stage) {
     count++;
     double factor = max(min(norm_distribution(generator), 2.0), 0.0);
@@ -56,11 +74,22 @@ HealthyCell::HealthyCell(char stage): Cell(stage) {
     alive = true;
 }
 
+
+/**
+ * Constructor of the class CancerCell, representing tumoral tissue in the tumor proliferation model
+ *
+ * @param stage Current stage of the cell in the cell cycle
+ */
 CancerCell::CancerCell(char stage): Cell(stage) {
     count++;
     alive = true;
 }
 
+/**
+ * Constructor of the class OARCell, representing an Organ At Risk in the tumor proliferation model
+ *
+ * @param stage Current stage of the cell in the cell cycle
+ */
 OARCell::OARCell(char stage) : Cell(stage) {
     count++;
     double factor = max(min(norm_distribution(generator), 2.0), 0.0);
@@ -69,10 +98,23 @@ OARCell::OARCell(char stage) : Cell(stage) {
     alive = true;
 }
 
+
+/**
+ * Simulates one hour of the cell cycle for a healthy cell
+ *
+ * Verifies that the cell has enough nutrients (otherwise it dies), and advances the cell one hour in the cycle,
+ * changing its stage if necessary.
+ *
+ * @param glucose Amount of glucose available to the cell
+ * @param oxygen Amount of oxygen available to the cell
+ * @param neigh_count Number of cells in neigbouring pixels on the grid
+ * @return A cell_cycle_res object that contains the amount of glucose and oxygen consumed as well as a character that
+ *         indicates if a new healthy cell has to be created and its type.
+ */
 cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count) {
     cell_cycle_res result = {.0,.0,'\0'};
     age++;
-    if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) {
+    if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) { //Check if the cell will survive this hour
         alive = false;
         count--;
         return result;
@@ -127,22 +169,63 @@ cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count
     return result;
 }
 
+/**
+ * Simulates the effect of radiation on a  HealthyCell
+ *
+ * Uses a modified LQ model to probabilistically decide if the cell survives or not to the radiation
+ *
+ * @param dose Radiation dose in grays
+ */
 void HealthyCell::radiate(double dose) {
-    double survival_probability = exp( - (alpha_norm_tissue * dose) - (beta_norm_tissue * dose * dose));
+    float radio_gamma = 0.0;
+    switch (stage){
+        case '1':
+            radio_gamma = 0.5;
+            break;
+        case 'q':
+            radio_gamma = 0.25;
+            break;
+        default:
+            radio_gamma = 1.0;
+            break;
+    }
+    double survival_probability = exp(radio_gamma * ( - (alpha_norm_tissue * dose) - (beta_norm_tissue * dose * dose)));
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;
     }
 }
 
+
+/**
+ * Simulates the effect of radiation on a CancerCell
+ *
+ * Uses a modified LQ model to probabilistically decide if the cell survives or not to the radiation
+ *
+ * @param dose Radiation dose in grays
+ */
 void CancerCell::radiate(double dose) {
-    double survival_probability = exp( - (alpha_tumor * dose) - (beta_tumor * dose * dose));
+    float radio_gamma = (stage == '1')? 0.5 : 0.25;
+    double survival_probability = exp(radio_gamma *  (- (alpha_tumor * dose) - (beta_tumor * dose * dose)));
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;
     }
 }
 
+
+/**
+ * Simulates one hour of the cell cycle for a cancer cell
+ *
+ * Verifies that the cell has enough nutrients (otherwise it dies), and advances the cell one hour in the cycle,
+ * changing its stage if necessary.
+ *
+ * @param glucose Amount of glucose available to the cell
+ * @param oxygen Amount of oxygen available to the cell
+ * @param neigh_count Number of cells in neigbouring pixels on the grid
+ * @return A cell_cycle_res object that contains the amount of glucose and oxygen consumed as well as a character that
+ *         indicates if a new cancer cell has to be created
+ */
 cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count) {
     cell_cycle_res result = {.0, .0, '\0'};
     age++;
@@ -193,7 +276,18 @@ cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count)
     return result;
 }
 
-
+/**
+ * Simulates one hour of the cell cycle for an OAR cell
+ *
+ * Verifies that the cell has enough nutrients (otherwise it dies), and advances the cell one hour in the cycle,
+ * changing its stage if necessary.
+ *
+ * @param glucose Amount of glucose available to the cell
+ * @param oxygen Amount of oxygen available to the cell
+ * @param neigh_count Number of cells in neigbouring pixels on the grid
+ * @return A cell_cycle_res object that contains the amount of glucose and oxygen consumed as well as a character that
+ *         indicates if a new OAR cell has to be created
+ */
 cell_cycle_res OARCell::cycle(double glucose, double oxygen, int neigh_count) {
     cell_cycle_res result = {.0,.0,'\0'};
     age++;
@@ -249,8 +343,27 @@ cell_cycle_res OARCell::cycle(double glucose, double oxygen, int neigh_count) {
     return result;
 }
 
+/**
+ * Simulates the effect of radiation on a OARCell
+ *
+ * Uses a modified LQ model to probabilistically decide if the cell survives or not to the radiation
+ *
+ * @param dose Radiation dose in grays
+ */
 void OARCell::radiate(double dose) {
-    double survival_probability = exp( - (alpha_oar * dose) - (beta_oar * dose * dose));
+    float radio_gamma = 0.0;
+    switch (stage){
+        case '1':
+            radio_gamma = 0.5;
+            break;
+        case 'q':
+            radio_gamma = 0.25;
+            break;
+        default:
+            radio_gamma = 1.0;
+            break;
+    }
+    double survival_probability = exp(radio_gamma * ( - (alpha_norm_tissue * dose) - (beta_norm_tissue * dose * dose)));
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;

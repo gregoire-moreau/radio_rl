@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 epoch_nums = []
 avg_scores = []
-with open('acc/acc/ac', 'r') as f:
+with open('dqn/dqn/dqn.log', 'r') as f:
     for line in f:
         epoch_test = re.match(r'epoch (\d+):', line)
         if epoch_test:
