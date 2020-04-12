@@ -21,7 +21,7 @@ class GridSearchController(Controller):
 
     def __init__(self, validationID=0, testID=None, unique_fname="nnet"):
         super(self.__class__, self).__init__()
-        self.first_epoch = [0.01, 0.001, 0.0001, 0.00001]
+        self.first_epoch = [0.001, 0.0001, 0.00001]
         self.multiplicator = [1, .75, .5]
         self._validationScores = []
         self._testScores = []
@@ -41,18 +41,21 @@ class GridSearchController(Controller):
             score, _ = agent.totalRewardOverLastTest()
             self._validationScores.append(score)
             self._epochNumbers.append(self._trainingEpochCount)
-
+            if score > self.best_cur_score:
+                self.best_cur_score = score
+                agent.dumpNetwork('cur_net')
             if score > self._bestValidationScoreSoFar:
                 self._bestValidationScoreSoFar = score
                 agent.dumpNetwork(self._filename)
                 self.cur_best = self.cur_lr if self.adv_count == 0 else self.cur_lr * self.multiplicator[self.cur_count]
             self.cur_count += 1
-            if (self.adv_count == 0 and self.cur_count == len(self.first_epoch)) or (self.adv_count > 0 and self.cur_count == len(self.multiplicator)):
-                agent.setNetwork(self._filename)
+            if self.cur_count == 3:
+                agent.setNetwork('cur_net')
                 agent.dumpNetwork('init_net')
                 self.adv_count += 1
                 self.cur_count = 0
                 self.cur_lr = self.cur_best
+                self.best_cur_score = -9999999
                 print("Adv count :", self.adv_count, "LR :", self.cur_lr)
             else:
                 agent.setNetwork('init_net')
