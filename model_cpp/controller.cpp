@@ -4,17 +4,37 @@
 
 using namespace std;
 
+/**
+ * Constructor of a Controller with the Grid already constructed
+ *
+ * Will randomly set hcells HealthyCells on the provided grid, and a CancerCell in the center
+ *
+ * @param grid The provided grid
+ * @param hcells The number of HealthyCells to set randomly on the grid
+ * @param xsize The number of rows of the grid
+ * @param ysize The number of columns of the grid
+ */
 Controller::Controller(Grid *grid, int hcells, int xsize, int ysize): xsize(xsize), ysize(ysize),  tick(0), self_grid(false), grid(grid), oar(nullptr)  {
     HealthyCell::count = 0;
     CancerCell::count = 0;
     char stages[5] = {'1', 's', '2', 'm', 'q'};
     for (int i = 0; i < hcells; i++){
-        Cell * new_cell = new HealthyCell(stages[rand() % 5]);
-        grid -> addCell(rand() % xsize, rand() % ysize, new_cell, 'h');
+        Cell * new_cell = new HealthyCell(stages[rand() % 5]); //We create a new cell and put it in a random stage
+        grid -> addCell(rand() % xsize, rand() % ysize, new_cell, 'h'); //We add that cell on a random pixel of the grid
     }
-    grid -> addCell(xsize / 2, ysize / 2, new CancerCell(stages[rand() % 4]), 'c');
+    grid -> addCell(xsize / 2, ysize / 2, new CancerCell(stages[rand() % 4]), 'c'); //We add the unique cancer cell in the center
 }
 
+/**
+ * Constructor of a Controller
+ *
+ * Will first create the grid, then randomly set hcells HealthyCells on the provided grid, and a CancerCell in the center
+ *
+ * @param hcells The number of HealthyCells to set randomly on the grid
+ * @param xsize The number of rows of the grid
+ * @param ysize The number of columns of the grid
+ * @param sources_num The number of nutrient sources to put on the grid
+ */
 Controller::Controller(int hcells, int xsize, int ysize, int sources_num): xsize(xsize), ysize(ysize), tick(0), self_grid(true), oar(nullptr) {
     HealthyCell::count = 0;
     CancerCell::count = 0;
@@ -28,6 +48,20 @@ Controller::Controller(int hcells, int xsize, int ysize, int sources_num): xsize
 
 }
 
+
+/**
+ * Constructor of a Controller with an Organ-at-Risk zone
+ *
+ * Will first create the grid, then randomly set hcells HealthyCells on the provided grid, and a CancerCell in the center
+ * The OAR zone is a rectangle defined by coordinates (x1, y1) and (x2, y2)
+ *
+ * @param hcells The number of HealthyCells to set randomly on the grid
+ * @param xsize The number of rows of the grid
+ * @param ysize The number of columns of the grid
+ * @param sources_num The number of nutrient sources to put on the grid
+ * @param x1, y1 The first corner of the OARZone rectangle
+ * @param x2, y2 The opposite corner of the OARZone rectangle
+ */
 Controller::Controller(int hcells, int xsize, int ysize, int sources_num, int x1, int x2, int y1, int y2):xsize(xsize), ysize(ysize), tick(0), self_grid(true){
     HealthyCell::count = 0;
     CancerCell::count = 0;
@@ -66,7 +100,9 @@ Controller::Controller(int hcells, int xsize, int ysize, int sources_num, int x1
     grid -> addCell(xsize / 2, ysize / 2, new CancerCell(stages[rand() % 4]), 'c');
 
 }
-
+/**
+ * Destructor of the controller
+ */
 Controller::~Controller() {
     if (self_grid)
         delete grid;
@@ -74,39 +110,75 @@ Controller::~Controller() {
         delete oar;
 }
 
+/**
+ * Simulate one hour
+ *
+ * Refill the sources, cycle all the cells, diffuse the nutrients on the grid
+ */
 void Controller::go() {
     grid -> fill_sources(100, 4500);
     grid -> cycle_cells();
     grid -> diffuse(0.2);
     tick++;
-    if(tick % 30 == 0)
+    if(tick % 24 == 0) // Once a day, recompute the current center of the tumor (used for angiogenesis)
         grid -> compute_center();
 }
 
+/**
+ * Irradiate the tumor with a certain dose
+ *
+ * @param dose The dose of radiation in grays
+ */
 void Controller::irradiate(double dose){
     grid -> irradiate(dose);
 }
 
+/**
+ * Return a weighted sum of the types of cells at a certain position
+ *
+ * @param x The x coordinate of the pixel
+ * @param y The y coordinate of the pixel
+ * @return The weighted sum
+ */
 int Controller::cell_types(int x, int y){
     return grid->cell_types(x, y);
 }
 
+/**
+ * Return a the type of the first cell at a position
+ *
+ * @param x The x coordinate of the pixel
+ * @param y The y coordinate of the pixel
+ * @return An integer representing the type
+ */
 int Controller::type_head(int x, int y){
     return grid -> type_head(x, y);
 }
 
+/**
+ * Return the current glucose array
+ */
 double ** Controller::currentGlucose(){
     return grid->currentGlucose();
 }
 
+/**
+ * Return the current oxygen array
+ */
 double ** Controller::currentOxygen(){
     return grid->currentOxygen();
 }
 
+/**
+ * Return the current tumor's radius
+ */
 double Controller::tumor_radius(){
     return grid -> tumor_radius(xsize / 2, ysize /2);
 }
 
+/**
+ * Simulate a basic treatment to ensure that there are no obvious bugs/crashes
+ */
 int main(){
     srand(42);
     Controller * controller = new Controller(1000, 50, 50, 50, 5, 15, 5, 15);

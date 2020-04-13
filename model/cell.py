@@ -22,8 +22,12 @@ quiescent_oxygen_level = 960
 
 radiosensitivities = [0.5, 1, 1, 1, 0.25]
 
+
 class Cell:
+    """Superclass of the different types of cells in the model."""
+
     def __init__(self, stage):
+        """Constructor of Cell."""
         self.age = 0
         self.stage = stage
         self.alive = True
@@ -31,13 +35,16 @@ class Cell:
         self.oxy_efficiency = 0
 
     def __lt__(self, other):
+        """Used to allow sorting of Cell lists"""
         return -self.cell_type() < -other.cell_type()
 
 
 class HealthyCell(Cell):
+    """HealthyCells are cells representing healthy tissue in the model."""
     cell_count = 0
 
     def __init__(self, stage):
+        """Constructor of a HealthyCell."""
         Cell.__init__(self, stage)
         HealthyCell.cell_count += 1
         factor = random.normalvariate(1, 1/3)
@@ -45,8 +52,8 @@ class HealthyCell(Cell):
         self.efficiency = average_glucose_absorption * factor
         self.oxy_efficiency = average_oxygen_consumption * factor
 
-    # Simulate an hour of the cell cycle
     def cycle(self, glucose, count, oxygen):
+        """Simulate an hour of the cell cycle."""
         self.age += 1
         if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
             self.alive = False
@@ -81,34 +88,40 @@ class HealthyCell(Cell):
             return self.efficiency, self.oxy_efficiency
 
     def radiate(self, dose):
+        """Irradiate this cell with a specific dose"""
         survival_probability = math.exp(radiosensitivities[self.stage] * (-alpha_norm_tissue*dose - beta_norm_tissue * (dose ** 2)))
         if random.random() > survival_probability:
             self.alive = False
             HealthyCell.cell_count -= 1
 
     def cell_color(self):
+        """RGB for the cell's color"""
         return 0, 102, 204
 
     def cell_type(self):
-        return -1
+        """Return 1, the type of the cell to sort cell lists and compare them"""
+        return 1
 
 
 class CancerCell(Cell):
+    """CancerCells are cells representing tumoral tissue in the model."""
     cell_count = 0
     center = (0, 0)
 
     def __init__(self, stage, x, y):
+        """Constructor of CancerCell."""
         Cell.__init__(self, stage)
         CancerCell.cell_count += 1
 
     def radiate(self, dose):
+        """Irradiate this cell with a specific dose."""
         survival_probability = math.exp(radiosensitivities[self.stage] * (-alpha_tumor*dose - beta_tumor * (dose ** 2)))
         if random.random() > survival_probability:
             self.alive = False
             CancerCell.cell_count -= 1
 
-    # Simulate an hour of the cell cycle
     def cycle(self, glucose, count, oxygen):
+        """Simulate one hour of the cell's cycle"""
         if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
             self.alive = False
             CancerCell.cell_count -= 1
@@ -139,23 +152,27 @@ class CancerCell(Cell):
             return self.efficiency, self.oxy_efficiency
 
     def cell_color(self):
+        """RGB for the cell's color"""
         return 104, 24, 24
 
     def cell_type(self):
-        return 1
+        """Return -1, the type of the cell to sort cell lists and compare them"""
+        return -1
 
 
 class OARCell(Cell):
+    """OARCells are cells representing an organ at risk in the model."""
     cell_count = 0
     worth = 5
 
     def __init__(self, stage, worth):
+        """Constructor of OARCell"""
         OARCell.cell_count += 1
         Cell.__init__(self, stage)
         OARCell.worth = worth
 
-    # One hour of cell cycle
     def cycle(self, glucose, count, oxygen):
+        """Simulate one hour of the cell's cycle"""
         self.age += 1
         if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
             self.alive = False
@@ -187,12 +204,15 @@ class OARCell(Cell):
             return self.efficiency, self.oxy_efficiency
 
     def cell_color(self):
+        """RGB for the cell's color"""
         return 255, 255, 153
 
     def cell_type(self):
-        return -OARCell.worth
+        """Return the OARCell's worth, the type of the cell to sort cell lists and compare them"""
+        return OARCell.worth
 
     def radiate(self, dose):
+        """Irradiate this cell with a specific dose."""
         survival_probability = math.exp(radiosensitivities[self.stage] * (-alpha_norm_tissue*dose - beta_norm_tissue * (dose ** 2)))
         if random.random() > survival_probability:
             self.alive = False

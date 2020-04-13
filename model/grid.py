@@ -5,12 +5,18 @@ import math
 import scipy.special
 
 
-occlusion_number = 6
 sqrt_2_pi = math.sqrt(2*math.pi)
 
 
 class Grid:
+    """The grid is the base of the simulation.
+
+    It is made out of 3 superimposed 2D layers : one contains the CellLists foreach pixel,
+    one contains the glucose amount on each pixel and one contains the oxygen amount on each pixel.
+    """
+
     def __init__(self, xsize, ysize, glucose=False, cells=False, oxygen=False, border=False, sources=0, oar=None):
+        """Constructor of the Grid"""
         self.xsize = xsize
         self.ysize = ysize
         if glucose:
@@ -30,11 +36,11 @@ class Grid:
         self.oar = oar
 
     def count_neigbors(self):
+        """Compute the neigbour counts (the number of cells on neighbouring pixels) for each pixel"""
         self.neigh_counts = [[len(self.cells[j][i])+sum(v for x,y, v in self.neighbors(j, i)) for i in range(self.ysize)] for j in range(self.xsize)]
 
-    # Sources of nutrients are refilled
     def fill_source(self, glucose=0, oxygen=0):
-        # self.sources = [(x, y) for (x, y) in self.sources if len(self.cells[x][y]) < occlusion_number]
+        """Sources of nutrients are refilled."""
         if glucose != 0:
             for (x, y) in self.sources:
                 self.glucose[x][y] += glucose
@@ -44,9 +50,11 @@ class Grid:
 
     # drate = diffusion rate : percentage of glucose that one patch loses to its neighbors
     def diffuse_glucose(self, drate):
+        """Diffuse glucose on the grid"""
         self.glucose = (1-drate)*np.array(self.glucose)+(0.125*drate)*self.neighbors_glucose()
 
     def diffuse_oxygen(self, drate):
+        """Diffuse oxygen on the grid"""
         self.oxygen = (1 - drate) * np.array(self.oxygen) + (0.125*drate) * self.neighbors_oxygen()
 
     def neighbors_glucose(self):
