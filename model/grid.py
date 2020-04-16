@@ -15,121 +15,116 @@ class Grid:
     one contains the glucose amount on each pixel and one contains the oxygen amount on each pixel.
     """
 
-    def __init__(self, xsize, ysize, glucose=False, cells=False, oxygen=False, border=False, sources=0, oar=None):
-        """Constructor of the Grid"""
+    def __init__(self, xsize, ysize,  sources, oar=None):
+        """Constructor of the Grid.
+
+        Parameters :
+        xsize : Number of rows of the grid
+        ysize : Number of cclumns of the grid
+        sources : Number of nutrient sources on the grid
+        oar : Optional description of an OAR zone on the grid
+        """
         self.xsize = xsize
         self.ysize = ysize
-        if glucose:
-            self.glucose = [[100 for i in range(self.ysize)] for j in range(xsize)]
-        if cells:
-            self.cells = [[[] for i in range(self.ysize)] for j in range(self.xsize)]
-        if oxygen:
-            self.oxygen = [[10000 for i in range(self.ysize)] for j in range(xsize)]
-        if border:
-            self.sources = [(0, i) for i in range(ysize)]+ [(i, 0) for i in range(xsize)]\
-                           + [(xsize-1, i) for i in range(ysize)]+ [(i, ysize-1) for i in range(xsize)]
-            self.num_sources = 2*xsize+2*ysize-4
-        else:
-            self.num_sources = sources
-            self.sources = random_sources(xsize, ysize, sources)
-        self.neigh_counts = None
+
+        self.glucose = np.full((xsize, ysize), 100.0)
+        self.oxygen = np.full((xsize, ysize), 10000.0)
+        # Helpers are useful because diffusion cannot be done efficiently in place.
+        # With a helper array of same shape, we can simply compute the result inside the other and alternate between
+        # the arrays.
+        self.glucose_helper = np.full((xsize, ysize), 100.0)
+        self.oxygen_helper = np.full((xsize, ysize), 10000.0)
+
+        self.cells = np.empty((xsize, ysize), dtype=object)
+        for i in range(xsize):
+            for j in range(ysize):
+                self.cells[i, j] = []
+
+        self.num_sources = sources
+        self.sources = random_sources(xsize, ysize, sources)
+
+        # Neigbor counts contain, for each pixel on the grid, the number of cells on neigboring pixels. They are useful
+        # as HealthyCells only reproduce in case of low density. As these counts seldom change after a few hundred
+        # simulated hours, it is more efficient to store them than simply recompute them for each pixel while cycling.
+        self.neigh_counts = np.zeros((xsize, ysize), )
+
         self.oar = oar
 
     def count_neigbors(self):
         """Compute the neigbour counts (the number of cells on neighbouring pixels) for each pixel"""
-        self.neigh_counts = [[len(self.cells[j][i])+sum(v for x,y, v in self.neighbors(j, i)) for i in range(self.ysize)] for j in range(self.xsize)]
+        for i in self.xsize:
+            for j in self.ysize:
+                self.neigh_counts[i, j] = sum(v for _, _, v in self.neighbors(i, j))
 
     def fill_source(self, glucose=0, oxygen=0):
         """Sources of nutrients are refilled."""
         if glucose != 0:
-            for (x, y) in self.sources:
-                self.glucose[x][y] += glucose
+            for (i, j) in self.sources:
+                self.glucose[i, j] += glucose
         if oxygen != 0:
-            for (x, y) in self.sources:
-                self.oxygen[x][y] += oxygen
+            for (i, j) in self.sources:
+                self.oxygen[i, j] += oxygen
 
-    # drate = diffusion rate : percentage of glucose that one patch loses to its neighbors
     def diffuse_glucose(self, drate):
-        """Diffuse glucose on the grid"""
-        self.glucose = (1-drate)*np.array(self.glucose)+(0.125*drate)*self.neighbors_glucose()
+        """Diffuse glucose on the grid
+
+        Parameters:
+        drate : diffusion rate : percentage of glucose that one patch loses to its neighbors
+        """
+        self.diffuse_helper(self.glucose, self.glucose_helper, drate)
+        self.glucose, self.glucose_helper = self.glucose_helper, self.glucose
 
     def diffuse_oxygen(self, drate):
-        """Diffuse oxygen on the grid"""
-        self.oxygen = (1 - drate) * np.array(self.oxygen) + (0.125*drate) * self.neighbors_oxygen()
+        """Diffuse glucose on the grid
 
-    def neighbors_glucose(self):
-        down = np.roll(self.glucose, 1, axis= 0)
-        up = np.roll(self.glucose, -1, axis=0)
-        right = np.roll(self.glucose, 1, axis=(0, 1))
-        left = np.roll(self.glucose, -1, axis=(0, 1))
-        down_right = np.roll(down, 1, axis=(0, 1))
-        down_left = np.roll(down, -1, axis=(0, 1))
-        up_right = np.roll(up, 1, axis=(0, 1))
-        up_left = np.roll(up, -1, axis=(0, 1))
-        for i in range(self.ysize):  # Down
-            down[0][i] = 0
-            down_left[0][i] = 0
-            down_right[0][i] = 0
-        for i in range(self.ysize):  # Up
-            up[self.xsize-1][i] = 0
-            up_left[self.xsize - 1][i] = 0
-            up_right[self.xsize - 1][i] = 0
-        for i in range(self.xsize):  # Right
-            right[i][0] = 0
-            down_right[i][0] = 0
-            up_right[i][0] = 0
-        for i in range(self.xsize):  # Left
-            left[i][self.ysize-1] = 0
-            down_left[i][self.ysize-1] = 0
-            up_left[i][self.ysize-1] = 0
-        return down+up+right+left+down_left+down_right+up_left+up_right
+        Parameters:
+        drate : diffusion rate : percentage of oxygen that one patch loses to its neighbors
+        """
+        self.diffuse_helper(self.glucose, self.glucose_helper, drate)
+        self.oxygen, self.oxygen_helper = self.oxygen_helper, self.oxygen
 
-    def neighbors_oxygen(self):
-        down = np.roll(self.oxygen, 1, axis= 0)
-        up = np.roll(self.oxygen, -1, axis=0)
-        right = np.roll(self.oxygen, 1, axis=(0, 1))
-        left = np.roll(self.oxygen, -1, axis=(0, 1))
-        down_right = np.roll(down, 1, axis=(0, 1))
-        down_left = np.roll(down, -1, axis=(0, 1))
-        up_right = np.roll(up, 1, axis=(0, 1))
-        up_left = np.roll(up, -1, axis=(0, 1))
-        for i in range(self.ysize):  # Down
-            down[0][i] = 0
-            down_left[0][i] = 0
-            down_right[0][i] = 0
-        for i in range(self.ysize):  # Up
-            up[self.xsize-1][i] = 0
-            up_left[self.xsize - 1][i] = 0
-            up_right[self.xsize - 1][i] = 0
-        for i in range(self.xsize):  # Right
-            right[i][0] = 0
-            down_right[i][0] = 0
-            up_right[i][0] = 0
-        for i in range(self.xsize):  # Left
-            left[i][self.ysize-1] = 0
-            down_left[i][self.ysize-1] = 0
-            up_left[i][self.ysize-1] = 0
-        return down+up+right+left+down_left+down_right+up_left+up_right
+    def diffuse_helper(self, src, dest, drate):
+        base = 1 - drate
+        neigh = drate * 0.125
+        for i in range(self.xsize):
+            for j in range(self.ysize):
+                dest[i, j] = base * src[i, j]  # First keep the base amount
+            for j in range(1, self.ysize):
+                dest[i, j] += neigh * src[i, j - 1]  # Diffusion to the right
+            for j in range(self.ysize - 1):
+                dest[i, j] += neigh * src[i, j + 1]  # Diffusion to the left
+        for i in range(self.xsize - 1):
+            for j in range(self.ysize):
+                dest[i, j] += neigh * src[i + 1, j]  # Diffusion to the top
+            for j in range(self.ysize - 1):
+                dest[i, j] += neigh * src[i + 1, j + 1]  # Diffusion to top left
+            for j in range(1, self.ysize):
+                dest[i, j] += neigh * src[i + 1, j - 1]  # Diffusion to top right
+        for i in range(1, self.xsize):
+            for j in range(self.ysize):
+                dest[i, j] += neigh * src[i - 1, j]  # Diffusion to the bottom
+            for j in range(self.ysize - 1):
+                dest[i, j] += neigh * src[i - 1, j + 1]  # Diffusion to bottom left
+            for j in range(1, self.ysize):
+                dest[i, j] += neigh * src[i - 1, j - 1]  # Diffusion to bottom right
 
     def cycle_cells(self):
         tot_count = 0
         for i in range(self.xsize):
-            for j in range(self.ysize): #For every tile
+            for j in range(self.ysize):  # For every pixel
                 count = len(self.cells[i][j])
-                glucose = self.glucose[i][j] #We keep local glucose and oxygen variables that are updated after every cell
-                oxygen = self.oxygen[i][j]
                 for cell in self.cells[i][j]:
-                    res = cell.cycle(self.glucose[i][j] / count,  self.neigh_counts[i][j], self.oxygen[i][j] / count,)
-                    if len(res) > 2: #If there are more than two arguments, a new cell must be created
+                    res = cell.cycle(self.glucose[i, j],  self.neigh_counts[i, j], self.oxygen[i, j])
+                    if len(res) > 2:  # If there are more than two arguments, a new cell must be created
                         if res[2] == 0: # Mitosis of a healthy cell
                             downhill = self.rand_min(i, j)
-                            self.cells[downhill[0]][downhill[1]].append(HealthyCell(0))
+                            self.cells[downhill[0], downhill[1]].append(HealthyCell(0))
                             self.add_neigh_count(downhill[0], downhill[1], 1)  # We add 1 to every neigbouring tile's neigbours counter
-                        elif res[2] == 1: #Mitosis of a cancer cell
+                        elif res[2] == 1:  # Mitosis of a cancer cell
                             downhill = self.rand_neigh(i, j)
                             self.cells[downhill[0]][downhill[1]].append(CancerCell(0, downhill[0], downhill[1]))
-                            self.add_neigh_count(downhill[0], downhill[1], 1) #We add 1 to every neigbouring tile's neigbours counter
-                        elif res[2] == 2: #Wake up surrounding oar cells
+                            self.add_neigh_count(downhill[0], downhill[1], 1)  # We add 1 to every neigbouring tile's neigbours counter
+                        elif res[2] == 2:  # Wake up surrounding oar cells
                             self.wake_surrounding_oar(i, j)
                         elif res[2] == 3:
                             downhill = self.find_hole(i, j)
@@ -139,25 +134,13 @@ class Grid:
                             else:
                                 cell.stage = 4
                                 cell.age = 0
-                    glucose -= res[0] #The local variables are updated according to the cell's consumption
-                    oxygen -= res[1]
+                    self.glucose[i, j] -= res[0]  # The local variables are updated according to the cell's consumption
+                    self.oxygen[i, j] -= res[1]
                     if not cell.alive:
                         count -= 1
                         self.add_neigh_count(i, j, -1) #We remove 1 from every neigbouring tile's neigbours counter
-                self.glucose[i][j] = glucose #The global glucose and oxygen variables are updated after we cycled every cell on the tile
-                self.oxygen[i][j] = oxygen
-                #TODO what do I do with dead cells? Should I consider that they take up space? Should they only disappear after some time?
                 self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive] #Removes all the dead cells from the tile so that the objects are deleted
-                self.cells[i][j].sort() #sort so that the cancer cells are first
-                # Angiogenesis
-                #TODO favor angiogenesis
-                '''
-                if (oxygen < len(self.cells[i][j])*critical_oxygen_level
-                    or glucose < critical_glucose_level*len(self.cells[i][j]))\
-                        and (i, j) not in self.sources: # if one nutrient is low and they are still cells on the tile
-                    if random.random() < (self.num_sources-len(self.sources))/(self.num_sources*2):
-                        self.sources.append((i,j))
-                '''
+                self.cells[i][j].sort()  # sort so that the cancer cells are first
                 tot_count += count
         return tot_count
 
