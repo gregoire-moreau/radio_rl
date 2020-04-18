@@ -50,6 +50,9 @@ class Grid:
 
         self.oar = oar
 
+        self.center_x = self.xsize // 2
+        self.center_y = self.ysize // 2
+
     def count_neigbors(self):
         """Compute the neigbour counts (the number of cells on neighbouring pixels) for each pixel"""
         for i in self.xsize:
@@ -58,12 +61,25 @@ class Grid:
 
     def fill_source(self, glucose=0, oxygen=0):
         """Sources of nutrients are refilled."""
-        if glucose != 0:
-            for (i, j) in self.sources:
-                self.glucose[i, j] += glucose
-        if oxygen != 0:
-            for (i, j) in self.sources:
-                self.oxygen[i, j] += oxygen
+        for i in range(len(self.sources)):
+            self.glucose[self.sources[i][0], self.sources[i][1]] += glucose
+            self.oxygen[self.sources[i][0], self.sources[i][1]] += oxygen
+            if random.randint(0, 23) == 0:
+                self.sources[i] = self.source_move(self.sources[i][0], self.sources[i][1])
+
+    def source_move(self, x, y):
+        if random.randint(0, 5000) < CancerCell.cell_count:  # Move towards tumour center
+            if x < self.center_x:
+                x += 1
+            elif x > self.center_x:
+                x -= 1
+            if y < self.center_y:
+                y += 1
+            elif y > self.center_y:
+                y -= 1
+            return x, y
+        else:
+            return self.rand_neigh(x, y);
 
     def diffuse_glucose(self, drate):
         """Diffuse glucose on the grid
@@ -109,6 +125,7 @@ class Grid:
                 dest[i, j] += neigh * src[i - 1, j - 1]  # Diffusion to bottom right
 
     def cycle_cells(self):
+        to_add = []
         tot_count = 0
         for i in range(self.xsize):
             for j in range(self.ysize):  # For every pixel
@@ -118,19 +135,16 @@ class Grid:
                     if len(res) > 2:  # If there are more than two arguments, a new cell must be created
                         if res[2] == 0: # Mitosis of a healthy cell
                             downhill = self.rand_min(i, j)
-                            self.cells[downhill[0], downhill[1]].append(HealthyCell(0))
-                            self.add_neigh_count(downhill[0], downhill[1], 1)  # We add 1 to every neigbouring tile's neigbours counter
+                            to_add.append((downhill[0], downhill[1], HealthyCell(0)))
                         elif res[2] == 1:  # Mitosis of a cancer cell
                             downhill = self.rand_neigh(i, j)
-                            self.cells[downhill[0]][downhill[1]].append(CancerCell(0, downhill[0], downhill[1]))
-                            self.add_neigh_count(downhill[0], downhill[1], 1)  # We add 1 to every neigbouring tile's neigbours counter
+                            to_add.append((downhill[0], downhill[1], CancerCell(0)))
                         elif res[2] == 2:  # Wake up surrounding oar cells
                             self.wake_surrounding_oar(i, j)
                         elif res[2] == 3:
                             downhill = self.find_hole(i, j)
                             if downhill:
-                                self.cells[downhill[0]][downhill[1]].append(OARCell(0, 5))
-                                self.add_neigh_count(downhill[0], downhill[1], 1)  # We add 1 to every neigbouring tile's neigbours counter
+                                to_add.append((downhill[0], downhill[1], OARCell(0, 5)))
                             else:
                                 cell.stage = 4
                                 cell.age = 0
@@ -139,9 +153,12 @@ class Grid:
                     if not cell.alive:
                         count -= 1
                         self.add_neigh_count(i, j, -1) #We remove 1 from every neigbouring tile's neigbours counter
-                self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive] #Removes all the dead cells from the tile so that the objects are deleted
-                self.cells[i][j].sort()  # sort so that the cancer cells are first
+                self.cells[i, j] = [cell for cell in self.cells[i, j] if cell.alive] #Removes all the dead cells from the tile so that the objects are deleted
+                self.cells[i, j].sort()  # sort so that the cancer cells are first
                 tot_count += count
+        for i, j, cell in to_add:
+            self.cells[i, j].append(cell)
+            self.add_neigh_count(i, j, 1)
         return tot_count
 
     def wake_surrounding_oar(self, x, y):
@@ -178,11 +195,11 @@ class Grid:
         for (i, j) in [(x, y), (x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
                        (x + 1, y + 1)]:
             if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
-                sum.append([i, j, len(self.cells[i][j])])
+                sum.append([i, j, len(self.cells[i, j])])
         return sum
 
     def irradiate(self, dose, x, y, rad = -1):
-        radius = self.tumor_radius()*1.1 if rad == -1 else rad
+        radius = self.tumor_radius(x, y) if rad == -1 else rad
         if radius == 0:
             return
         multiplicator = dose/conv(radius, 0)
@@ -190,21 +207,21 @@ class Grid:
             for j in range(self.ysize):
                 dist = math.sqrt((x-i)**2 + (y-j)**2)
                 if dist <= 2*radius:
-                    for cell in self.cells[i][j]:
+                    for cell in self.cells[i, j]:
                         cell.radiate(conv(radius, dist)*multiplicator)
-                if any((isinstance(cell, OARCell) and not cell.alive) for cell in self.cells[i][j]):
+                if any((isinstance(cell, OARCell) and not cell.alive) for cell in self.cells[i, j]):
                     self.wake_surrounding_oar(i,j)
-                self.cells[i][j] = [cell for cell in self.cells[i][j] if cell.alive]
+                self.cells[i, j] = [cell for cell in self.cells[i, j] if cell.alive]
         self.count_neigbors()
         return radius
 
-    def tumor_radius(self):
+    def tumor_radius(self, x, y):
         if CancerCell.cell_count > 0:
             max_dist = -1
             for i in range(self.xsize):
                 for j in range(self.ysize):
-                    if len(self.cells[i][j]) > 0 and self.cells[i][j][0].__class__ == CancerCell:
-                        v = self.dist(i, j, self.xsize//2, self.ysize//2)
+                    if len(self.cells[i, j]) > 0 and self.cells[i, j][0].__class__ == CancerCell:
+                        v = self.dist(i, j, x, y)
                         if v > max_dist:
                             max_dist = v
             return max_dist
@@ -221,10 +238,10 @@ class Grid:
         for (i, j) in [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
                        (x + 1, y + 1)]:
             if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
-                if len(self.cells[i][j]) < v:
-                    v = len(self.cells[i][j])
+                if len(self.cells[i, j]) < v:
+                    v = len(self.cells[i, j])
                     ind = [(i, j)]
-                elif len(self.cells[i][j]) == v:
+                elif len(self.cells[i, j]) == v:
                     ind.append((i, j))
         return random.choice(ind)
 
@@ -240,8 +257,23 @@ class Grid:
         for (i, j) in [(x - 1, y - 1), (x - 1, y), (x - 1, y + 1), (x, y - 1), (x, y + 1), (x + 1, y - 1), (x + 1, y),
                        (x + 1, y + 1)]:
             if (i >= 0 and i < self.xsize and j >= 0 and j < self.ysize):
-                self.neigh_counts[i][j] += v
+                self.neigh_counts[i, j] += v
 
+    def compute_center(self):
+        if CancerCell.cell_count == 0:
+            return -1, -1
+        sum_x = 0
+        sum_y = 0
+        count = 0
+        for i in range(self.xsize):
+            for j in range(self.ysize):
+                for cell in self.cells[i, j]:
+                    if cell.__class__ == CancerCell:
+                        count += 1
+                        sum_x += i
+                        sum_y += j
+        self.center_x = sum_x / count
+        self.center_y = sum_y / count
 
 # std_dev = 0.4 cm = 1.6 cases
 denom = math.sqrt(2)*2.4
