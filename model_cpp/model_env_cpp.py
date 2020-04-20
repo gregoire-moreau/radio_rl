@@ -11,8 +11,22 @@ except:
 
 from deer.base_classes import Environment
 
+
 class CellEnvironment(Environment):
+    """Environment that the reinforcement learning agent uses to interact with the simulation."""
+
     def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward):
+        """Constructor of the environment
+
+        Parameters:
+        obs_type : Type of observations provided to the agent ('head' for segmentation or 'types' for weighted sums)
+        resize : True if the observations should be resized to 25 * 25 arrays
+        reward : Type of reward function used ('dose' to minimize the total dose, 'killed' to maximize damage to cancer
+                 cells while miniizing damage to healthy tissue and 'oar' to minimize damage to the Organ At Risk
+        action_type : 'DQN' means that we have a discrete action domain and 'AC' means that it is continuous
+        tumor_radius : True if the current radius of the tumor should be included as an observation to the agent
+        special_reward : True if the agent should receive a special reward at the end of the episode.
+        """
         if reward == 'oar':
             x1 = random.randint(1, 10)
             x2 = random.randint(11, 20)
@@ -49,13 +63,11 @@ class CellEnvironment(Environment):
             self.verbose = False
         else :
             self.verbose = True
-        cppCellModel.go(self.controller_capsule, 12)
         return self.observe()
     
     def act(self, action):
-        dose = action / 2 if self.action_type == 'DQN' else action[0] # * 4 + 1
-        rest = 24 if self.action_type == 'DQN' else int(round(action[1] #* 60 + 12
-                                                                        ))
+        dose = action / 2 if self.action_type == 'DQN' else action[0] * 4 + 1
+        rest = 24 if self.action_type == 'DQN' else int(round(action[1] * 60 + 12))
 
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
@@ -85,7 +97,7 @@ class CellEnvironment(Environment):
                 if self.reward == 'oar':
                     return cppCellModel.OARCellCount() / self.init_oar_count
                 elif self.reward == 'dose':
-                    return (cppCellModel.HCellCount() / self.init_hcell_count) ** 2 - dose / 100
+                    return min((cppCellModel.HCellCount() / self.init_hcell_count), 1.0) - dose / 100
                 else:
                     return 1
         else:
@@ -114,7 +126,7 @@ class CellEnvironment(Environment):
             return False
 
     def nActions(self):
-        return 9 if self.action_type == 'DQN' else [[1, 5], [12, 72]]
+        return 9 if self.action_type == 'DQN' else [[0, 1], [0, 1]]
  
     def end(self):
         cppCellModel.delete_controller(self.controller_capsule)
@@ -128,12 +140,11 @@ class CellEnvironment(Environment):
             tab.append((1,1))
         return tab
 
-
     def observe(self):
         if self.obs_type == 'types':
-            cells = np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)
+            cells = (np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32) + 10.0) / 2.0
         else:
-            cells = np.array(cppCellModel.observeType(self.controller_capsule), dtype=np.float32)
+            cells = (np.array(cppCellModel.observeType(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
         if self.resize:
             cells = cv2.resize(cells, dsize=(25,25), interpolation=cv2.INTER_CUBIC)
         return [cells, cppCellModel.tumor_radius(self.controller_capsule)] if self.tumor_radius else [cells]
