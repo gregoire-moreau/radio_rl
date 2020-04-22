@@ -15,7 +15,7 @@ from deer.base_classes import Environment
 class CellEnvironment(Environment):
     """Environment that the reinforcement learning agent uses to interact with the simulation."""
 
-    def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward):
+    def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward, center):
         """Constructor of the environment
 
         Parameters:
@@ -26,6 +26,7 @@ class CellEnvironment(Environment):
         action_type : 'DQN' means that we have a discrete action domain and 'AC' means that it is continuous
         tumor_radius : True if the current radius of the tumor should be included as an observation to the agent
         special_reward : True if the agent should receive a special reward at the end of the episode.
+        center : True if the irradiation should be centered on the center of the grid
         """
         if reward == 'oar':
             x1 = random.randint(1, 10)
@@ -33,10 +34,10 @@ class CellEnvironment(Environment):
             y1 = random.randint(1, 10)
             y2 = random.randint(11, 20)
             print("Start with oar x1=", x1, "x2=", x2, "y1=", y1, "y2=", y2)
-            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 350, x1, x2, y1, y2)
+            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 100, 350, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 350)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
             self.init_hcell_count = cppCellModel.HCellCount()
         self.obs_type = obs_type
         self.resize = resize
@@ -44,6 +45,7 @@ class CellEnvironment(Environment):
         self.action_type = action_type
         self.tumor_radius = tumor_radius
         self.special_reward = special_reward
+        self.center = center
 
 
     def reset(self, mode):
@@ -57,7 +59,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 338, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 50, 338)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
             self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
             self.verbose = False
@@ -72,8 +74,17 @@ class CellEnvironment(Environment):
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
         pre_oar_cell = cppCellModel.OARCellCount()
-        
-        cppCellModel.irradiate(self.controller_capsule, dose)
+
+        if self.center:
+            if self.tumor_radius:
+                cppCellModel.irradiate_center_radius(self.controller_capsule, dose, action[2] * 25)
+            else:
+                cppCellModel.irradiate_center(self.controller_capsule, dose)
+        else:
+            if self.tumor_radius:
+                cppCellModel.irradiate_radius(self.controller_capsule, dose, action[2] * 25)
+            else:
+                cppCellModel.irradiate(self.controller_capsule, dose)
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
@@ -126,7 +137,11 @@ class CellEnvironment(Environment):
             return False
 
     def nActions(self):
-        return 9 if self.action_type == 'DQN' else [[0, 1], [0, 1]]
+        if self.action_type == 'DQN':
+            return 9
+        elif self.action_type == 'AC':
+            return [[0, 1], [0, 1], [0, 1]] if self.tumor_radius else [[0, 1], [0, 1]]
+
  
     def end(self):
         cppCellModel.delete_controller(self.controller_capsule)
@@ -136,8 +151,6 @@ class CellEnvironment(Environment):
             tab = [(1, 25, 25)]
         else:
             tab = [(1, 50, 50)]
-        if self.tumor_radius:
-            tab.append((1,1))
         return tab
 
     def observe(self):
@@ -147,17 +160,30 @@ class CellEnvironment(Environment):
             cells = (np.array(cppCellModel.observeType(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
         if self.resize:
             cells = cv2.resize(cells, dsize=(25,25), interpolation=cv2.INTER_CUBIC)
-        return [cells, cppCellModel.tumor_radius(self.controller_capsule)] if self.tumor_radius else [cells]
+        return [cells]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):
         print(test_data_set)
 
+def transform(head):
+    to_ret = np.zeros(shape=(head.shape[0], head.shape[1], 3), dtype=np.int)
+    for i in range(head.shape[0]):
+        for j in range(head.shape[1]):
+            if head[i][j] == 1:
+                to_ret[i][j][2] = 255
+            elif head[i][j] == -1:
+                to_ret[i][j][0] = 255
+    return to_ret
+
 if __name__ == '__main__':
+    '''
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use("TkAgg")
     plt.ion()
-    controller = cppCellModel.controller_constructor_oar(50,50,50,0, 5,15,5,15)
+    '''
+    controller = cppCellModel.controller_constructor(50,50,100,0)
+    '''
     fig, axs = plt.subplots(2,2, constrained_layout=True)
     fig.suptitle('Cell proliferation at t = 0')
     glucose_plot = axs[0][0]
@@ -177,17 +203,19 @@ if __name__ == '__main__':
     ccount_ticks.append(cppCellModel.controllerTick(controller))
     ccount_vals.append(cppCellModel.CCellCount())
     cancer_count_plot.plot(ccount_ticks, ccount_vals)
-
+    '''
     for i in range(200):
         cppCellModel.go(controller, 12)
-        if i > 30 and i % 2 == 0:
-            cppCellModel.irradiate(controller, 2.0)
+        if i > 30 and i % 1 == 0:
+            cppCellModel.irradiate(controller, 4.5)
+        '''
         fig.suptitle('Cell proliferation at t = ' + str((i+1)*12))
         glucose_plot.imshow(cppCellModel.observeGlucose(controller))
         oxygen_plot.imshow(cppCellModel.observeOxygen(controller))
-        cell_plot.imshow(cppCellModel.observeType(controller))
+        cell_plot.imshow(transform(cppCellModel.observeType(controller)))
         ccount_ticks.append(cppCellModel.controllerTick(controller))
         ccount_vals.append(cppCellModel.CCellCount())
         cancer_count_plot.plot(ccount_ticks, ccount_vals)
         plt.pause(0.02)
+    '''
     cppCellModel.delete_controller(controller)

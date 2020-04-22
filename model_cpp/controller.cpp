@@ -118,7 +118,7 @@ Controller::~Controller() {
 void Controller::go() {
     grid -> fill_sources(100, 4500);
     grid -> cycle_cells();
-    grid -> diffuse(0.2);
+    grid -> diffuse(0.3);
     tick++;
     if(tick % 24 == 0) // Once a day, recompute the current center of the tumor (used for angiogenesis)
         grid -> compute_center();
@@ -132,6 +132,37 @@ void Controller::go() {
 void Controller::irradiate(double dose){
     grid -> irradiate(dose);
 }
+
+/**
+ * Irradiate the tumor with a certain dose and radius
+ *
+ * @param dose The dose of radiation in grays
+ * @param radius The radius of irradiation
+ */
+void Controller::irradiate(double dose, double radius){
+    grid -> irradiate(dose, radius);
+}
+
+/**
+ * Irradiate the tumor with a certain dose and radius around the center of the grid
+ *
+ * @param dose The dose of radiation in grays
+ * @param radius The radius of irradiation
+ */
+void Controller::irradiate_center(double dose, double radius){
+    grid -> irradiate(dose, radius, xsize / 2, ysize / 2);
+}
+
+/**
+ * Irradiate the tumor with a certain dose around the center of the grid
+ *
+ * @param dose The dose of radiation in grays
+ */
+void Controller::irradiate_center(double dose){
+    double radius = grid -> tumor_radius(xsize / 2, ysize / 2);
+    grid -> irradiate(dose, radius, xsize / 2, ysize / 2);
+}
+
 
 /**
  * Return a weighted sum of the types of cells at a certain position

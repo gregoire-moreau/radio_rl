@@ -92,13 +92,54 @@ PyObject* irradiate(PyObject* self, PyObject* args){
     PyArg_ParseTuple(args, "Od",
                      &controllerCapsule,
                      &dose);
-
     Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
     controller -> irradiate(dose);
     
     Py_RETURN_NONE;
 }
 
+PyObject* irradiate_radius(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    double dose;
+    double radius;
+    PyArg_ParseTuple(args, "Odd",
+                     &controllerCapsule,
+                     &dose,
+                     &radius);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+    controller -> irradiate(dose, radius);
+
+    Py_RETURN_NONE;
+}
+
+PyObject* irradiate_center_radius(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    double dose;
+    double radius;
+    PyArg_ParseTuple(args, "Odd",
+                     &controllerCapsule,
+                     &dose,
+                     &radius);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+    controller -> irradiate_center(dose, radius);
+
+    Py_RETURN_NONE;
+}
+
+PyObject* irradiate_center(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    double dose;
+    PyArg_ParseTuple(args, "Od",
+                     &controllerCapsule,
+                     &dose);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+    controller -> irradiate_center(dose);
+
+    Py_RETURN_NONE;
+}
 
 PyObject* delete_controller(PyObject* self, PyObject* args){
     PyObject* controllerCapsule;
@@ -343,6 +384,18 @@ PyMethodDef cppCellModelFunctions[] =
     {"irradiate",
       irradiate, METH_VARARGS,
      "Irradiate the tumor with a certain dose"},
+
+     {"irradiate_radius",
+      irradiate_radius, METH_VARARGS,
+     "Irradiate the tumor with a certain dose and a certain radius"},
+
+     {"irradiate_center",
+      irradiate_center, METH_VARARGS,
+     "Irradiate the tumor with a certain dose at the center of the grid"},
+
+     {"irradiate_center_radius",
+      irradiate_center, METH_VARARGS,
+     "Irradiate the tumor with a certain dose at the center of the grid with a certain radius"},
 
     {"delete_controller",
       delete_controller, METH_VARARGS,

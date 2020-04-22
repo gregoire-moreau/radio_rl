@@ -800,7 +800,7 @@ double ** Grid::currentOxygen(){
 void Grid::irradiate(double dose){
     compute_center();
     double radius = tumor_radius(center_x, center_y);
-    irradiate(dose, radius, center_x, center_y);
+    irradiate(10, radius, 25, 25);
 }
 
 /**
