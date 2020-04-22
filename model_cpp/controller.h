@@ -16,9 +16,9 @@ public:
     Controller(int hcells, int xsize, int ysize, int sources_num, int x1, int x2, int y1, int y2);
     ~Controller();
     void irradiate(double dose);
-    void Controller::irradiate_center(double dose);
-    void Controller::irradiate(double dose, double radius);
-    void Controller::irradiate_center(double dose, double radius);
+    void irradiate_center(double dose);
+    void irradiate(double dose, double radius);
+    void irradiate_center(double dose, double radius);
     void go();
     int cell_types(int x, int y);
     int type_head(int x, int y);
