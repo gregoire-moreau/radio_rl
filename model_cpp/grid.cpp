@@ -689,7 +689,7 @@ double distance(int x1, int y1, int x2, int y2){
  * @return The Euclidean distance between the two points
  */
 double conv(double rad, double x){
-    double denom = 3.39411;//sqrt(2) * 2.4
+    double denom = 5.6568;//sqrt(2) * 4
     return erf((rad - x)/denom) - erf((-rad - x) / denom);
 }
 

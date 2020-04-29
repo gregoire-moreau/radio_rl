@@ -1,11 +1,7 @@
 #!/bin/bash
 
-mkdir -p training_logs/center
-./main.py -n AC --obs_type head -r dose -e 20 2500 > training_logs/center/head_reg
-./main.py -n AC --obs_type types -r dose -e 20 2500 > training_logs/center/types_reg
-./main.py -n AC --obs_type head -r dose -e 20 2500 --center > training_logs/center/head_center
-./main.py -n AC --obs_type types -r dose -e 20 2500 --center > training_logs/center/types_center
-./main.py -n AC --obs_type head -r dose -e 20 2500 -t > training_logs/center/head_radius
-./main.py -n AC --obs_type types -r dose -e 20 2500 -t > training_logs/center/types_radius
-./main.py -n AC --obs_type head -r dose -e 20 2500 --center -t > training_logs/center/head_both
-./main.py -n AC --obs_type types -r dose -e 20 2500 --center -t > training_logs/center/types_both
+mkdir -p training_logs/stud
+./main.py -n DQN --obs_type head -r dose -e 60 2500 --fname head_dose > training_logs/stud/head_dose
+./main.py -n DQN --obs_type types -r dose -e 60 2500 --fname types_dose > training_logs/stud/types_dose
+./main.py -n DQN --obs_type head -r killed -e 60 2500 --fname head_killed > training_logs/stud/head_killed
+./main.py -n DQN --obs_type types -r killed -e 60 2500 --fname types_killed > training_logs/stud/types_killed

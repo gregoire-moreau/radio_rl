@@ -60,11 +60,13 @@ class GridSearchController(Controller):
                 print("Adv count :", self.adv_count, "LR :", self.cur_lr)
             else:
                 agent.setNetwork('init_net')
-                if self.adv_count == 0:
-                    self.cur_lr = self.first_epoch[self.cur_count]
-                    agent._learning_algo.setLearningRate(self.first_epoch[0])
-                else:
-                    agent._learning_algo.setLearningRate(self.cur_lr * self.multiplicator[self.cur_count])
+            if self.adv_count == 0:
+                self.cur_lr = self.first_epoch[self.cur_count]
+                agent._learning_algo.setLearningRate(self.cur_lr)
+                print(self.cur_lr)
+            else:
+                agent._learning_algo.setLearningRate(self.cur_lr * self.multiplicator[self.cur_count])
+                print(self.multiplicator[self.cur_count])
 
         elif mode == self._testID:
             score, _ = agent.totalRewardOverLastTest()
