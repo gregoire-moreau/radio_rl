@@ -175,14 +175,35 @@ def transform(head):
                 to_ret[i][j][0] = 255
     return to_ret
 
+
+def tcp_test():
+    count_failed = 0
+    count_success = 0
+    for i in range(500):
+        print(i)
+        controller = cppCellModel.controller_constructor(50, 50, 100, 350)
+        for i in range(35):
+            cppCellModel.irradiate(controller, 2) #monday
+            cppCellModel.go(controller, 24)
+        count = cppCellModel.CCellCount()
+        if count > 10:
+            count_failed += 1
+        elif count == 0:
+            count_success += 1
+        cppCellModel.delete_controller(controller)
+    print("Percentage of full recovs :", (100*count_success)/ 500)
+    print("Percentage of almost recovs :", (100*(500 - count_failed))/ 500)
+
+
 if __name__ == '__main__':
+    tcp_test()
     '''
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use("TkAgg")
     plt.ion()
     '''
-    controller = cppCellModel.controller_constructor(50,50,100,0)
+    #controller = cppCellModel.controller_constructor(50,50,100,0)
     '''
     fig, axs = plt.subplots(2,2, constrained_layout=True)
     fig.suptitle('Cell proliferation at t = 0')
@@ -203,12 +224,12 @@ if __name__ == '__main__':
     ccount_ticks.append(cppCellModel.controllerTick(controller))
     ccount_vals.append(cppCellModel.CCellCount())
     cancer_count_plot.plot(ccount_ticks, ccount_vals)
-    '''
+    
     for i in range(200):
         cppCellModel.go(controller, 12)
         if i > 30 and i % 1 == 0:
             cppCellModel.irradiate(controller, 4.5)
-        '''
+        
         fig.suptitle('Cell proliferation at t = ' + str((i+1)*12))
         glucose_plot.imshow(cppCellModel.observeGlucose(controller))
         oxygen_plot.imshow(cppCellModel.observeOxygen(controller))
@@ -218,4 +239,4 @@ if __name__ == '__main__':
         cancer_count_plot.plot(ccount_ticks, ccount_vals)
         plt.pause(0.02)
     '''
-    cppCellModel.delete_controller(controller)
+    #cppCellModel.delete_controller(controller)

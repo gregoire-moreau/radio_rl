@@ -712,7 +712,7 @@ void Grid::irradiate(double dose, double radius, double center_x, double center_
                 CellNode * current = cells[i][j].head;
                 bool oar_dead = false;
                 while (current){
-                    double omf = (1.0 / 3.0) * (oxygen[i][j] * 3.0 + 3.0) / (oxygen[i][j] + 3.0); // Include the effect of hypoxia
+                    double omf = /*(1.0 / 3.0) */ (oxygen[i][j] * 3.0 + 3.0) / (oxygen[i][j] + 3.0); // Include the effect of hypoxia
                     current -> cell -> radiate(conv(radius, dist) * multiplicator * omf);
                     if (!(current -> cell ->alive) && current->type == 'o'){
                         oar_dead = true;

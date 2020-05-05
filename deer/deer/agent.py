@@ -11,6 +11,7 @@ import copy
 import sys
 import joblib
 from warnings import warn
+import datetime
 
 from .experiment import base_controllers as controllers
 from .helper import tree 
@@ -268,7 +269,7 @@ class NeuralAgent(object):
         i = 0
         while i < n_epochs or self._mode_epochs_length > 0:
             self._training_loss_averages = []
-
+            print("Epoch : +" + str(i)+ " at "+ datetime.datetime.now(), file=sys.stderr)
             if self._mode != -1:                
                 self._totalModeNbrEpisode=0
                 while self._mode_epochs_length > 0:

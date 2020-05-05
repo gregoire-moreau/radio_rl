@@ -12,7 +12,7 @@ parser.add_argument('-t', action='store_true', dest='tumor_radius')
 parser.add_argument('-n', '--network', choices=['AC', 'DQN'], dest='network', required=True)
 parser.add_argument('-r', '--reward', choices=['dose', 'killed', 'oar'], dest='reward', required=True)
 parser.add_argument('--no_special', action='store_false', dest='special')
-parser.add_argument('-l', '--learning_rate', nargs=3, type=float, default=[0.0001, 0.8,1])
+parser.add_argument('-l', '--learning_rate', nargs=3, type=float, default=[0.0001, 0.75,5])
 parser.add_argument('--fname', default='nnet')
 parser.add_argument('-e', '--epochs', nargs=2, type=int, default=[20, 2500])
 parser.add_argument('-c', '--center', action='store_true')
@@ -52,18 +52,18 @@ if args.network == 'DQN':
     agent = NeuralAgent(
         env,
         network,
-        replay_memory_size=min(int(args.epochs[0]*args.epochs[1] * 1.1), 500000),
+        replay_memory_size=min(int(args.epochs[0]*args.epochs[1] * 1.1), 150000),
         batch_size=32,
         random_state=rng)
     agent.setDiscountFactor(0.95)
-    agent.attach(GridSearchController(validationID=0, unique_fname=args.fname))
+    agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
     agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.01))
-    #agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
+    agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
     epoch_length=500,
-    controllers_to_disable=[1, 2, 3]))
+    controllers_to_disable=[1, 2, 3, 4]))
 elif args.network == 'AC':
     network = MyACNetwork(
         environment=env,
@@ -74,7 +74,7 @@ elif args.network == 'AC':
     agent = NeuralAgent(
         env,
         network,
-        train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5),
+        #train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5),
         replay_memory_size=min(args.epochs[0]*args.epochs[1] * 2, 500000),
         batch_size=32,
         random_state=rng)
@@ -82,11 +82,11 @@ elif args.network == 'AC':
     agent.attach(GridSearchController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
-    agent.attach(GaussianNoiseController(initial_std_dev=0.2, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
-    #agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=100000, e_min=0.01))
-    #agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
+    #agent.attach(GaussianNoiseController(initial_std_dev=0.2, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
+    agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.01))
+    agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
         epoch_length=500,
-        controllers_to_disable=[1, 2, 3]))
+        controllers_to_disable=[1, 2, 3, 4]))
 
 agent.run(n_epochs=args.epochs[0], epoch_length=args.epochs[1])
