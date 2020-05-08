@@ -240,10 +240,10 @@ Grid::Grid(int xsize, int ysize, int sources_num):xsize(xsize), ysize(ysize), oa
         cells[i] = new CellList[ysize];
         glucose[i] = new double[ysize];
         glucose_helper[i] = new double[ysize];
-        std::fill_n(glucose[i], ysize, 100.0);
+        std::fill_n(glucose[i], ysize, 100.0); // 1E-6 mg O'Neil
         oxygen[i] = new double[ysize];
         oxygen_helper[i] = new double[ysize];
-        std::fill_n(oxygen[i], ysize, 10000.0);
+        std::fill_n(oxygen[i], ysize, 9200.0); // 1 E-6 ml Jalalimanesh
         neigh_counts[i] = new int[ysize]();
     }
     sources = new SourceList();
@@ -674,7 +674,7 @@ void Grid::diffuse(double diff_factor) {
  * @param x2, y2 Coordinates of the second point
  * @return The Euclidean distance between the two points
  */
-double distance(int x1, int y1, int x2, int y2){
+double distance(int x1, int y1, double x2, double y2){
     int dist_x = x1 - x2;
     int dist_y = y1 - y2;
     return sqrt(dist_x * dist_x + dist_y * dist_y);
@@ -712,7 +712,7 @@ void Grid::irradiate(double dose, double radius, double center_x, double center_
                 CellNode * current = cells[i][j].head;
                 bool oar_dead = false;
                 while (current){
-                    double omf = /*(1.0 / 3.0) */ (oxygen[i][j] * 3.0 + 3.0) / (oxygen[i][j] + 3.0); // Include the effect of hypoxia
+                    double omf = (1.0 / 3.0) * (oxygen[i][j] * 3.0 + 3.0) / (oxygen[i][j] + 3.0); // Include the effect of hypoxia, Powathil formula
                     current -> cell -> radiate(conv(radius, dist) * multiplicator * omf);
                     if (!(current -> cell ->alive) && current->type == 'o'){
                         oar_dead = true;

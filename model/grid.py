@@ -3,7 +3,7 @@ import numpy as np
 import random
 import math
 import scipy.special
-
+import matplotlib.pyplot as plt
 
 sqrt_2_pi = math.sqrt(2*math.pi)
 
@@ -15,7 +15,7 @@ class Grid:
     one contains the glucose amount on each pixel and one contains the oxygen amount on each pixel.
     """
 
-    def __init__(self, xsize, ysize,  sources, oar=None):
+    def __init__(self, xsize, ysize,  sources, oar=None, dose_map=False):
         """Constructor of the Grid.
 
         Parameters :
@@ -52,6 +52,12 @@ class Grid:
 
         self.center_x = self.xsize // 2
         self.center_y = self.ysize // 2
+
+        if dose_map:
+            self.dose_map = np.zeros((xsize, ysize), dtype=float)
+        else:
+            self.dose_map = None
+
 
     def count_neigbors(self):
         """Compute the neigbour counts (the number of cells on neighbouring pixels) for each pixel"""
@@ -207,6 +213,8 @@ class Grid:
             for j in range(self.ysize):
                 dist = math.sqrt((x-i)**2 + (y-j)**2)
                 if dist <= 2*radius:
+                    if self.dose_map:
+                        self.dose_map[i, j] += conv(radius, dist)*multiplicator
                     for cell in self.cells[i, j]:
                         cell.radiate(conv(radius, dist)*multiplicator)
                 if any((isinstance(cell, OARCell) and not cell.alive) for cell in self.cells[i, j]):
@@ -274,6 +282,9 @@ class Grid:
                         sum_y += j
         self.center_x = sum_x / count
         self.center_y = sum_y / count
+
+    def show_dose_map(self):
+        return
 
 # std_dev = 0.4 cm = 1.6 cases
 denom = math.sqrt(2)*2.4

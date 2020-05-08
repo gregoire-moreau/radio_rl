@@ -16,7 +16,7 @@ def patch_type(patch):
 
 
 class CellEnvironment(Environment):
-    def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward):
+    def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward, dose_map=False):
         self.obs_type = obs_type
         self.resize = resize
         self.reward = reward
@@ -27,7 +27,7 @@ class CellEnvironment(Environment):
         HealthyCell.cell_count = 0
         CancerCell.cell_count = 0
         OARCell.cell_count = 0
-        self.grid = Grid(50, 50, glucose=True, oxygen=True, cells=True, border=False, sources=50, oar=(15, 15))
+        self.grid = Grid(50, 50, sources=100, dose_map=dose_map)
         self.controller = None
         self.init_hcell_count = HealthyCell.cell_count
         self.map = False
@@ -142,4 +142,6 @@ class CellEnvironment(Environment):
         print(test_data_set)
 
 
-
+    def show_dose_map(self):
+        if self.grid:
+            pass

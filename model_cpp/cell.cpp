@@ -5,27 +5,24 @@
 
 using namespace std;
 
-static float quiescent_glucose_level = 17.28; // Glucose consumed by cells in quiescent phase every hour
-//static float max_glucose_absorption = .72;
-static float average_glucose_absorption = .36; //
-static float average_cancer_glucose_absorption = .54;
-static int critical_neighbors = 8;
-static float critical_glucose_level = 6.48;
-static float alpha_tumor = 0.38;
-static float beta_tumor = 0.038;
+static float quiescent_glucose_level = 17.28; // 1.728 E-7 mg/cell O'Neil
+//static float max_glucose_absorption = .72; //
+static float average_glucose_absorption = .36; // 3.6E-9 mg/cell/hour O'Neil
+static float average_cancer_glucose_absorption = .54; // 5.4 E-9 mg/cell/hour O'Neil
+static int critical_neighbors = 9; // Density to get one cell per pixel, O'Neil
+static float critical_glucose_level = 6.48; //6.48 E-8 mg/cell O'Neil
+static float alpha_tumor = 0.3; // AlfaBeta Guerroro 2003
+static float beta_tumor = 0.03; // AlfaBeta Guerroro 2003
 static float alpha_norm_tissue = 0.03;
 static float beta_norm_tissue = 0.009;
 static float alpha_oar = 0.03;
 static float beta_oar = 0.009;
-//static float repair = 0.1;
-//static float bystander_rad = 0.05;
-//static float bystander_survival_probability = 0.95;
-static float average_oxygen_consumption = 20.0;
-//static float max_oxygen_consumption = 40.0;
-static float critical_oxygen_level = 360.0;
-static float quiescent_oxygen_level = 960.0;
+static float average_oxygen_consumption = 20.0; // 2.16 E-9 ml/cell/hour Jalalimanesh
+//static float max_oxygen_consumption = 40.0; // 4.32 E-9 ml/cell/hour Jalalimanesh
+static float critical_oxygen_level = 360.0; // 3.88 E-8 ml/cell/hour Jalalimanesh
+static float quiescent_oxygen_level = 960.0; // 10.37 E-8 ml/cell/hour Jalalimanesh
 
-default_random_engine generator (19);
+default_random_engine generator(19);
 normal_distribution<double> norm_distribution (1.0, 0.3333333);
 uniform_real_distribution<double> uni_distribution(0.0, 1.0);
 
@@ -205,7 +202,7 @@ void HealthyCell::radiate(double dose) {
  * @param dose Radiation dose in grays
  */
 void CancerCell::radiate(double dose) {
-    float radio_gamma = (stage == '1')? 0.5 : 0.25;
+    float radio_gamma = (stage == '1')? 0.5 : 1.0;
     double survival_probability = exp(radio_gamma *  (- (alpha_tumor * dose) - (beta_tumor * dose * dose)));
     if (uni_distribution(generator) > survival_probability){
         alive = false;
@@ -234,7 +231,7 @@ cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count)
         count--;
         return result;
     }
-    double factor = max(min(norm_distribution(generator), 2.0), 0.0);
+    double factor = max(min(norm_distribution(generator), 1.3333), 0.0);
     double glu_efficiency = factor * average_cancer_glucose_absorption;
     double oxy_efficiency = factor * average_oxygen_consumption;
     switch(stage){

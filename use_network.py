@@ -19,9 +19,6 @@ parser.add_argument('-e', '--epochs', nargs=2, type=int, default=[20, 2500])
 args = parser.parse_args()
 print(args)
 
-if args.canicula:
-    import os
-    os.environ['CUDA_VISIBLE_DEVICES'] = '2'  # GPU cluster
 if args.simulation == 'c++':
     from model_cpp.model_env_cpp import CellEnvironment
 elif args.simulation == 'py':
@@ -64,9 +61,8 @@ agent = NeuralAgent(
         random_state=rng)
 
 #agent.attach(bc.VerboseController())
-agent.attach(bc.InterleavedTestEpochController(0,1000))
 agent.setNetwork(args.fname)
 
-agent.run(1, 0)
+agent._runEpisode(100000)
 
 print("done")

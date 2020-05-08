@@ -116,12 +116,13 @@ Controller::~Controller() {
  * Refill the sources, cycle all the cells, diffuse the nutrients on the grid
  */
 void Controller::go() {
-    grid -> fill_sources(100, 4500);
+    grid -> fill_sources(130, 4500); //O'Neil, Jalalimanesh
     grid -> cycle_cells();
-    grid -> diffuse(0.3);
+    grid -> diffuse(0.5);
     tick++;
-    if(tick % 24 == 0) // Once a day, recompute the current center of the tumor (used for angiogenesis)
+    if(tick % 24 == 0){ // Once a day, recompute the current center of the tumor (used for angiogenesis)
         grid -> compute_center();
+    }
 }
 
 /**
