@@ -72,7 +72,7 @@ public:
     void compute_center();
 private:
     void change_neigh_counts(int x, int y, int val);
-    int rand_min(int x, int y);
+    int rand_min(int x, int y, int max);
     int rand_adj(int x, int y);
     int find_missing_oar(int x, int y);
     

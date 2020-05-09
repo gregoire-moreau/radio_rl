@@ -37,7 +37,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 100, 350, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 400)
             self.init_hcell_count = cppCellModel.HCellCount()
         self.obs_type = obs_type
         self.resize = resize
@@ -59,7 +59,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 338, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 400)
             self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
             self.verbose = False
@@ -108,14 +108,14 @@ class CellEnvironment(Environment):
                 if self.reward == 'oar':
                     return cppCellModel.OARCellCount() / self.init_oar_count
                 elif self.reward == 'dose':
-                    return min((cppCellModel.HCellCount() / self.init_hcell_count), 1.0) - dose / 100
+                    return min((cppCellModel.HCellCount() / self.init_hcell_count), 1.0) - dose / 50
                 else:
                     return 1
         else:
             if self.reward == 'dose' or self.reward == 'oar':
-                return - dose / 100
+                return - dose / 50
             elif self.reward == 'killed':
-                return (ccell_killed - 3 * hcell_lost)/500
+                return (ccell_killed - 3 * hcell_lost)/1000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
@@ -180,9 +180,11 @@ def tcp_test():
     count_failed = 0
     count_success = 0
     steps = []
+    counts = []
     for i in range(200):
         print(i)
         controller = cppCellModel.controller_constructor(50, 50, 100, 400)
+        counts.append(cppCellModel.HCellCount())
         for i in range(35):
             cppCellModel.irradiate(controller, 2)
             cppCellModel.go(controller, 24)
@@ -194,10 +196,12 @@ def tcp_test():
             count_failed += 1
         elif count == 0:
             count_success += 1
+        counts[-1] /= cppCellModel.HCellCount()
         cppCellModel.delete_controller(controller)
     print("Percentage of full recovs :", (100*count_success)/ 200)
     print("Percentage of almost recovs :", (100*(200 - count_failed))/ 200)
     print("Average dose in successes :", 2*sum(steps)/len(steps))
+    print(sum(counts) / len(counts))
 
 
 if __name__ == '__main__':
@@ -207,7 +211,7 @@ if __name__ == '__main__':
     matplotlib.use("TkAgg")
     plt.ion()
 
-    controller = cppCellModel.controller_constructor(50,50,100,0)
+    controller = cppCellModel.controller_constructor(50,50,100,350)
 
     fig, axs = plt.subplots(2,2, constrained_layout=True)
     fig.suptitle('Cell proliferation at t = 0')
@@ -231,9 +235,8 @@ if __name__ == '__main__':
     print(cppCellModel.CCellCount())
     for i in range(200):
         cppCellModel.go(controller, 12)
-        if i > 30 and i % 2 == 0:
+        if i % 2 == 0:
             cppCellModel.irradiate(controller, 2.0)
-        
         fig.suptitle('Cell proliferation at t = ' + str((i+1)*12))
         glucose_plot.imshow(cppCellModel.observeGlucose(controller))
         oxygen_plot.imshow(cppCellModel.observeOxygen(controller))

@@ -40,9 +40,14 @@ Controller::Controller(int hcells, int xsize, int ysize, int sources_num): xsize
     CancerCell::count = 0;
     grid = new Grid(xsize, ysize, sources_num);
     char stages[5] = {'1', 's', '2', 'm', 'q'};
-    for (int i = 0; i < hcells; i++){
-        Cell * new_cell = new HealthyCell(stages[rand() % 5]);
-        grid -> addCell(rand() % xsize, rand() % ysize, new_cell, 'h');
+    float prob = 100.0 * (float) hcells / (xsize * ysize);
+    for (int i = 0; i < xsize; i++){
+        for(int j = 0; j < ysize; j++){
+            if (rand() % 100 < prob){
+                Cell * new_cell = new HealthyCell(stages[rand() % 5]);
+                grid -> addCell(i, j, new_cell, 'h');
+            }
+        }
     }
     grid -> addCell(xsize / 2, ysize / 2, new CancerCell(stages[rand() % 4]), 'c');
 

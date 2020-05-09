@@ -11,10 +11,10 @@ static float average_glucose_absorption = .36; // 3.6E-9 mg/cell/hour O'Neil
 static float average_cancer_glucose_absorption = .54; // 5.4 E-9 mg/cell/hour O'Neil
 static int critical_neighbors = 9; // Density to get one cell per pixel, O'Neil
 static float critical_glucose_level = 6.48; //6.48 E-8 mg/cell O'Neil
-static float alpha_tumor = 0.3; // AlfaBeta Guerroro 2003
-static float beta_tumor = 0.03; // AlfaBeta Guerroro 2003
-static float alpha_norm_tissue = 0.03;
-static float beta_norm_tissue = 0.009;
+static float alpha_tumor = 0.3; // Powathil
+static float beta_tumor = 0.03; // Powathil
+static float alpha_norm_tissue = 0.3;
+static float beta_norm_tissue = 0.09;
 static float alpha_oar = 0.03;
 static float beta_oar = 0.009;
 static float average_oxygen_consumption = 20.0; // 2.16 E-9 ml/cell/hour Jalalimanesh
@@ -151,7 +151,7 @@ cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count
         case '1': //Gap 1
             result.glucose = glu_efficiency;
             result.oxygen = oxy_efficiency;
-            if (glucose < quiescent_glucose_level || neigh_count > critical_neighbors || oxygen < quiescent_oxygen_level){
+            if (glucose < quiescent_glucose_level || neigh_count >= critical_neighbors || oxygen < quiescent_oxygen_level){
                 age = 0;
                 stage = 'q';
             } else if(age >= 11) {
@@ -176,11 +176,14 @@ cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count
 void HealthyCell::radiate(double dose) {
     float radio_gamma = 0.0;
     switch (stage){
-        case '1':
-            radio_gamma = 0.5;
+        case '2':
+            radio_gamma = 1.25;
             break;
-        case 'q':
-            radio_gamma = 0.25;
+        case 'm':
+            radio_gamma = 1.25;
+            break;
+        case '1':
+            radio_gamma = 0.75;
             break;
         default:
             radio_gamma = 1.0;
@@ -202,11 +205,27 @@ void HealthyCell::radiate(double dose) {
  * @param dose Radiation dose in grays
  */
 void CancerCell::radiate(double dose) {
-    float radio_gamma = (stage == '1')? 0.5 : 1.0;
+    float radio_gamma = 0.0;
+    switch (stage){
+        case '2':
+            radio_gamma = 1.25;
+            break;
+        case 'm':
+            radio_gamma = 1.25;
+            break;
+        case '1':
+            radio_gamma = 0.75;
+            break;
+        default:
+            radio_gamma = 1.0;
+            break;
+    }
     double survival_probability = exp(radio_gamma *  (- (alpha_tumor * dose) - (beta_tumor * dose * dose)));
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;
+    } else {
+        age -= 18;
     }
 }
 

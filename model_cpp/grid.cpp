@@ -243,9 +243,21 @@ Grid::Grid(int xsize, int ysize, int sources_num):xsize(xsize), ysize(ysize), oa
         std::fill_n(glucose[i], ysize, 100.0); // 1E-6 mg O'Neil
         oxygen[i] = new double[ysize];
         oxygen_helper[i] = new double[ysize];
-        std::fill_n(oxygen[i], ysize, 9200.0); // 1 E-6 ml Jalalimanesh
+        std::fill_n(oxygen[i], ysize, 1000.0); // 1 E-6 ml Jalalimanesh
         neigh_counts[i] = new int[ysize]();
     }
+    for(int i = 0; i < xsize; i++){
+        neigh_counts[i][0] += 3;
+        neigh_counts[i][ysize - 1] += 3;
+    }
+    for(int i = 0; i < ysize; i++){
+        neigh_counts[0][i] += 3;
+        neigh_counts[xsize - 1][i] += 3;
+    }
+    neigh_counts[0][0] -= 1;
+    neigh_counts[0][ysize -1] -= 1;
+    neigh_counts[xsize - 1][0] -= 1;
+    neigh_counts[xsize - 1][ysize - 1] -= 1;
     sources = new SourceList();
     for (int i = 0; i < sources_num; i++){
         sources->add(rand() % xsize, rand() % ysize); // Set the sources at random locations on the grid
@@ -370,7 +382,7 @@ void Grid::fill_sources(double glu, double oxy) {
  * @return An integer corresponding to the new position (ysize * x + y)
  */
 int Grid::sourceMove(int x, int y){
-    if (rand() % 5000 < CancerCell::count){ // Move towards tumour center
+    if (rand() % 50000 < CancerCell::count){ // Move towards tumour center
         if (x < center_x)
             x++;
         else if (x > center_x)
@@ -397,16 +409,20 @@ void Grid::cycle_cells() {
         int j = x % ysize;
         CellNode * current = cells[i][j].head;
         while(current){ // Go through all cells on this pixel
-            cell_cycle_res result = current->cell->cycle(glucose[i][j], oxygen[i][j], neigh_counts[i][j]);
+            cell_cycle_res result = current->cell->cycle(glucose[i][j], oxygen[i][j], neigh_counts[i][j] + cells[i][j].size);
             glucose[i][j] -= result.glucose;
             oxygen[i][j] -= result.oxygen;
             if (result.new_cell == 'h'){ //New healthy cell
-                int downhill = rand_min(i, j);
-                toAdd -> add(new HealthyCell('1'), 'h', downhill / ysize, downhill % ysize);
+                int downhill = rand_min(i, j, 5);
+                if(downhill >= 0)
+                    toAdd -> add(new HealthyCell('1'), 'h', downhill / ysize, downhill % ysize);
+                else
+                    current -> cell -> sleep();
             }
             if (result.new_cell == 'c'){ // New cancer cell
                 int downhill = rand_adj(i, j);
-                toAdd -> add(new CancerCell('1'), 'c', downhill / ysize, downhill % ysize);
+                if(downhill >= 0)
+                    toAdd -> add(new CancerCell('1'), 'c', downhill / ysize, downhill % ysize);
             }
             if (result.new_cell == 'o'){ // New oar cell
                 int downhill = find_missing_oar(i, j);
@@ -453,7 +469,7 @@ void Grid::addToGrid(CellList * newCells){
  * @param y The y of the pixel around which we are searching
  * @return An integer corresponding to the pixel coordinates found (ysize * x + y)
  */
-int Grid::rand_min(int x, int y){
+int Grid::rand_min(int x, int y, int max){
     int counter = 0;
     int curr_min = 100000;
     int pos[8];
@@ -467,7 +483,10 @@ int Grid::rand_min(int x, int y){
     min_helper(x+1, y, curr_min, pos, counter);
     min_helper(x+1, y+1, curr_min, pos, counter);
 
-    return pos[rand() % counter];
+    if (curr_min < max)
+        return pos[rand() % counter];
+    else
+        return -1;
 }
 
 /**
@@ -705,6 +724,8 @@ void Grid::irradiate(double dose, double radius, double center_x, double center_
     if (dose == 0) // A dose of 0 is sometimes sent here to signify that the agent has chosen not to irradiate,
         return;
     double multiplicator = dose/conv(radius, 0); // Ensures that we have a max amplitude of dose
+    double oer_m = 3.0;
+    double k_m = 3.0;
     for (int i = 0; i < xsize; i++){
         for (int j = 0; j < ysize; j++){
             double dist = distance(i, j, center_x, center_y); //Distance of the pixel from the center
@@ -712,7 +733,7 @@ void Grid::irradiate(double dose, double radius, double center_x, double center_
                 CellNode * current = cells[i][j].head;
                 bool oar_dead = false;
                 while (current){
-                    double omf = (1.0 / 3.0) * (oxygen[i][j] * 3.0 + 3.0) / (oxygen[i][j] + 3.0); // Include the effect of hypoxia, Powathil formula
+                    double omf = (oxygen[i][j] / 100.0 * oer_m + k_m) / (oxygen[i][j] / 100.0 + k_m) / oer_m; // Include the effect of hypoxia, Powathil formula
                     current -> cell -> radiate(conv(radius, dist) * multiplicator * omf);
                     if (!(current -> cell ->alive) && current->type == 'o'){
                         oar_dead = true;
@@ -750,7 +771,9 @@ double Grid::tumor_radius(int center_x, int center_y){
             }
         }
     }
-    return dist;
+    if (dist < 3.0)
+        dist = 3.0;
+    return 1.1 * dist;
 }
 
 /**
@@ -800,7 +823,7 @@ double ** Grid::currentOxygen(){
 void Grid::irradiate(double dose){
     compute_center();
     double radius = tumor_radius(center_x, center_y);
-    irradiate(10, radius, 25, 25);
+    irradiate(dose, radius, center_x, center_y);
 }
 
 /**
