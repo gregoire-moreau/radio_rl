@@ -228,3 +228,11 @@ int main(){
     }
     delete controller;
 }
+
+double Controller::get_center_x(){
+    return grid -> get_center_x();
+}
+
+double Controller::get_center_y(){
+    return grid -> get_center_y();
+}

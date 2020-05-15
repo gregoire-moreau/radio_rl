@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import random
+import matplotlib.colors as mcol
 import cv2
+import math
 try:
     import cppCellModel
 except:
@@ -46,7 +48,28 @@ class CellEnvironment(Environment):
         self.tumor_radius = tumor_radius
         self.special_reward = special_reward
         self.center = center
+        self.dose_map = None
 
+    def get_tick(self):
+        return cppCellModel.controllerTick(self.controller_capsule)
+
+    def init_dose_map(self):
+        self.dose_map = np.zeros((50, 50), dtype=float)
+        self.dataset = [[], [], []]
+
+    def add_radiation(self, dose, radius, center_x, center_y):
+        if dose == 0:
+            return
+        multiplicator = dose / conv(radius, 0)
+        for x in range(50):
+            for y in range(50):
+                dist = math.sqrt((center_x - x)**2 + (center_y - y)**2)
+                self.dose_map[x, y] += conv(radius, dist) * multiplicator
+
+    def show_dose_map(self):
+        pos = plt.imshow(self.dose_map, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
+        plt.colorbar(pos)
+        plt.show()
 
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
@@ -65,16 +88,18 @@ class CellEnvironment(Environment):
             self.verbose = False
         else :
             self.verbose = True
+        self.total_dose = 0
         return self.observe()
     
     def act(self, action):
         dose = action / 2 if self.action_type == 'DQN' else action[0] * 4 + 1
         rest = 24 if self.action_type == 'DQN' else int(round(action[1] * 60 + 12))
-
+        if self.dose_map is not None:
+            tumor_radius = cppCellModel.tumor_radius(self.controller_capsule)
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
         pre_oar_cell = cppCellModel.OARCellCount()
-
+        self.total_dose += dose
         if self.center:
             if self.tumor_radius:
                 cppCellModel.irradiate_center_radius(self.controller_capsule, dose, action[2] * 25)
@@ -85,11 +110,18 @@ class CellEnvironment(Environment):
                 cppCellModel.irradiate_radius(self.controller_capsule, dose, action[2] * 25)
             else:
                 cppCellModel.irradiate(self.controller_capsule, dose)
+
+        if self.dose_map is not None:
+            self.add_radiation(dose, tumor_radius, cppCellModel.get_center_x(self.controller_capsule), cppCellModel.get_center_y(self.controller_capsule))
+            self.dataset[0].append(cppCellModel.controllerTick(self.controller_capsule))
+            self.dataset[1].append((pre_ccell, cppCellModel.CCellCount()))
+            self.dataset[2].append(dose)
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         post_oar_cell = cppCellModel.OARCellCount()
-        
+
+
         if self.verbose:
             if self.reward != 'oar':
                 print("Radiation dose :", dose, "Gy ",
@@ -176,6 +208,11 @@ def transform(head):
     return to_ret
 
 
+def conv(rad, x):
+    denom = 5.6568
+    return math.erf((rad - x) / denom) - math.erf((-rad - x) / denom)
+
+
 def tcp_test():
     count_failed = 0
     count_success = 0
@@ -205,7 +242,7 @@ def tcp_test():
 
 
 if __name__ == '__main__':
-    #tcp_test()
+    tcp_test()
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use("TkAgg")
@@ -247,3 +284,4 @@ if __name__ == '__main__':
         plt.pause(0.02)
 
     cppCellModel.delete_controller(controller)
+

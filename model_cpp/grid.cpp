@@ -851,3 +851,11 @@ void Grid::compute_center(){
     center_x /= count;
     center_y /= count;
 }
+
+double Grid::get_center_x(){
+    return center_x;
+}
+
+double Grid::get_center_y(){
+    return center_y;
+}

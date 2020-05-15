@@ -27,6 +27,8 @@ public:
     double tumor_radius();
     int xsize, ysize;
     int tick;
+    double get_center_x();
+    double get_center_y();
 private:
     bool self_grid;
     Grid * grid;

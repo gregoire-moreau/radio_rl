@@ -185,6 +185,26 @@ PyObject* tumor_radius(PyObject* self, PyObject* args){
     return Py_BuildValue("f", controller -> tumor_radius());
 }
 
+PyObject* get_center_x(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    PyArg_ParseTuple(args, "O",
+                     &controllerCapsule);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+
+    return Py_BuildValue("f", controller -> get_center_x());
+}
+
+PyObject* get_center_y(PyObject* self, PyObject* args){
+    PyObject* controllerCapsule;
+    PyArg_ParseTuple(args, "O",
+                     &controllerCapsule);
+
+    Controller* controller = (Controller*)PyCapsule_GetPointer(controllerCapsule, "ControllerPtr");
+
+    return Py_BuildValue("f", controller -> get_center_y());
+}
+
 PyObject* observeGrid(PyObject* self, PyObject* args){
     PyObject* controllerCapsule;
     int ** out_dataptr;
@@ -431,7 +451,12 @@ PyMethodDef cppCellModelFunctions[] =
      {"tumor_radius",
       tumor_radius, METH_VARARGS,
      "Observation of oxygen"},
-
+     {"get_center_x",
+      get_center_x, METH_VARARGS,
+     "Observation of oxygen"},
+     {"get_center_y",
+      get_center_y, METH_VARARGS,
+     "Observation of oxygen"},
      {"controllerTick",
       controllerTick, METH_VARARGS,
      "Number of ticks for current controller"},
