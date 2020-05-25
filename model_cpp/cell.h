@@ -1,7 +1,3 @@
-//
-// Created by grego on 08/01/2020.
-//
-
 #ifndef RADIO_RL_CELL_H
 #define RADIO_RL_CELL_H
 
@@ -14,6 +10,7 @@ typedef struct {
 class Cell {
 protected:
     short age;
+    short repair;
     char stage;
 public:
     bool alive;

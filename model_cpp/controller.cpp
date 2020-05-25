@@ -123,7 +123,7 @@ Controller::~Controller() {
 void Controller::go() {
     grid -> fill_sources(130, 4500); //O'Neil, Jalalimanesh
     grid -> cycle_cells();
-    grid -> diffuse(0.5);
+    grid -> diffuse(0.2);
     tick++;
     if(tick % 24 == 0){ // Once a day, recompute the current center of the tumor (used for angiogenesis)
         grid -> compute_center();

@@ -14,9 +14,10 @@ static float critical_glucose_level = 6.48; //6.48 E-8 mg/cell O'Neil
 static float alpha_tumor = 0.3; // Powathil
 static float beta_tumor = 0.03; // Powathil
 static float alpha_norm_tissue = 0.3;
-static float beta_norm_tissue = 0.09;
+static float beta_norm_tissue = 0.03;
 static float alpha_oar = 0.03;
 static float beta_oar = 0.009;
+static int repair_time = 9;
 static float average_oxygen_consumption = 20.0; // 2.16 E-9 ml/cell/hour Jalalimanesh
 //static float max_oxygen_consumption = 40.0; // 4.32 E-9 ml/cell/hour Jalalimanesh
 static float critical_oxygen_level = 360.0; // 3.88 E-8 ml/cell/hour Jalalimanesh
@@ -37,7 +38,7 @@ int OARCell::worth     = 5;
  *
  * @param stage Current stage of the cell in the cell cycle
  */
-Cell::Cell(char stage):age(0), stage(stage), alive(true)  {}
+Cell::Cell(char stage):age(0), stage(stage), alive(true), repair(0)  {}
 
 /**
  * Sets a cell's stage to "quiescent" and resets its time counter
@@ -110,7 +111,10 @@ OARCell::OARCell(char stage) : Cell(stage) {
  */
 cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count) {
     cell_cycle_res result = {.0,.0,'\0'};
-    age++;
+    if(repair == 0)
+        age++;
+    else
+        repair--;
     if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) { //Check if the cell will survive this hour
         alive = false;
         count--;
@@ -126,11 +130,13 @@ cell_cycle_res HealthyCell::cycle(double glucose, double oxygen, int neigh_count
             }
             break;
         case 'm': //Mitosis
-            stage = '1';
-            age = 0;
+            if (age == 1){
+                stage = '1';
+                age = 0;
+                result.new_cell = 'h';
+            }
             result.glucose = glu_efficiency;
             result.oxygen = oxy_efficiency;
-            result.new_cell = 'h';
             break;
         case '2': //Gap 2
             result.glucose = glu_efficiency;
@@ -183,6 +189,12 @@ void HealthyCell::radiate(double dose) {
             radio_gamma = 1.25;
             break;
         case '1':
+            radio_gamma = 1.0;
+            break;
+        case 'q':
+            radio_gamma = 0.75;
+            break;
+        case 's':
             radio_gamma = 0.75;
             break;
         default:
@@ -193,6 +205,8 @@ void HealthyCell::radiate(double dose) {
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;
+    } else {
+        repair = repair_time;
     }
 }
 
@@ -214,6 +228,9 @@ void CancerCell::radiate(double dose) {
             radio_gamma = 1.25;
             break;
         case '1':
+            radio_gamma = 1.0;
+            break;
+        case 's':
             radio_gamma = 0.75;
             break;
         default:
@@ -225,7 +242,7 @@ void CancerCell::radiate(double dose) {
         alive = false;
         count--;
     } else {
-        age -= 18;
+        repair = repair_time;
     }
 }
 
@@ -244,7 +261,10 @@ void CancerCell::radiate(double dose) {
  */
 cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count) {
     cell_cycle_res result = {.0, .0, '\0'};
-    age++;
+    if(repair == 0)
+        age++;
+    else
+        repair--;
     if (glucose < critical_glucose_level || oxygen < critical_oxygen_level) {
         alive = false;
         count--;
@@ -255,11 +275,13 @@ cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count)
     double oxy_efficiency = factor * average_oxygen_consumption;
     switch(stage){
         case 'm': //Mitosis
-            stage = '1';
-            age = 0;
+            if(age == 1){
+                stage = '1';
+                age = 0;
+                result.new_cell = 'c';
+            }
             result.glucose = glu_efficiency;
             result.oxygen = oxy_efficiency;
-            result.new_cell = 'c';
             break;
         case '2': //Gap 2
             result.glucose = glu_efficiency;

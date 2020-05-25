@@ -79,7 +79,7 @@ elif args.network == 'AC':
         batch_size=32,
         random_state=rng)
     agent.setDiscountFactor(0.95)
-    agent.attach(GridSearchController(validationID=0, unique_fname=args.fname))
+    agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
     #agent.attach(GaussianNoiseController(initial_std_dev=0.2, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))

@@ -39,7 +39,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 100, 350, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 400)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
             self.init_hcell_count = cppCellModel.HCellCount()
         self.obs_type = obs_type
         self.resize = resize
@@ -82,7 +82,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 338, x1, x2, y1, y2)
             self.init_oar_count = cppCellModel.OARCellCount()
         else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 400)
+            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
             self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
             self.verbose = False
@@ -209,18 +209,18 @@ def transform(head):
 
 
 def conv(rad, x):
-    denom = 5.6568
+    #denom = 5.6568
     return math.erf((rad - x) / denom) - math.erf((-rad - x) / denom)
 
 
-def tcp_test():
+def tcp_test(num):
     count_failed = 0
     count_success = 0
     steps = []
     counts = []
-    for i in range(200):
+    for i in range(num):
         print(i)
-        controller = cppCellModel.controller_constructor(50, 50, 100, 400)
+        controller = cppCellModel.controller_constructor(50, 50, 100, 350)
         counts.append(cppCellModel.HCellCount())
         for i in range(35):
             cppCellModel.irradiate(controller, 2)
@@ -235,14 +235,14 @@ def tcp_test():
             count_success += 1
         counts[-1] /= cppCellModel.HCellCount()
         cppCellModel.delete_controller(controller)
-    print("Percentage of full recovs :", (100*count_success)/ 200)
-    print("Percentage of almost recovs :", (100*(200 - count_failed))/ 200)
+    print("Percentage of full recovs :", (100*count_success)/ num)
+    print("Percentage of almost recovs :", (100*(num - count_failed))/ num)
     print("Average dose in successes :", 2*sum(steps)/len(steps))
     print(sum(counts) / len(counts))
 
 
 if __name__ == '__main__':
-    tcp_test()
+    tcp_test(200)
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use("TkAgg")

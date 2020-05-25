@@ -708,7 +708,7 @@ double distance(int x1, int y1, double x2, double y2){
  * @return The Euclidean distance between the two points
  */
 double conv(double rad, double x){
-    double denom = 5.6568;//sqrt(2) * 4
+    double denom = 3.39411;//sqrt(2) * 4
     return erf((rad - x)/denom) - erf((-rad - x) / denom);
 }
 
@@ -773,7 +773,7 @@ double Grid::tumor_radius(int center_x, int center_y){
     }
     if (dist < 3.0)
         dist = 3.0;
-    return 1.1 * dist;
+    return dist * 1.1;
 }
 
 /**

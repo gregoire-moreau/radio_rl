@@ -48,7 +48,7 @@ class EmpiricalTreatmentAgent():
                 i += 1
             else:
                 env.act(0)
-            
+
 
 
 '''
