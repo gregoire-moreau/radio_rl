@@ -13,7 +13,7 @@ static int critical_neighbors = 9; // Density to get one cell per pixel, O'Neil
 static float critical_glucose_level = 6.48; //6.48 E-8 mg/cell O'Neil
 static float alpha_tumor = 0.3; // Powathil
 static float beta_tumor = 0.03; // Powathil
-static float alpha_norm_tissue = 0.3;
+static float alpha_norm_tissue = 0.15;
 static float beta_norm_tissue = 0.03;
 static float alpha_oar = 0.03;
 static float beta_oar = 0.009;
@@ -205,8 +205,8 @@ void HealthyCell::radiate(double dose) {
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;
-    } else {
-        repair = repair_time;
+    } else if (dose > 0.5){
+        repair += repair_time;
     }
 }
 
@@ -241,8 +241,8 @@ void CancerCell::radiate(double dose) {
     if (uni_distribution(generator) > survival_probability){
         alive = false;
         count--;
-    } else {
-        repair = repair_time;
+    } else if (dose > 0.5){
+        repair += repair_time;
     }
 }
 
@@ -270,7 +270,7 @@ cell_cycle_res CancerCell::cycle(double glucose, double oxygen, int neigh_count)
         count--;
         return result;
     }
-    double factor = max(min(norm_distribution(generator), 1.3333), 0.0);
+    double factor = max(min(norm_distribution(generator), 2.0), 0.0);
     double glu_efficiency = factor * average_cancer_glucose_absorption;
     double oxy_efficiency = factor * average_oxygen_consumption;
     switch(stage){

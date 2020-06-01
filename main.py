@@ -62,7 +62,7 @@ if args.network == 'DQN':
     agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.01))
     agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
-    epoch_length=500,
+    epoch_length=1000,
     controllers_to_disable=[1, 2, 3, 4]))
 elif args.network == 'AC':
     network = MyACNetwork(
@@ -86,7 +86,7 @@ elif args.network == 'AC':
     agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.01))
     agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
-        epoch_length=500,
+        epoch_length=1000,
         controllers_to_disable=[1, 2, 3, 4]))
 
 agent.run(n_epochs=args.epochs[0], epoch_length=args.epochs[1])
