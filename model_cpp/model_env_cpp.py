@@ -56,6 +56,8 @@ class CellEnvironment(Environment):
     def init_dose_map(self):
         self.dose_map = np.zeros((50, 50), dtype=float)
         self.dataset = [[], [], []]
+        self.dose_maps = []
+        self.tumor_images = []
 
     def add_radiation(self, dose, radius, center_x, center_y):
         if dose == 0:
@@ -89,6 +91,11 @@ class CellEnvironment(Environment):
         else :
             self.verbose = True
         self.total_dose = 0
+        self.radiation_h_killed = 0
+        if self.dose_map is not None:
+            self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
+            self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350,
+                                      cppCellModel.observeType(self.controller_capsule)))
         return self.observe()
     
     def act(self, action):
@@ -110,12 +117,14 @@ class CellEnvironment(Environment):
                 cppCellModel.irradiate_radius(self.controller_capsule, dose, action[2] * 25)
             else:
                 cppCellModel.irradiate(self.controller_capsule, dose)
-
+        self.radiation_h_killed += (pre_hcell - cppCellModel.HCellCount())
         if self.dose_map is not None:
             self.add_radiation(dose, tumor_radius, cppCellModel.get_center_x(self.controller_capsule), cppCellModel.get_center_y(self.controller_capsule))
-            self.dataset[0].append(cppCellModel.controllerTick(self.controller_capsule))
+            self.dataset[0].append(cppCellModel.controllerTick(self.controller_capsule) - 350)
             self.dataset[1].append((pre_ccell, cppCellModel.CCellCount()))
             self.dataset[2].append(dose)
+            self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
+            self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeType(self.controller_capsule)))
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
@@ -209,7 +218,7 @@ def transform(head):
 
 
 def conv(rad, x):
-    #denom = 5.6568
+    denom = 3.39411
     return math.erf((rad - x) / denom) - math.erf((-rad - x) / denom)
 
 
@@ -241,8 +250,17 @@ def tcp_test(num):
     print(sum(counts) / len(counts))
 
 
+def test():
+    for i in range(5):
+        controller = cppCellModel.controller_constructor(50, 50, 100, 350)
+        cppCellModel.irradiate(controller, 2)
+        cppCellModel.go(controller, 24)
+        print(cppCellModel.CCellCount())
+        cppCellModel.delete_controller(controller)
+
 if __name__ == '__main__':
-    tcp_test(200)
+    test()
+    tcp_test(50)
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use("TkAgg")

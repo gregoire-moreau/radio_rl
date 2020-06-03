@@ -20,11 +20,12 @@ args = parser.parse_args()
 print(args)
 
 if args.simulation == 'c++':
-    from model_cpp.model_env_cpp import CellEnvironment
+    from model_cpp.model_env_cpp import CellEnvironment, transform
 elif args.simulation == 'py':
     from cell_environment import CellEnvironment
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcol
 import numpy as np
 from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
@@ -42,8 +43,11 @@ class EmpiricalTreatmentAgent():
     def _runEpisode(self, steps):
         i = 0
         env.reset(-1)
+        env.act(8)
+        env.act(8)
+        env.act(8)
         while(not env.inTerminalState()):
-            if i == 35:
+            if i < 35:
                 env.act(4)
                 i += 1
             else:
@@ -84,22 +88,56 @@ agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
+avg_h_cell_killed = 0
 k = 2
 for i in range(k):
     print(i)
     agent._runEpisode(100000)
     if env.end_type == 'W':
         count += 1
-        length_success += env.get_tick() - 400
+        length_success += env.get_tick() - 350
     avg_rad += env.total_dose
+    avg_h_cell_killed += env.radiation_h_killed
 
 print("TCP = ", count / k)
 print("Avg rad", avg_rad / k)
 print("Avg length in successes", length_success / count)
+print("Avg hcells killed", avg_h_cell_killed / k)
 env.init_dose_map()
 agent._runEpisode(100000)
-env.show_dose_map()
+#env.show_dose_map()
 print("done")
+
+
+fig, axs = plt.subplots(4, 2, constrained_layout=True)
+axs[0][0].set_title("Tumor at time:"+ str(env.tumor_images[0][0]))
+axs[0][0].imshow(transform(env.tumor_images[0][1]))
+axs[0][0].set_axis_off()
+axs[0][1].set_title("Dose map at time: "+str(env.dose_maps[0][0]))
+p = axs[0][1].imshow(env.dose_maps[0][1], vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
+#fig.colorbar(p, ax=axs[0][1])
+axs[0][1].set_axis_off()
+
+axs[1][0].set_title("Tumor at time:"+ str(env.tumor_images[int(len(env.tumor_images) / 3)][0]))
+axs[1][0].imshow(transform(env.tumor_images[int(len(env.tumor_images) / 3)][1]))
+axs[1][0].set_axis_off()
+axs[1][1].set_title("Dose map at time: "+str(env.dose_maps[int(len(env.tumor_images) / 3)][0]))
+axs[1][1].imshow(env.dose_maps[int(len(env.tumor_images) / 3)][1], vmin=0, vmax=70,  cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
+axs[1][1].set_axis_off()
+
+axs[2][0].set_title("Tumor at time:"+ str(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0]))
+axs[2][0].imshow(transform(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1]))
+axs[2][0].set_axis_off()
+axs[2][1].set_title("Dose map at time: "+str(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0]))
+axs[2][1].imshow(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
+axs[2][1].set_axis_off()
+
+axs[3][0].set_title("Tumor at time:"+ str(env.tumor_images[-1][0]))
+axs[3][0].imshow(transform(env.tumor_images[-1][1]))
+axs[3][0].set_axis_off()
+axs[3][1].set_title("Dose map at time: "+str(env.dose_maps[-1][0]))
+axs[3][1].imshow(env.dose_maps[-1][1], vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
+axs[3][1].set_axis_off()
 
 ticks, counts, doses = env.dataset
 fig, ax1 = plt.subplots()
@@ -107,7 +145,8 @@ fig, ax1 = plt.subplots()
 color = 'tab:red'
 ax1.set_xlabel('time (h)')
 ax1.set_ylabel('Dose (Gy)', color=color)
-ax1.plot(ticks, doses, color=color)
+ax1.set_ylim(0, 5)
+ax1.plot(ticks, doses, color=color, marker='o')
 ax1.tick_params(axis='y', labelcolor=color)
 d_ticks = []
 d_counts = []
@@ -116,7 +155,8 @@ for i in range(len(ticks)):
     d_counts += [counts[i][0], counts[i][1]]
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 color = 'tab:blue'
-ax2.set_ylabel('Number of cancer cells', color=color)  # we already handled the x-label with ax1
+ax2.set_ylabel('Number of cancer cells (log)', color=color)  # we already handled the x-label with ax1
+ax2.set_ybound(0, 10000)
 ax2.plot(d_ticks, d_counts, color=color)
 ax2.set_yscale('log')
 ax2.tick_params(axis='y', labelcolor=color)
