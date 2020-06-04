@@ -79,7 +79,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
             self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
-            self.verbose = True
+            self.verbose = False
         else :
             self.verbose = True
         self.total_dose = 0
