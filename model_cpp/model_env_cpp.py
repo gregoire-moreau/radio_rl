@@ -81,7 +81,7 @@ class CellEnvironment(Environment):
         if mode == -1:
             self.verbose = False
         else :
-            self.verbose = False
+            self.verbose = True
         self.total_dose = 0
         self.radiation_h_killed = 0
         if self.dose_map is not None:
