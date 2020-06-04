@@ -81,14 +81,13 @@ class CellEnvironment(Environment):
         if mode == -1:
             self.verbose = False
         else :
-            self.verbose = True
+            self.verbose = False
         self.total_dose = 0
         self.radiation_h_killed = 0
         if self.dose_map is not None:
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
             self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350,
                                       cppCellModel.observeType(self.controller_capsule)))
-        print(cppCellModel.CCellCount())
         return self.observe()
     
     def act(self, action):
