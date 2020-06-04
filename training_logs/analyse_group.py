@@ -2,8 +2,8 @@ import os
 import re
 import matplotlib.pyplot as plt
 
-PATH = "st_types_dose/st_types_dose"
-filter = r'dose_0.005-(.*)'
+PATH = "stlra/stlra"
+filter = r'types-dose-0.005-(.*)'
 
 
 names = []

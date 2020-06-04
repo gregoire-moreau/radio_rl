@@ -1,6 +1,7 @@
 #!/bin/bash
 
-mkdir -p training_logs/st_types_dose
+mkdir -p training_logs/st_types_killed
 
-#types dose
-./main.py -n DQN --obs_type types -r dose --fname dqn_dose_ult -e 200 2500 -s c++ -l 0.005 .75 4 > training_logs/st_types_dose/dose_0.005-.75-4
+#types killed
+./main.py -n DQN --obs_type types -r killed  -e 100 2500 -s c++ -l 0.01 .75 4 --no_special --fname dqn_killed_no > training_logs/st_types_killed/killed-.75-4-no
+./main.py -n DQN --obs_type types -r killed  -e 100 2500 -s c++ -l 0.01 .75 4 --fname dqn_killed > training_logs/st_types_killed/killed-.75-4

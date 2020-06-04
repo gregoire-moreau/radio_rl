@@ -146,18 +146,10 @@ void CellList::deleteDeadAndSort(){
 int CellList::CellTypeSum(){
     if (size == 0)
         return 0;
-    int to_ret = 0;
-    CellNode * current = head;
-    while(current){
-        if (current -> type == 'h')
-            to_ret++;
-        else if (current -> type == 'c')
-            to_ret--;
-        else if (current -> type == 'o')
-            to_ret += OARCell::worth;
-        current = current -> next;
-    }
-    return to_ret;
+    if(ccell_count > 0)
+        return -ccell_count;
+    else
+        return size;
 }
 
 
@@ -712,6 +704,17 @@ double conv(double rad, double x){
     return erf((rad - x)/denom) - erf((-rad - x) / denom);
 }
 
+
+
+double get_multiplicator(double dose, double radius){
+    return dose / conv(14, 0);
+}
+
+double scale(double radius, double x, double multiplicator){
+    return multiplicator * conv(14.0, x * 10.0 / radius);
+}
+
+
 /**
  * Irradiate cells around a center with a specific dose and radius
  *
@@ -723,18 +726,18 @@ double conv(double rad, double x){
 void Grid::irradiate(double dose, double radius, double center_x, double center_y){
     if (dose == 0) // A dose of 0 is sometimes sent here to signify that the agent has chosen not to irradiate,
         return;
-    double multiplicator = dose/conv(radius, 0); // Ensures that we have a max amplitude of dose
+    double multiplicator = get_multiplicator(dose, radius); // Ensures that we have a max amplitude of dose
     double oer_m = 3.0;
     double k_m = 3.0;
     for (int i = 0; i < xsize; i++){
         for (int j = 0; j < ysize; j++){
             double dist = distance(i, j, center_x, center_y); //Distance of the pixel from the center
-            if (dist <= 2*radius && cells[i][j].size){ //If we are more than two radii away, the radiation is negligible
+            if (cells[i][j].size){ //If there are cells on the pixel
                 CellNode * current = cells[i][j].head;
                 bool oar_dead = false;
                 while (current){
                     double omf = (oxygen[i][j] / 100.0 * oer_m + k_m) / (oxygen[i][j] / 100.0 + k_m) / oer_m; // Include the effect of hypoxia, Powathil formula
-                    current -> cell -> radiate(conv(radius, dist) * multiplicator * omf);
+                    current -> cell -> radiate(scale(radius, dist, multiplicator) * omf);
                     if (!(current -> cell ->alive) && current->type == 'o'){
                         oar_dead = true;
                     }
@@ -773,7 +776,7 @@ double Grid::tumor_radius(int center_x, int center_y){
     }
     if (dist < 3.0)
         dist = 3.0;
-    return dist * 1.1;
+    return dist;
 }
 
 /**

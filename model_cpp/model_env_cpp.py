@@ -30,17 +30,8 @@ class CellEnvironment(Environment):
         special_reward : True if the agent should receive a special reward at the end of the episode.
         center : True if the irradiation should be centered on the center of the grid
         """
-        if reward == 'oar':
-            x1 = random.randint(1, 10)
-            x2 = random.randint(11, 20)
-            y1 = random.randint(1, 10)
-            y2 = random.randint(11, 20)
-            print("Start with oar x1=", x1, "x2=", x2, "y1=", y1, "y2=", y2)
-            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 100, 350, x1, x2, y1, y2)
-            self.init_oar_count = cppCellModel.OARCellCount()
-        else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
-            self.init_hcell_count = cppCellModel.HCellCount()
+        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
+        self.init_hcell_count = cppCellModel.HCellCount()
         self.obs_type = obs_type
         self.resize = resize
         self.reward = reward
@@ -59,14 +50,15 @@ class CellEnvironment(Environment):
         self.dose_maps = []
         self.tumor_images = []
 
+
     def add_radiation(self, dose, radius, center_x, center_y):
         if dose == 0:
             return
-        multiplicator = dose / conv(radius, 0)
+        multiplicator = get_multiplicator(dose, radius)
         for x in range(50):
             for y in range(50):
                 dist = math.sqrt((center_x - x)**2 + (center_y - y)**2)
-                self.dose_map[x, y] += conv(radius, dist) * multiplicator
+                self.dose_map[x, y] += scale(radius, x, multiplicator)
 
     def show_dose_map(self):
         pos = plt.imshow(self.dose_map, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
@@ -105,18 +97,8 @@ class CellEnvironment(Environment):
             tumor_radius = cppCellModel.tumor_radius(self.controller_capsule)
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
-        pre_oar_cell = cppCellModel.OARCellCount()
         self.total_dose += dose
-        if self.center:
-            if self.tumor_radius:
-                cppCellModel.irradiate_center_radius(self.controller_capsule, dose, action[2] * 25)
-            else:
-                cppCellModel.irradiate_center(self.controller_capsule, dose)
-        else:
-            if self.tumor_radius:
-                cppCellModel.irradiate_radius(self.controller_capsule, dose, action[2] * 25)
-            else:
-                cppCellModel.irradiate(self.controller_capsule, dose)
+        cppCellModel.irradiate(self.controller_capsule, dose)
         self.radiation_h_killed += (pre_hcell - cppCellModel.HCellCount())
         if self.dose_map is not None:
             self.add_radiation(dose, tumor_radius, cppCellModel.get_center_x(self.controller_capsule), cppCellModel.get_center_y(self.controller_capsule))
@@ -128,35 +110,27 @@ class CellEnvironment(Environment):
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
-        post_oar_cell = cppCellModel.OARCellCount()
 
+        reward = self.adjust_reward(dose, post_ccell - pre_ccell, post_hcell - pre_hcell)
 
         if self.verbose:
-            if self.reward != 'oar':
-                print("Radiation dose :", dose, "Gy ",
-                "remaining :", post_ccell,  "time =", rest)
-            else:
-                print("Radiation dose :", dose, "Gy ",
-                      "remaining :", post_ccell, "time =", rest, "radius =", cppCellModel.tumor_radius(self.controller_capsule))
-        
-        return self.adjust_reward(dose, post_ccell - pre_ccell, post_hcell - pre_hcell, post_oar_cell - pre_oar_cell)
+                print("Radiation dose :", dose, "Gy ", "remaining :", post_ccell,  "time =", rest, "reward=", reward)
+        return reward
 
-    def adjust_reward(self, dose, ccell_killed, hcell_lost, oar_lost): 
+    def adjust_reward(self, dose, ccell_killed, hcells_lost):
         if self.special_reward and self.inTerminalState():
             if self.end_type == "L" or self.end_type == "T":
                 return -1
             else:
-                if self.reward == 'oar':
-                    return cppCellModel.OARCellCount() / self.init_oar_count
-                elif self.reward == 'dose':
+                if self.reward == 'dose':
                     return min((cppCellModel.HCellCount() / self.init_hcell_count), 1.0) - dose / 50
                 else:
-                    return 1
+                    return 1 - (5 * hcells_lost/25000)
         else:
             if self.reward == 'dose' or self.reward == 'oar':
                 return - dose / 50
             elif self.reward == 'killed':
-                return (ccell_killed - 3 * hcell_lost)/50000
+                return (ccell_killed - 3 * hcells_lost)/25000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
@@ -218,8 +192,16 @@ def transform(head):
 
 
 def conv(rad, x):
-    denom = 3.39411
-    return math.erf((rad - x) / denom) - math.erf((-rad - x) / denom)
+    denom = 3.39411 # //sqrt(2) * 2.4
+    return math.erf((rad - x)/denom) - math.erf((-rad - x) / denom)
+
+
+def get_multiplicator(dose, radius):
+    return dose / conv(14, 0)
+
+
+def scale(radius, x, multiplicator):
+    return multiplicator * conv(14, x * 10 / radius)
 
 
 def tcp_test(num):
@@ -259,8 +241,7 @@ def test():
         cppCellModel.delete_controller(controller)
 
 if __name__ == '__main__':
-    test()
-    tcp_test(50)
+    tcp_test(100)
     import matplotlib.pyplot as plt
     import matplotlib
     matplotlib.use("TkAgg")
