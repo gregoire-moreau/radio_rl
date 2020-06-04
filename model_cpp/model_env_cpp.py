@@ -79,7 +79,7 @@ class CellEnvironment(Environment):
             self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
             self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
-            self.verbose = False
+            self.verbose = True
         else :
             self.verbose = True
         self.total_dose = 0
@@ -88,6 +88,7 @@ class CellEnvironment(Environment):
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
             self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350,
                                       cppCellModel.observeType(self.controller_capsule)))
+        print(cppCellModel.CCellCount())
         return self.observe()
     
     def act(self, action):
@@ -170,7 +171,7 @@ class CellEnvironment(Environment):
 
     def observe(self):
         if self.obs_type == 'types':
-            cells = (np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32) + 10.0) / 2.0
+            cells = (np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32) + 50.0) / 100.0
         else:
             cells = (np.array(cppCellModel.observeType(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
         if self.resize:
