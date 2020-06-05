@@ -2,8 +2,8 @@ import os
 import re
 import matplotlib.pyplot as plt
 
-PATH = "stlra/stlra"
-filter = r'types-dose-0.005-(.*)'
+PATH = "ca_killed_ilr/ca_killed_ilr"
+filter = r'killed-(.*)'
 
 
 names = []

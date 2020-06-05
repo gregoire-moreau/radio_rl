@@ -130,7 +130,7 @@ class CellEnvironment(Environment):
             if self.reward == 'dose' or self.reward == 'oar':
                 return - dose / 50
             elif self.reward == 'killed':
-                return (ccell_killed - 3 * hcells_lost)/25000
+                return (ccell_killed - 3 * hcells_lost)/50000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
