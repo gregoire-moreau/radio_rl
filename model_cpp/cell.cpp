@@ -206,7 +206,7 @@ void HealthyCell::radiate(double dose) {
         alive = false;
         count--;
     } else if (dose > 0.5){
-        repair += repair_time;
+        repair += (int) round(2.0 * uni_distribution(generator) * (double) repair_time );
     }
 }
 
@@ -242,7 +242,7 @@ void CancerCell::radiate(double dose) {
         alive = false;
         count--;
     } else if (dose > 0.5){
-        repair += repair_time;
+        repair += (int) round(2.0 * uni_distribution(generator) * (double) repair_time );
     }
 }
 

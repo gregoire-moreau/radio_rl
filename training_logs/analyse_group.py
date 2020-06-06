@@ -2,8 +2,8 @@ import os
 import re
 import matplotlib.pyplot as plt
 
-PATH = "ca_killed_ilr/ca_killed_ilr"
-filter = r'killed-(.*)'
+PATH = "st_killed/st_killed"
+filter = r'(.*)'
 
 
 names = []

@@ -39,19 +39,27 @@ env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, arg
 class EmpiricalTreatmentAgent():
     def __init__(self, env):
         self.env = env
+        self.num_episodes = 0
+        self.total_score = 0
+
+    def average_score(self):
+        print("Episodes :", self.num_episodes, "Average score :", self.total_score/self.num_episodes)
 
     def _runEpisode(self, steps):
+        self.num_episodes += 1
         i = 0
-        env.reset(-1)
-        env.act(8)
-        env.act(8)
-        env.act(8)
+        env.reset(0)
+
+        self.total_score += env.act(8)
+        self.total_score += env.act(8)
+        self.total_score += env.act(8)
+
         while(not env.inTerminalState()):
-            if i < 35:
-                env.act(4)
+            if i < 35 or True:
+                self.total_score += env.act(8)
                 i += 1
             else:
-                env.act(0)
+                self.total_score += env.act(0)
 
 
 
@@ -89,7 +97,7 @@ count = 0
 length_success = 0
 avg_rad = 0
 avg_h_cell_killed = 0
-k = 2
+k = 100
 for i in range(k):
     print(i)
     agent._runEpisode(100000)
@@ -103,6 +111,8 @@ print("TCP = ", count / k)
 print("Avg rad", avg_rad / k)
 print("Avg length in successes", length_success / count)
 print("Avg hcells killed", avg_h_cell_killed / k)
+agent.average_score()
+"""
 env.init_dose_map()
 agent._runEpisode(100000)
 #env.show_dose_map()
@@ -163,6 +173,6 @@ ax2.tick_params(axis='y', labelcolor=color)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
-
+"""
 env.end()
 

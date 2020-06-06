@@ -107,11 +107,13 @@ class CellEnvironment(Environment):
             self.dataset[2].append(dose)
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
             self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeType(self.controller_capsule)))
+        p_hcell = cppCellModel.HCellCount()
+        p_ccell = cppCellModel.CCellCount()
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
-
-        reward = self.adjust_reward(dose, post_ccell - pre_ccell, post_hcell - pre_hcell)
+        print(post_hcell, post_ccell)
+        reward = self.adjust_reward(dose, pre_ccell - p_ccell, pre_hcell-min(post_hcell, p_hcell))
 
         if self.verbose:
                 print("Radiation dose :", dose, "Gy ", "remaining :", post_ccell,  "time =", rest, "reward=", reward)
@@ -125,12 +127,12 @@ class CellEnvironment(Environment):
                 if self.reward == 'dose':
                     return min((cppCellModel.HCellCount() / self.init_hcell_count), 1.0) - dose / 50
                 else:
-                    return 1 - (5 * hcells_lost/25000)
+                    return 0.5 - (self.init_hcell_count - cppCellModel.HCellCount()) / 3000#(cppCellModel.HCellCount() / self.init_hcell_count) - 0.5 - (2 * hcells_lost/2500)
         else:
             if self.reward == 'dose' or self.reward == 'oar':
                 return - dose / 50
             elif self.reward == 'killed':
-                return (ccell_killed - 3 * hcells_lost)/50000
+                return (ccell_killed - 2 * hcells_lost)/50000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :
@@ -214,7 +216,9 @@ def tcp_test(num):
         controller = cppCellModel.controller_constructor(50, 50, 100, 350)
         counts.append(cppCellModel.HCellCount())
         for i in range(35):
+            #print("Before", cppCellModel.HCellCount(), cppCellModel.CCellCount())
             cppCellModel.irradiate(controller, 2)
+            ##print("After", cppCellModel.HCellCount(), cppCellModel.CCellCount())
             cppCellModel.go(controller, 24)
             if cppCellModel.CCellCount() == 0:
                 steps.append(i + 1)

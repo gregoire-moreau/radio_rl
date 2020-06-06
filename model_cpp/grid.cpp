@@ -407,7 +407,7 @@ void Grid::cycle_cells() {
             if (result.new_cell == 'h'){ //New healthy cell
                 int downhill = rand_min(i, j, 5);
                 if(downhill >= 0)
-                    toAdd -> add(new HealthyCell('1'), 'h', downhill / ysize, downhill % ysize);
+                    toAdd -> add(new HealthyCell('q'), 'h', downhill / ysize, downhill % ysize);
                 else
                     current -> cell -> sleep();
             }
@@ -700,7 +700,7 @@ double distance(int x1, int y1, double x2, double y2){
  * @return The Euclidean distance between the two points
  */
 double conv(double rad, double x){
-    double denom = 3.39411;//sqrt(2) * 2.4
+    double denom = 3.8;//sqrt(2) * 2.4
     return erf((rad - x)/denom) - erf((-rad - x) / denom);
 }
 

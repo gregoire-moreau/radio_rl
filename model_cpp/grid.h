@@ -51,7 +51,6 @@ public:
     ~SourceList();
     void add(int x, int y);
 };
-
 class Grid {
 public:
     Grid(int xsize, int ysize, int sources_num);
