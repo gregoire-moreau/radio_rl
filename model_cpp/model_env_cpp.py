@@ -113,7 +113,7 @@ class CellEnvironment(Environment):
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         print(post_hcell, post_ccell)
-        reward = self.adjust_reward(dose, pre_ccell - p_ccell, pre_hcell-min(post_hcell, p_hcell))
+        reward = self.adjust_reward(dose, pre_ccell - post_ccell, pre_hcell-min(post_hcell, p_hcell))
 
         if self.verbose:
                 print("Radiation dose :", dose, "Gy ", "remaining :", post_ccell,  "time =", rest, "reward=", reward)
@@ -132,7 +132,7 @@ class CellEnvironment(Environment):
             if self.reward == 'dose' or self.reward == 'oar':
                 return - dose / 50
             elif self.reward == 'killed':
-                return (ccell_killed - 2 * hcells_lost)/50000
+                return (ccell_killed - 5 * hcells_lost)/500000
 
     def inTerminalState(self):
         if cppCellModel.CCellCount() <= 0 :

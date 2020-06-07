@@ -56,7 +56,7 @@ class EmpiricalTreatmentAgent():
 
         while(not env.inTerminalState()):
             if i < 35 or True:
-                self.total_score += env.act(8)
+                self.total_score += env.act(4)
                 i += 1
             else:
                 self.total_score += env.act(0)
