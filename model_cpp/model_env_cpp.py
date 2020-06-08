@@ -112,7 +112,7 @@ class CellEnvironment(Environment):
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
-        print(post_hcell, post_ccell)
+        #print(post_hcell, post_ccell)
         reward = self.adjust_reward(dose, pre_ccell - post_ccell, pre_hcell-min(post_hcell, p_hcell))
 
         if self.verbose:
@@ -172,7 +172,7 @@ class CellEnvironment(Environment):
 
     def observe(self):
         if self.obs_type == 'types':
-            cells = (np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32) + 50.0) / 100.0
+            cells = (np.array(cppCellModel.observeGrid(self.controller_capsule), dtype=np.float32)) / 100.0
         else:
             cells = (np.array(cppCellModel.observeType(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
         if self.resize:

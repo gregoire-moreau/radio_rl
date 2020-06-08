@@ -55,7 +55,7 @@ if args.network == 'DQN':
         replay_memory_size=min(int(args.epochs[0]*args.epochs[1] * 1.1), 100000),
         batch_size=32,
         random_state=rng)
-    agent.setDiscountFactor(0.95)
+    agent.setDiscountFactor(0.99)
     agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
