@@ -112,7 +112,6 @@ class CellEnvironment(Environment):
         cppCellModel.go(self.controller_capsule, rest)
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
-        #print(post_hcell, post_ccell)
         reward = self.adjust_reward(dose, pre_ccell - post_ccell, pre_hcell-min(post_hcell, p_hcell))
 
         if self.verbose:

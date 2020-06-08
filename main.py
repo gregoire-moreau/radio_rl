@@ -78,7 +78,7 @@ elif args.network == 'AC':
         replay_memory_size=min(args.epochs[0]*args.epochs[1] * 2, 100000),
         batch_size=32,
         random_state=rng)
-    agent.setDiscountFactor(0.95)
+    agent.setDiscountFactor(0.99)
     agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
