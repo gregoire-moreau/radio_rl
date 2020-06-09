@@ -67,17 +67,8 @@ class CellEnvironment(Environment):
 
     def reset(self, mode):
         cppCellModel.delete_controller(self.controller_capsule)
-        if self.reward == 'oar':
-            x1 = random.randint(1, 10)
-            x2 = random.randint(11, 20)
-            y1 = random.randint(1, 10)
-            y2 = random.randint(11, 20)
-            print("Start with oar x1=", x1, "x2=", x2, "y1=", y1, "y2=", y2)
-            self.controller_capsule = cppCellModel.controller_constructor_oar(50, 50, 50, 338, x1, x2, y1, y2)
-            self.init_oar_count = cppCellModel.OARCellCount()
-        else:
-            self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
-            self.init_hcell_count = cppCellModel.HCellCount()
+        self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
+        self.init_hcell_count = cppCellModel.HCellCount()
         if mode == -1:
             self.verbose = False
         else :
@@ -113,7 +104,6 @@ class CellEnvironment(Environment):
         post_hcell = cppCellModel.HCellCount()
         post_ccell = cppCellModel.CCellCount()
         reward = self.adjust_reward(dose, pre_ccell - post_ccell, pre_hcell-min(post_hcell, p_hcell))
-
         if self.verbose:
                 print("Radiation dose :", dose, "Gy ", "remaining :", post_ccell,  "time =", rest, "reward=", reward)
         return reward
@@ -124,12 +114,12 @@ class CellEnvironment(Environment):
                 return -1
             else:
                 if self.reward == 'dose':
-                    return min((cppCellModel.HCellCount() / self.init_hcell_count), 1.0) - dose / 50
+                    return (cppCellModel.HCellCount() / self.init_hcell_count) / 2.0 - dose / 50
                 else:
                     return 0.5 - (self.init_hcell_count - cppCellModel.HCellCount()) / 3000#(cppCellModel.HCellCount() / self.init_hcell_count) - 0.5 - (2 * hcells_lost/2500)
         else:
             if self.reward == 'dose' or self.reward == 'oar':
-                return - dose / 50
+                return - dose / 25
             elif self.reward == 'killed':
                 return (ccell_killed - 5 * hcells_lost)/500000
 

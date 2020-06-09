@@ -48,12 +48,11 @@ class EmpiricalTreatmentAgent():
     def _runEpisode(self, steps):
         self.num_episodes += 1
         i = 0
-        env.reset(0)
+        env.reset(-1)
 
         self.total_score += env.act(8)
         self.total_score += env.act(8)
         self.total_score += env.act(8)
-
         while(not env.inTerminalState()):
             if i < 35 or True:
                 self.total_score += env.act(4)
