@@ -89,5 +89,4 @@ elif args.network == 'AC':
         epoch_length=1000,
         controllers_to_disable=[1, 2, 3, 4]))
 
-agent.setNetwork(args.fname)
 agent.run(n_epochs=args.epochs[0], epoch_length=args.epochs[1])
