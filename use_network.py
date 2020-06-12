@@ -20,7 +20,7 @@ args = parser.parse_args()
 print(args)
 
 if args.simulation == 'c++':
-    from model_cpp.model_env_cpp import CellEnvironment, transform
+    from model_cpp.model_env_cpp import CellEnvironment, transform, transform_densities
 elif args.simulation == 'py':
     from cell_environment import CellEnvironment
 
@@ -34,7 +34,30 @@ import deer.experiment.base_controllers as bc
 from deer.policies import EpsilonGreedyPolicy
 from other_controllers import GaussianNoiseController, GridSearchController
 from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
+from draw_treatment import make_img
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.tumor_radius, args.special, args.center)
+
+def save_tumor_image(data, tick):
+    data = transform_densities(data)
+    sizes = np.shape(data)
+    fig = plt.figure()
+    fig.set_size_inches(1. * sizes[0] / sizes[1], 1, forward = False)
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+    ax.imshow(data)
+    plt.savefig('tmp/t'+str(tick), dpi=500)
+    plt.close()
+
+def save_dose_map(data, tick):
+    pos = plt.imshow(data, vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName", [[0, 0, 0.6], "r"]))
+    cb = plt.colorbar(pos, ticks=[0, 35, 70])
+    cb.set_label(label='[Gy]', size='large', weight='bold')
+    cb.ax.tick_params(labelsize='large')
+    plt.axis('off')
+    plt.tight_layout(pad=0.05)
+    plt.savefig('tmp/d'+str(tick))
+    plt.close()
 
 class EmpiricalTreatmentAgent():
     def __init__(self, env):
@@ -42,7 +65,7 @@ class EmpiricalTreatmentAgent():
         self.num_episodes = 0
         self.total_score = 0
 
-    def average_score(self):
+    def summarizeTestPerformance(self):
         print("Episodes :", self.num_episodes, "Average score :", self.total_score/self.num_episodes)
 
     def _runEpisode(self, steps):
@@ -50,11 +73,8 @@ class EmpiricalTreatmentAgent():
         i = 0
         env.reset(-1)
 
-        self.total_score += env.act(8)
-        self.total_score += env.act(8)
-        self.total_score += env.act(8)
         while(not env.inTerminalState()):
-            if i < 35 or True:
+            if i < 35:
                 self.total_score += env.act(4)
                 i += 1
             else:
@@ -96,7 +116,7 @@ count = 0
 length_success = 0
 avg_rad = 0
 avg_h_cell_killed = 0
-k = 100
+k = 1
 for i in range(k):
     print(i)
     agent._runEpisode(100000)
@@ -110,44 +130,28 @@ print("TCP = ", count / k)
 print("Avg rad", avg_rad / k)
 print("Avg length in successes", length_success / count)
 print("Avg hcells killed", avg_h_cell_killed / k)
-agent.average_score()
-"""
+agent.summarizeTestPerformance()
+
 env.init_dose_map()
 agent._runEpisode(100000)
 #env.show_dose_map()
 print("done")
 
 
-fig, axs = plt.subplots(4, 2, constrained_layout=True)
-axs[0][0].set_title("Tumor at time:"+ str(env.tumor_images[0][0]))
-axs[0][0].imshow(transform(env.tumor_images[0][1]))
-axs[0][0].set_axis_off()
-axs[0][1].set_title("Dose map at time: "+str(env.dose_maps[0][0]))
-p = axs[0][1].imshow(env.dose_maps[0][1], vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
-#fig.colorbar(p, ax=axs[0][1])
-axs[0][1].set_axis_off()
 
-axs[1][0].set_title("Tumor at time:"+ str(env.tumor_images[int(len(env.tumor_images) / 3)][0]))
-axs[1][0].imshow(transform(env.tumor_images[int(len(env.tumor_images) / 3)][1]))
-axs[1][0].set_axis_off()
-axs[1][1].set_title("Dose map at time: "+str(env.dose_maps[int(len(env.tumor_images) / 3)][0]))
-axs[1][1].imshow(env.dose_maps[int(len(env.tumor_images) / 3)][1], vmin=0, vmax=70,  cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
-axs[1][1].set_axis_off()
 
-axs[2][0].set_title("Tumor at time:"+ str(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0]))
-axs[2][0].imshow(transform(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1]))
-axs[2][0].set_axis_off()
-axs[2][1].set_title("Dose map at time: "+str(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0]))
-axs[2][1].imshow(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
-axs[2][1].set_axis_off()
+save_tumor_image(env.tumor_images[0][1], env.tumor_images[0][0])
+save_dose_map(env.dose_maps[0][1], env.dose_maps[0][0])
+save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 3)][1], env.tumor_images[int(len(env.tumor_images) / 3)][0])
+save_dose_map(env.dose_maps[int(len(env.tumor_images) / 3)][1], env.dose_maps[int(len(env.tumor_images) / 3)][0])
+save_tumor_image(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0])
+save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0])
+save_tumor_image(env.tumor_images[-1][1], env.tumor_images[-1][0])
+save_dose_map(env.dose_maps[-1][1], env.dose_maps[-1][0])
+ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0], env.tumor_images[-1][0]]
+make_img(ticks, 'baseline')
 
-axs[3][0].set_title("Tumor at time:"+ str(env.tumor_images[-1][0]))
-axs[3][0].imshow(transform(env.tumor_images[-1][1]))
-axs[3][0].set_axis_off()
-axs[3][1].set_title("Dose map at time: "+str(env.dose_maps[-1][0]))
-axs[3][1].imshow(env.dose_maps[-1][1], vmin=0, vmax=70, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
-axs[3][1].set_axis_off()
-
+'''
 ticks, counts, doses = env.dataset
 fig, ax1 = plt.subplots()
 
@@ -172,6 +176,6 @@ ax2.tick_params(axis='y', labelcolor=color)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.show()
-"""
+'''
 env.end()
 

@@ -23,7 +23,7 @@ static float average_oxygen_consumption = 20.0; // 2.16 E-9 ml/cell/hour Jalalim
 static float critical_oxygen_level = 360.0; // 3.88 E-8 ml/cell/hour Jalalimanesh
 static float quiescent_oxygen_level = 960.0; // 10.37 E-8 ml/cell/hour Jalalimanesh
 
-default_random_engine generator(19);
+default_random_engine generator(5);
 normal_distribution<double> norm_distribution (1.0, 0.3333333);
 uniform_real_distribution<double> uni_distribution(0.0, 1.0);
 

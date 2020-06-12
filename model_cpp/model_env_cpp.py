@@ -58,7 +58,7 @@ class CellEnvironment(Environment):
         for x in range(50):
             for y in range(50):
                 dist = math.sqrt((center_x - x)**2 + (center_y - y)**2)
-                self.dose_map[x, y] += scale(radius, x, multiplicator)
+                self.dose_map[x, y] += scale(radius, dist, multiplicator)
 
     def show_dose_map(self):
         pos = plt.imshow(self.dose_map, cmap=mcol.LinearSegmentedColormap.from_list("MyCmapName",[[0,0,0.6],"r"]))
@@ -78,7 +78,7 @@ class CellEnvironment(Environment):
         if self.dose_map is not None:
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
             self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350,
-                                      cppCellModel.observeType(self.controller_capsule)))
+                                      cppCellModel.observeGrid(self.controller_capsule)))
         return self.observe()
     
     def act(self, action):
@@ -97,7 +97,7 @@ class CellEnvironment(Environment):
             self.dataset[1].append((pre_ccell, cppCellModel.CCellCount()))
             self.dataset[2].append(dose)
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
-            self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeType(self.controller_capsule)))
+            self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeGrid(self.controller_capsule)))
         p_hcell = cppCellModel.HCellCount()
         p_ccell = cppCellModel.CCellCount()
         cppCellModel.go(self.controller_capsule, rest)
@@ -181,9 +181,19 @@ def transform(head):
                 to_ret[i][j][0] = 255
     return to_ret
 
+def transform_densities(obs):
+    to_ret = np.zeros(shape=(obs.shape[0], obs.shape[1], 3), dtype=np.int)
+    for i in range(obs.shape[0]):
+        for j in range(obs.shape[1]):
+            if obs[i][j] < 0:
+                to_ret[i][j][0] = 60 + min(- obs[i][j] * 4, 195)
+            elif obs[i][j] > 0:
+                to_ret[i][j][1] = 60 + min(obs[i][j] * 8, 195)
+    return to_ret
+
 
 def conv(rad, x):
-    denom = 3.39411 # //sqrt(2) * 2.4
+    denom = 3.8 # //sqrt(2) * 2.7
     return math.erf((rad - x)/denom) - math.erf((-rad - x) / denom)
 
 
