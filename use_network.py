@@ -82,7 +82,7 @@ class EmpiricalTreatmentAgent():
 
 
 
-'''
+
 rng = np.random.RandomState(123456)
 
 # TODO : best algorithm, hyperparameter tuning
@@ -110,27 +110,30 @@ agent = NeuralAgent(
 
 #agent.attach(bc.VerboseController())
 agent.setNetwork(args.fname)
-'''
-agent = EmpiricalTreatmentAgent(env)
+
+#agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
 avg_h_cell_killed = 0
-k = 1
+avg_doses = 0
+k = 500
 for i in range(k):
     print(i)
     agent._runEpisode(100000)
     if env.end_type == 'W':
         count += 1
         length_success += env.get_tick() - 350
-    avg_rad += env.total_dose
-    avg_h_cell_killed += env.radiation_h_killed
+        avg_rad += env.total_dose
+        avg_h_cell_killed += env.radiation_h_killed
+        avg_doses += env.num_doses
 
 print("TCP = ", count / k)
-print("Avg rad", avg_rad / k)
+print("Avg rad", avg_rad / count)
 print("Avg length in successes", length_success / count)
-print("Avg hcells killed", avg_h_cell_killed / k)
-agent.summarizeTestPerformance()
+print("Avg number of doses", avg_doses / count)
+print("Avg hcells killed", avg_h_cell_killed / count)
+#agent.summarizeTestPerformance()
 
 env.init_dose_map()
 agent._runEpisode(100000)
@@ -149,9 +152,9 @@ save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_map
 save_tumor_image(env.tumor_images[-1][1], env.tumor_images[-1][0])
 save_dose_map(env.dose_maps[-1][1], env.dose_maps[-1][0])
 ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0], env.tumor_images[-1][0]]
-make_img(ticks, 'baseline')
+make_img(ticks, args.fname)
 
-'''
+
 ticks, counts, doses = env.dataset
 fig, ax1 = plt.subplots()
 
@@ -175,7 +178,7 @@ ax2.set_yscale('log')
 ax2.tick_params(axis='y', labelcolor=color)
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
-plt.show()
-'''
+plt.savefig('tmp/'+args.fname+'_treat')
+
 env.end()
 

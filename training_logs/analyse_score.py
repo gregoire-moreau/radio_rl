@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 epoch_nums = []
 avg_scores = []
-with open('dqn/dqn/dqn.log', 'r') as f:
+with open('training_logs/dose_ac/dose_ac/dose', 'r') as f:
     for line in f:
         epoch_test = re.match(r'epoch (\d+):', line)
         if epoch_test:
@@ -15,14 +15,26 @@ with open('dqn/dqn/dqn.log', 'r') as f:
             avg_scores.append(float(score_test.group(1)))
             continue
 
-plt.plot(epoch_nums, avg_scores)
-plt.show()
-
 ind = -1
 max_score = -100
 for i in range(len(epoch_nums)):
     if avg_scores[i] > max_score:
         max_score = avg_scores[i]
         ind = i
+
+plt.xlabel('Epoch number')
+plt.ylabel('Average score on test epoch')
+plt.plot(epoch_nums, avg_scores, 'b')
+plt.plot([epoch_nums[ind], epoch_nums[ind]], [min(avg_scores)-1, max(avg_scores) +1], 'r')
+plt.plot([-1000, 1000], [max_score, max_score], 'r')
+plt.xlim((min(epoch_nums), max(epoch_nums)))
+plt.ylim((min(avg_scores)-0.1, max(avg_scores)+0.1))
+plt.text(epoch_nums[ind] + 2, min(avg_scores), 'Epoch '+str(epoch_nums[ind]),  fontdict={'color':'red'})
+plt.text(3, max(avg_scores)+0.02, "{:.3f}".format(max(avg_scores)),  fontdict={'color':'red'})
+plt.savefig('tmp/score_dose_ac')
+
+#plt.show()
+
+
 
 print("Best epoch :", epoch_nums[ind] , "with score", max_score)

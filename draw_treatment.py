@@ -23,7 +23,7 @@ def add_dose_map(base, tick, x_offset, y_offset):
 
 def add_images(base, ticks, pad_left=400, space_between_h=80, space_between_v=80, height=3500, width=2000):
     pad_top = int((height - 4* 500 - 3 * space_between_v) / 2)
-    more=80
+    more=0
     higher_dose = 2
     add_tumor(base, ticks[0], pad_top, pad_left)
     add_dose_map(base, ticks[0], pad_top - higher_dose, pad_left + 500 + space_between_h+more)
@@ -55,7 +55,7 @@ def save_base(base, filename):
 
 def make_img(ticks, name):
     height = 2350
-    width = 1750
+    width = 1600
     base = make_base(height, width)
     add_images(base, ticks, height=height, width=width)
     add_text(base, ticks)

@@ -74,6 +74,7 @@ class CellEnvironment(Environment):
         else :
             self.verbose = True
         self.total_dose = 0
+        self.num_doses = 0
         self.radiation_h_killed = 0
         if self.dose_map is not None:
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
@@ -89,6 +90,7 @@ class CellEnvironment(Environment):
         pre_hcell = cppCellModel.HCellCount()
         pre_ccell = cppCellModel.CCellCount()
         self.total_dose += dose
+        self.num_doses += 1 if dose > 0 else 0
         cppCellModel.irradiate(self.controller_capsule, dose)
         self.radiation_h_killed += (pre_hcell - cppCellModel.HCellCount())
         if self.dose_map is not None:
@@ -235,7 +237,7 @@ def tcp_test(num):
     print(sum(counts) / len(counts))
 
 
-def test():
+def _test():
     for i in range(5):
         controller = cppCellModel.controller_constructor(50, 50, 100, 350)
         cppCellModel.irradiate(controller, 2)
@@ -243,7 +245,75 @@ def test():
         print(cppCellModel.CCellCount())
         cppCellModel.delete_controller(controller)
 
+def save_tumor_image(data, tick):
+    sizes = np.shape(data)
+    fig = plt.figure()
+    fig.set_size_inches(1. * sizes[0] / sizes[1], 1, forward = False)
+    ax = plt.Axes(fig, [0., 0., 1., 1.])
+    ax.set_axis_off()
+    fig.add_axes(ax)
+    ax.imshow(data)
+    plt.savefig('tmp/t'+str(tick), dpi=500)
+    plt.close()
+
 if __name__ == '__main__':
+    tcp_test(14)
+    ticks = []
+    cancer_cells = []
+    controller = cppCellModel.controller_constructor(50, 50, 100, 0)
+    '''
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 0)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 50)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 100)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 150)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 200)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 250)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 300)
+    for i in range(50):
+        ticks.append(cppCellModel.controllerTick(controller))
+        cancer_cells.append(cppCellModel.CCellCount())
+        cppCellModel.go(controller, 1)
+    '''
+    cppCellModel.go(controller, 350)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 350)
+    cppCellModel.go(controller, 300)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 650)
+    cppCellModel.go(controller, 150)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 800)
+    while(cppCellModel.HCellCount() >= 10):
+        cppCellModel.go(controller, 1)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), cppCellModel.controllerTick(controller))
+    cppCellModel.delete_controller(controller)
+    '''
+    plt.plot(ticks, cancer_cells)
+    plt.xlabel("Hours")
+    plt.ylabel("Number of cancer cells")
+
+    plt.savefig('tmp/ccellstart')
     tcp_test(100)
     import matplotlib.pyplot as plt
     import matplotlib
@@ -286,4 +356,4 @@ if __name__ == '__main__':
         plt.pause(0.02)
 
     cppCellModel.delete_controller(controller)
-
+    '''

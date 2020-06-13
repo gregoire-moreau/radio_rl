@@ -31,9 +31,10 @@ def time_test(fun, env, count):
 
 if __name__ == '__main__':
     env = CellEnvironment('types', False, 'dose', 'DQN', False, False, False)
-    print("Average time to reset:", 1000 * time_test(_test_reset, env, 100), "milliseconds")
-    print("Average time without treatment:", 1000 * time_test(_test_no_treat, env, 100), "milliseconds")
-    print("Average time in timeout:", 1000 * time_test(_test_timeout, env, 100), "milliseconds")
+    k = 1000 * time_test(_test_reset, env, 100)
+    print("Average time to reset:", k, "milliseconds")
+    print("Average time without treatment:", 1000 * time_test(_test_no_treat, env, 100) - k, "milliseconds")
+    print("Average time in timeout:", 1000 * time_test(_test_timeout, env, 100) - k, "milliseconds")
     env.action_type = 'AC'
-    print("Average time with max treatment:", 1000 * time_test(_test_max_treat, env, 100), "milliseconds")
+    print("Average time with max treatment:", 1000 * time_test(_test_max_treat, env, 100) - k, "milliseconds")
     env.end()

@@ -2,7 +2,7 @@ import os
 import re
 import matplotlib.pyplot as plt
 
-PATH = "st_killed/st_killed"
+PATH = "killed4/killed4/"
 filter = r'(.*)'
 
 
