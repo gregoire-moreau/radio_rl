@@ -74,7 +74,7 @@ elif args.network == 'AC':
     agent = NeuralAgent(
         env,
         network,
-        #train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5),
+        train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5),
         replay_memory_size=min(args.epochs[0]*args.epochs[1] * 2, 100000),
         batch_size=32,
         random_state=rng)
@@ -82,8 +82,8 @@ elif args.network == 'AC':
     agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
-    #agent.attach(GaussianNoiseController(initial_std_dev=0.2, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.0))
-    agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.05))
+    agent.attach(GaussianNoiseController(initial_std_dev=0.5, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.005))
+    #agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.05))
     agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
         epoch_length=1000,
