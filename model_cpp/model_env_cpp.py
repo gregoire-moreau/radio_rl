@@ -178,9 +178,9 @@ def transform(head):
     for i in range(head.shape[0]):
         for j in range(head.shape[1]):
             if head[i][j] == 1:
-                to_ret[i][j][2] = 255
+                to_ret[i][j][1] = 120
             elif head[i][j] == -1:
-                to_ret[i][j][0] = 255
+                to_ret[i][j][0] = 120
     return to_ret
 
 def transform_densities(obs):
@@ -298,15 +298,8 @@ if __name__ == '__main__':
         cancer_cells.append(cppCellModel.CCellCount())
         cppCellModel.go(controller, 1)
     '''
-    cppCellModel.go(controller, 350)
-    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 350)
-    cppCellModel.go(controller, 300)
-    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 650)
-    cppCellModel.go(controller, 150)
-    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 800)
-    while(cppCellModel.HCellCount() >= 10):
-        cppCellModel.go(controller, 1)
-    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), cppCellModel.controllerTick(controller))
+    cppCellModel.go(controller, 550)
+    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 551)
     cppCellModel.delete_controller(controller)
     '''
     plt.plot(ticks, cancer_cells)

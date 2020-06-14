@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 epoch_nums = []
 avg_scores = []
-with open('training_logs/dose_dqn/dose_dqn/dose', 'r') as f:
+with open('training_logs/dose_dqn_sec/dose_dqn_sec/dose', 'r') as f:
     for line in f:
         epoch_test = re.match(r'epoch (\d+):', line)
         if epoch_test:
@@ -31,8 +31,8 @@ plt.xlim((min(epoch_nums), max(epoch_nums)))
 plt.ylim((min(avg_scores)-0.1, max(avg_scores)+0.1))
 plt.text(epoch_nums[ind] + 2, min(avg_scores) - 0.05, 'Epoch '+str(epoch_nums[ind]),  fontdict={'color':'red'})
 plt.text(20, max(avg_scores)+0.02, "{:.3f}".format(max(avg_scores)),  fontdict={'color':'red'})
-plt.savefig('tmp/score_dose_dqn')
-#plt.show()
+#plt.savefig('tmp/score_dose_dqn')
+plt.show()
 
 
 
