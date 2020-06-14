@@ -8,8 +8,8 @@ def _test_reset(env):
 
 def _test_no_treat(env):
     env.reset(-1)
-    while not env.inTerminalState():
-        env.act(0)
+    #while not env.inTerminalState():
+    env.act(10)
 
 
 def _test_max_treat(env):
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     k = 1000 * time_test(_test_reset, env, 100)
     print("Average time to reset:", k, "milliseconds")
     print("Average time without treatment:", 1000 * time_test(_test_no_treat, env, 100) - k, "milliseconds")
-    print("Average time in timeout:", 1000 * time_test(_test_timeout, env, 100) - k, "milliseconds")
+    #print("Average time in timeout:", 1000 * time_test(_test_timeout, env, 100) - k, "milliseconds")
     env.action_type = 'AC'
-    print("Average time with max treatment:", 1000 * time_test(_test_max_treat, env, 100) - k, "milliseconds")
+    #print("Average time with max treatment:", 1000 * time_test(_test_max_treat, env, 100) - k, "milliseconds")
     env.end()
