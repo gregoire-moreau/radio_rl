@@ -75,7 +75,7 @@ class CellEnvironment(Environment):
         if self.dose_map is not None:
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
             self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350,
-                                      cppCellModel.observeDensities(self.controller_capsule)))
+                                      cppCellModel.observeDensity(self.controller_capsule)))
         return self.observe()
     
     def act(self, action):
@@ -95,7 +95,7 @@ class CellEnvironment(Environment):
             self.dataset[1].append((pre_ccell, cppCellModel.CCellCount()))
             self.dataset[2].append(dose)
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
-            self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeDensities(self.controller_capsule)))
+            self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeDensity(self.controller_capsule)))
         p_hcell = cppCellModel.HCellCount()
         p_ccell = cppCellModel.CCellCount()
         cppCellModel.go(self.controller_capsule, rest)
@@ -159,7 +159,7 @@ class CellEnvironment(Environment):
 
     def observe(self):
         if self.obs_type == 'densities':
-            cells = (np.array(cppCellModel.observeDensities(self.controller_capsule), dtype=np.float32)) / 100.0
+            cells = (np.array(cppCellModel.observeDensity(self.controller_capsule), dtype=np.float32)) / 100.0
         else:
             cells = (np.array(cppCellModel.observeSegmentation(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
         if self.resize:
