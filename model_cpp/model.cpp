@@ -445,7 +445,7 @@ PyMethodDef cppCellModelFunctions[] =
       observeOxygen, METH_VARARGS,
      "Observation of oxygen"},
 
-     {"observeSegmenteation",
+     {"observeSegmentation",
       observeSegmentation, METH_VARARGS,
      "Observation of pixel types"},
      {"tumor_radius",
