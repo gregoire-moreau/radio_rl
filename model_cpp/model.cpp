@@ -205,7 +205,7 @@ PyObject* get_center_y(PyObject* self, PyObject* args){
     return Py_BuildValue("f", controller -> get_center_y());
 }
 
-PyObject* observeGrid(PyObject* self, PyObject* args){
+PyObject* observeDensity(PyObject* self, PyObject* args){
     PyObject* controllerCapsule;
     int ** out_dataptr;
     NpyIter *out_iter;
@@ -235,7 +235,7 @@ PyObject* observeGrid(PyObject* self, PyObject* args){
     }
     out_dataptr = (int **) NpyIter_GetDataPtrArray(out_iter);
     do {
-        **out_dataptr = controller->cell_types(x / controller->ysize, x % controller->ysize);
+        **out_dataptr = controller->pixel_density(x / controller->ysize, x % controller->ysize);
         x++;
     } while(out_iternext(out_iter));
 
@@ -248,7 +248,7 @@ PyObject* observeGrid(PyObject* self, PyObject* args){
         return NULL;
 }
 
-PyObject* observeType(PyObject* self, PyObject* args){
+PyObject* observeSegmentation(PyObject* self, PyObject* args){
     PyObject* controllerCapsule;
     int ** out_dataptr;
     NpyIter *out_iter;
@@ -278,7 +278,7 @@ PyObject* observeType(PyObject* self, PyObject* args){
     }
     out_dataptr = (int **) NpyIter_GetDataPtrArray(out_iter);
     do {
-        **out_dataptr = controller->type_head(x / controller->ysize, x % controller->ysize);
+        **out_dataptr = controller->pixel_type(x / controller->ysize, x % controller->ysize);
         x++;
     } while(out_iternext(out_iter));
 
@@ -433,9 +433,9 @@ PyMethodDef cppCellModelFunctions[] =
       (PyCFunction)OARCellCount, METH_NOARGS,
      "Number of cancer cells"},
 
-    {"observeGrid",
-      observeGrid, METH_VARARGS,
-     "Observation of cell types"},
+    {"observeDensity",
+      observeDensity, METH_VARARGS,
+     "Observation of cell type densities"},
     
     {"observeGlucose",
       observeGlucose, METH_VARARGS,
@@ -445,18 +445,18 @@ PyMethodDef cppCellModelFunctions[] =
       observeOxygen, METH_VARARGS,
      "Observation of oxygen"},
 
-     {"observeType",
-      observeType, METH_VARARGS,
-     "Observation of heads of lists' types"},
+     {"observeSegmenteation",
+      observeSegmentation, METH_VARARGS,
+     "Observation of pixel types"},
      {"tumor_radius",
       tumor_radius, METH_VARARGS,
      "Observation of oxygen"},
      {"get_center_x",
       get_center_x, METH_VARARGS,
-     "Observation of oxygen"},
+     "X coordinate of tumour's center"},
      {"get_center_y",
       get_center_y, METH_VARARGS,
-     "Observation of oxygen"},
+     "Y coordinate of tumour's center"},
      {"controllerTick",
       controllerTick, METH_VARARGS,
      "Number of ticks for current controller"},

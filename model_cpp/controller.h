@@ -20,8 +20,8 @@ public:
     void irradiate(double dose, double radius);
     void irradiate_center(double dose, double radius);
     void go();
-    int cell_types(int x, int y);
-    int type_head(int x, int y);
+    int pixel_density(int x, int y);
+    int pixel_type(int x, int y);
     double ** currentGlucose();
     double ** currentOxygen();
     double tumor_radius();

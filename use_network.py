@@ -22,7 +22,7 @@ print(args)
 if args.simulation == 'c++':
     from model_cpp.model_env_cpp import CellEnvironment, transform, transform_densities
 elif args.simulation == 'py':
-    from cell_environment import CellEnvironment
+    from cell_environment import CellEnvironment, transform, transform_densities
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcol
@@ -35,7 +35,7 @@ from deer.policies import EpsilonGreedyPolicy
 from other_controllers import GaussianNoiseController, GridSearchController
 from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
 from draw_treatment import make_img
-env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.tumor_radius, args.special, args.center)
+env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 def save_tumor_image(data, tick):
     data = transform_densities(data)
@@ -109,15 +109,15 @@ agent = NeuralAgent(
         random_state=rng)
 
 #agent.attach(bc.VerboseController())
-agent.setNetwork(args.fname)
+#agent.setNetwork(args.fname)
 
-#agent = EmpiricalTreatmentAgent(env)
+agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
 avg_h_cell_killed = 0
 avg_doses = 0
-k = 500
+k = 1
 for i in range(k):
     print(i)
     agent._runEpisode(100000)

@@ -17,7 +17,7 @@ from deer.base_classes import Environment
 class CellEnvironment(Environment):
     """Environment that the reinforcement learning agent uses to interact with the simulation."""
 
-    def __init__(self, obs_type, resize, reward, action_type, tumor_radius, special_reward, center):
+    def __init__(self, obs_type, resize, reward, action_type, special_reward):
         """Constructor of the environment
 
         Parameters:
@@ -26,9 +26,7 @@ class CellEnvironment(Environment):
         reward : Type of reward function used ('dose' to minimize the total dose, 'killed' to maximize damage to cancer
                  cells while miniizing damage to healthy tissue and 'oar' to minimize damage to the Organ At Risk
         action_type : 'DQN' means that we have a discrete action domain and 'AC' means that it is continuous
-        tumor_radius : True if the current radius of the tumor should be included as an observation to the agent
         special_reward : True if the agent should receive a special reward at the end of the episode.
-        center : True if the irradiation should be centered on the center of the grid
         """
         self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
         self.init_hcell_count = cppCellModel.HCellCount()
@@ -36,9 +34,7 @@ class CellEnvironment(Environment):
         self.resize = resize
         self.reward = reward
         self.action_type = action_type
-        self.tumor_radius = tumor_radius
         self.special_reward = special_reward
-        self.center = center
         self.dose_map = None
 
     def get_tick(self):
@@ -257,10 +253,20 @@ def save_tumor_image(data, tick):
     plt.close()
 
 if __name__ == '__main__':
-    tcp_test(14)
+    #tcp_test(14)
     ticks = []
     cancer_cells = []
+
     controller = cppCellModel.controller_constructor(50, 50, 100, 0)
+    cppCellModel.go(controller, 350)
+    for i in range(35):
+        a = cppCellModel.CCellCount()
+        cppCellModel.irradiate(controller, 2)
+        b = cppCellModel.CCellCount()
+        cppCellModel.go(controller, 24)
+        c= cppCellModel.CCellCount()
+        print(b / a, c / b)
+    cppCellModel.delete_controller(controller)
     '''
     save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 0)
     for i in range(50):
@@ -298,9 +304,9 @@ if __name__ == '__main__':
         cancer_cells.append(cppCellModel.CCellCount())
         cppCellModel.go(controller, 1)
     '''
-    cppCellModel.go(controller, 550)
-    save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 551)
-    cppCellModel.delete_controller(controller)
+    #cppCellModel.go(controller, 550)
+    #save_tumor_image(transform_densities(cppCellModel.observeGrid(controller)), 551)
+    #cppCellModel.delete_controller(controller)
     '''
     plt.plot(ticks, cancer_cells)
     plt.xlabel("Hours")

@@ -6,19 +6,21 @@ print(datetime.datetime.now())
 parser = argparse.ArgumentParser(description='Start training of an agent')
 parser.add_argument('--canicula', action='store_true')
 parser.add_argument('-s', '--simulation', choices=['py', 'c++'], dest="simulation", default='c++')
-parser.add_argument('--obs_type', choices=['head', 'types'], default='types')
+parser.add_argument('--obs_type', choices=['segmentation', 'densities'], default='densities')
 parser.add_argument('--resize', action='store_true')
-parser.add_argument('-t', action='store_true', dest='tumor_radius')
-parser.add_argument('-n', '--network', choices=['AC', 'DQN'], dest='network', required=True)
+parser.add_argument('-n', '--network', choices=['DDPG', 'DQN'], dest='network', required=True)
 parser.add_argument('-r', '--reward', choices=['dose', 'killed', 'oar'], dest='reward', required=True)
 parser.add_argument('--no_special', action='store_false', dest='special')
 parser.add_argument('-l', '--learning_rate', nargs=3, type=float, default=[0.0001, 0.75,5])
 parser.add_argument('--fname', default='nnet')
 parser.add_argument('-e', '--epochs', nargs=2, type=int, default=[20, 2500])
-parser.add_argument('-c', '--center', action='store_true')
+parser.add_argument('-e', '--exploration', choices=['epsilon', 'gauss'], dest='exploration', default='epsilon')
 
 args = parser.parse_args()
 print(args)
+
+if args.network == 'DQN' and args.exploration == 'gauss':
+    raise Exception("Can't use Gaussian Noise with DQN")
 
 if args.canicula:
     import os
@@ -37,7 +39,7 @@ import deer.experiment.base_controllers as bc
 from deer.policies import EpsilonGreedyPolicy
 from other_controllers import GaussianNoiseController, GridSearchController
 from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
-env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.tumor_radius, args.special, args.center)
+env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 rng = np.random.RandomState(123456)
 
@@ -74,7 +76,7 @@ elif args.network == 'AC':
     agent = NeuralAgent(
         env,
         network,
-        train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5),
+        train_policy=GaussianNoiseExplorationPolicy(network, env.nActions(), rng, .5) if args.exploration == 'gauss' else EpsilonGreedyPolicy(network, env.nActions(), rng, 0.1),
         replay_memory_size=min(args.epochs[0]*args.epochs[1] * 2, 100000),
         batch_size=32,
         random_state=rng)
@@ -82,8 +84,10 @@ elif args.network == 'AC':
     agent.attach(bc.FindBestController(validationID=0, unique_fname=args.fname))
     agent.attach(bc.VerboseController())
     agent.attach(bc.TrainerController())
-    agent.attach(GaussianNoiseController(initial_std_dev=0.5, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.005))
-    #agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.05))
+    if args.exploration == 'gauss':
+        agent.attach(GaussianNoiseController(initial_std_dev=0.5, n_decays=args.epochs[0] * args.epochs[1], final_std_dev=0.005))
+    else:
+        agent.attach(bc.EpsilonController(initial_e=0.8, e_decays=args.epochs[0] * args.epochs[1], e_min=0.05))
     agent.attach(bc.LearningRateController(args.learning_rate[0], args.learning_rate[1], args.learning_rate[2]))
     agent.attach(bc.InterleavedTestEpochController(
         epoch_length=1000,

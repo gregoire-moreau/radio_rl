@@ -177,8 +177,8 @@ void Controller::irradiate_center(double dose){
  * @param y The y coordinate of the pixel
  * @return The weighted sum
  */
-int Controller::cell_types(int x, int y){
-    return grid->cell_types(x, y);
+int Controller::pixel_density(int x, int y){
+    return grid->pixel_type(x, y);
 }
 
 /**
@@ -188,8 +188,8 @@ int Controller::cell_types(int x, int y){
  * @param y The y coordinate of the pixel
  * @return An integer representing the type
  */
-int Controller::type_head(int x, int y){
-    return grid -> type_head(x, y);
+int Controller::pixel_type(int x, int y){
+    return grid -> pixel_density(x, y);
 }
 
 /**

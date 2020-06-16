@@ -3,24 +3,20 @@ import math
 
 
 quiescent_glucose_level = 17.28
-max_glucose_absorption = .72
 average_glucose_absorption = .36
 average_cancer_glucose_absorption = .54
 critical_neighbors = 9
 critical_glucose_level = 6.48
-alpha_tumor = 0.38
-beta_tumor = 0.038
-alpha_norm_tissue = 0.03
-beta_norm_tissue = 0.009
-repair = 0.1
-bystander_rad = 0.05
-bystander_survival_probability = 0.95
+alpha_tumor = 0.3
+beta_tumor = 0.03
+alpha_norm_tissue = 0.15
+beta_norm_tissue = 0.03
+repair_time = 9
 average_oxygen_consumption = 20
-max_oxygen_consumption = 40
 critical_oxygen_level = 360
 quiescent_oxygen_level = 960
 
-radiosensitivities = [0.5, 1, 1, 1, 0.25]
+radiosensitivities = [1, .75, 1.25, 1.25, .75]
 
 
 class Cell:
@@ -33,6 +29,7 @@ class Cell:
         self.alive = True
         self.efficiency = 0
         self.oxy_efficiency = 0
+        self.repair = 0
 
     def __lt__(self, other):
         """Used to allow sorting of Cell lists"""
@@ -54,19 +51,23 @@ class HealthyCell(Cell):
 
     def cycle(self, glucose, count, oxygen):
         """Simulate an hour of the cell cycle."""
-        self.age += 1
         if glucose < critical_glucose_level or oxygen < critical_oxygen_level:
             self.alive = False
             HealthyCell.cell_count -= 1
             return 0, 0
-        elif self.stage == 4:  # Quiescent
+        if self.repair == 0:
+            self.age += 1
+        else:
+            self.repair -= 1
+        if self.stage == 4:  # Quiescent
             if glucose > quiescent_glucose_level and count < critical_neighbors and oxygen > quiescent_oxygen_level:
                 self.age = 0
                 self.stage = 0
             return self.efficiency * .75, self.oxy_efficiency * .75
         elif self.stage == 3:  # Mitosis
-            self.stage = 0
-            self.age = 0
+            if self.age == 1:
+                self.stage = 0
+                self.age = 0
             return self.efficiency, self.oxy_efficiency, 0
         elif self.stage == 2:  # Gap 2
             if self.age == 4:
@@ -90,9 +91,11 @@ class HealthyCell(Cell):
     def radiate(self, dose):
         """Irradiate this cell with a specific dose"""
         survival_probability = math.exp(radiosensitivities[self.stage] * (-alpha_norm_tissue*dose - beta_norm_tissue * (dose ** 2)))
-        if random.random() > survival_probability:
+        if random.uniform(0, 1) > survival_probability:
             self.alive = False
             HealthyCell.cell_count -= 1
+        elif dose > 0.5:
+            self.repair += int(round(random.uniform(0, 2) * repair_time))
 
     def cell_color(self):
         """RGB for the cell's color"""
@@ -106,9 +109,8 @@ class HealthyCell(Cell):
 class CancerCell(Cell):
     """CancerCells are cells representing tumoral tissue in the model."""
     cell_count = 0
-    center = (0, 0)
 
-    def __init__(self, stage, x, y):
+    def __init__(self, stage):
         """Constructor of CancerCell."""
         Cell.__init__(self, stage)
         CancerCell.cell_count += 1
@@ -119,6 +121,8 @@ class CancerCell(Cell):
         if random.random() > survival_probability:
             self.alive = False
             CancerCell.cell_count -= 1
+        elif dose > 0.5:
+            self.repair += int(round(random.uniform(0, 2) * repair_time))
 
     def cycle(self, glucose, count, oxygen):
         """Simulate one hour of the cell's cycle"""
@@ -127,14 +131,19 @@ class CancerCell(Cell):
             CancerCell.cell_count -= 1
             return 0, 0
         factor = random.normalvariate(1, 1 / 3)
-        factor = 2 if factor > 2 else factor
-        self.efficiency = average_cancer_glucose_absorption * factor
+        factor = max(0, min(2, factor))
+        self.efficiency = average_glucose_absorption * factor
         self.oxy_efficiency = average_oxygen_consumption * factor
-        self.age += 1
+        if self.repair == 0:
+            self.age += 1
+        else:
+            self.repair -= 1
         if self.stage == 3:  # Mitosis
-            self.stage = 0
-            self.age = 0
-            return self.efficiency, self.oxy_efficiency, 1
+            if self.age == 1:
+                self.stage = 0
+                self.age = 0
+                return self.efficiency, self.oxy_efficiency, 1
+            return self.efficiency, self.oxy_efficiency
         elif self.stage == 2:  # Gap 2
             if self.age == 4:
                 self.age = 0

@@ -700,7 +700,7 @@ double distance(int x1, int y1, double x2, double y2){
  * @return The Euclidean distance between the two points
  */
 double conv(double rad, double x){
-    double denom = 3.8;//sqrt(2) * 2.4
+    double denom = 3.8;//sqrt(2) * 2.7
     return erf((rad - x)/denom) - erf((-rad - x) / denom);
 }
 
@@ -782,7 +782,7 @@ double Grid::tumor_radius(int center_x, int center_y){
 /**
  * Compute the weighted sum of cell types for the CellList on position x, y
  */
-int Grid::cell_types(int x, int y){
+int Grid::pixel_density(int x, int y){
     return cells[x][y].CellTypeSum();
 }
 
@@ -791,7 +791,7 @@ int Grid::cell_types(int x, int y){
  *
  * @return 0 if there are no cells on this position, -1 if there is a cancer cell, 1 for a healthy cell and 2 for an OAR cell
  */
-int Grid::type_head(int x, int y){
+int Grid::pixel_type(int x, int y){
     if (cells[x][y].head){
         char t = cells[x][y].head -> type;
         if (t == 'c'){
