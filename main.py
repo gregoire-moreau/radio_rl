@@ -14,7 +14,7 @@ parser.add_argument('--no_special', action='store_false', dest='special')
 parser.add_argument('-l', '--learning_rate', nargs=3, type=float, default=[0.0001, 0.75,5])
 parser.add_argument('--fname', default='nnet')
 parser.add_argument('-e', '--epochs', nargs=2, type=int, default=[20, 2500])
-parser.add_argument('-e', '--exploration', choices=['epsilon', 'gauss'], dest='exploration', default='epsilon')
+parser.add_argument('--exploration', choices=['epsilon', 'gauss'], dest='exploration', default='epsilon')
 
 args = parser.parse_args()
 print(args)
