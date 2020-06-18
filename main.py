@@ -66,7 +66,7 @@ if args.network == 'DQN':
     agent.attach(bc.InterleavedTestEpochController(
     epoch_length=1000,
     controllers_to_disable=[1, 2, 3, 4]))
-elif args.network == 'AC':
+elif args.network == 'DDPG':
     network = MyACNetwork(
         environment=env,
         batch_size=32,
