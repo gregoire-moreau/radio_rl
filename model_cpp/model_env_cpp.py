@@ -25,7 +25,7 @@ class CellEnvironment(Environment):
         resize : True if the observations should be resized to 25 * 25 arrays
         reward : Type of reward function used ('dose' to minimize the total dose, 'killed' to maximize damage to cancer
                  cells while miniizing damage to healthy tissue and 'oar' to minimize damage to the Organ At Risk
-        action_type : 'DQN' means that we have a discrete action domain and 'AC' means that it is continuous
+        action_type : 'DQN' means that we have a discrete action domain and 'DDPG' means that it is continuous
         special_reward : True if the agent should receive a special reward at the end of the episode.
         """
         self.controller_capsule = cppCellModel.controller_constructor(50, 50, 100, 350)
@@ -143,8 +143,8 @@ class CellEnvironment(Environment):
     def nActions(self):
         if self.action_type == 'DQN':
             return 9
-        elif self.action_type == 'AC':
-            return [[0, 1], [0, 1], [0, 1]] if self.tumor_radius else [[0, 1], [0, 1]]
+        elif self.action_type == 'DDPG':
+            return [[0, 1], [0, 1]]
 
  
     def end(self):
