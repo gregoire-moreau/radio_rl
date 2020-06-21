@@ -178,7 +178,7 @@ void Controller::irradiate_center(double dose){
  * @return The weighted sum
  */
 int Controller::pixel_density(int x, int y){
-    return grid->pixel_type(x, y);
+    return grid->pixel_density(x, y);
 }
 
 /**
@@ -189,7 +189,7 @@ int Controller::pixel_density(int x, int y){
  * @return An integer representing the type
  */
 int Controller::pixel_type(int x, int y){
-    return grid -> pixel_density(x, y);
+    return grid -> pixel_type(x, y);
 }
 
 /**

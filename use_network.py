@@ -34,7 +34,7 @@ import deer.experiment.base_controllers as bc
 from deer.policies import EpsilonGreedyPolicy
 from other_controllers import GaussianNoiseController, GridSearchController
 from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
-from draw_treatment import make_img
+from draw_treatment import make_img, make_img3
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 def save_tumor_image(data, tick):
@@ -145,14 +145,14 @@ print("done")
 
 save_tumor_image(env.tumor_images[0][1], env.tumor_images[0][0])
 save_dose_map(env.dose_maps[0][1], env.dose_maps[0][0])
-save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 3)][1], env.tumor_images[int(len(env.tumor_images) / 3)][0])
-save_dose_map(env.dose_maps[int(len(env.tumor_images) / 3)][1], env.dose_maps[int(len(env.tumor_images) / 3)][0])
-save_tumor_image(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0])
-save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0])
+save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 2)][1], env.tumor_images[int(len(env.tumor_images) / 2)][0])
+save_dose_map(env.dose_maps[int(len(env.tumor_images) / 2)][1], env.dose_maps[int(len(env.tumor_images) / 2)][0])
+#save_tumor_image(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0])
+#save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0])
 save_tumor_image(env.tumor_images[-1][1], env.tumor_images[-1][0])
 save_dose_map(env.dose_maps[-1][1], env.dose_maps[-1][0])
-ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0], env.tumor_images[-1][0]]
-make_img(ticks, args.fname)
+ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 2)][0], env.tumor_images[-1][0]]
+make_img3(ticks, args.fname)
 
 
 ticks, counts, doses = env.dataset
