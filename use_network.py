@@ -6,10 +6,10 @@ print(datetime.datetime.now())
 parser = argparse.ArgumentParser(description='Start training of an agent')
 parser.add_argument('--canicula', action='store_true')
 parser.add_argument('-s', '--simulation', choices=['py', 'c++'], dest="simulation", default='c++')
-parser.add_argument('--obs_type', choices=['head', 'types'], default='types')
+parser.add_argument('--obs_type', choices=['densities', 'segmentation'], default='densities')
 parser.add_argument('--resize', action='store_true')
 parser.add_argument('-t', action='store_true', dest='tumor_radius')
-parser.add_argument('-n', '--network', choices=['AC', 'DQN'], dest='network', required=True)
+parser.add_argument('-n', '--network', choices=['DDPG', 'DQN'], dest='network', required=True)
 parser.add_argument('-r', '--reward', choices=['dose', 'killed', 'oar'], dest='reward', required=True)
 parser.add_argument('--no_special', action='store_false', dest='special')
 parser.add_argument('-l', '--learning_rate', nargs=3, type=float, default=[0.001, 0.8,1])
@@ -93,7 +93,7 @@ if args.network == 'DQN':
         freeze_interval=args.epochs[1],
         double_Q=True,
         random_state=rng)
-elif args.network == 'AC':
+elif args.network == 'DDPG':
     network = MyACNetwork(
         environment=env,
         batch_size=32,
@@ -109,9 +109,9 @@ agent = NeuralAgent(
         random_state=rng)
 
 #agent.attach(bc.VerboseController())
-#agent.setNetwork(args.fname)
+agent.setNetwork(args.fname)
 
-agent = EmpiricalTreatmentAgent(env)
+#agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
@@ -127,14 +127,14 @@ for i in range(k):
         avg_rad += env.total_dose
         avg_h_cell_killed += env.radiation_h_killed
         avg_doses += env.num_doses
-
+'''
 print("TCP = ", count / k)
 print("Avg rad", avg_rad / count)
 print("Avg length in successes", length_success / count)
 print("Avg number of doses", avg_doses / count)
 print("Avg hcells killed", avg_h_cell_killed / count)
 #agent.summarizeTestPerformance()
-
+'''
 env.init_dose_map()
 agent._runEpisode(100000)
 #env.show_dose_map()
