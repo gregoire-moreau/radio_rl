@@ -4,7 +4,6 @@ import argparse
 import datetime
 print(datetime.datetime.now())
 parser = argparse.ArgumentParser(description='Start training of an agent')
-parser.add_argument('--canicula', action='store_true')
 parser.add_argument('-s', '--simulation', choices=['py', 'c++'], dest="simulation", default='c++')
 parser.add_argument('--obs_type', choices=['densities', 'segmentation'], default='densities')
 parser.add_argument('--resize', action='store_true')
@@ -12,9 +11,7 @@ parser.add_argument('-t', action='store_true', dest='tumor_radius')
 parser.add_argument('-n', '--network', choices=['DDPG', 'DQN'], dest='network', required=True)
 parser.add_argument('-r', '--reward', choices=['dose', 'killed', 'oar'], dest='reward', required=True)
 parser.add_argument('--no_special', action='store_false', dest='special')
-parser.add_argument('-l', '--learning_rate', nargs=3, type=float, default=[0.001, 0.8,1])
 parser.add_argument('--fname', default='nnet')
-parser.add_argument('-e', '--epochs', nargs=2, type=int, default=[20, 2500])
 parser.add_argument('-c', '--center', action='store_true')
 args = parser.parse_args()
 print(args)
@@ -90,21 +87,19 @@ if args.network == 'DQN':
     network = MyQNetwork(
         environment=env,
         batch_size=32,
-        freeze_interval=args.epochs[1],
         double_Q=True,
         random_state=rng)
 elif args.network == 'DDPG':
     network = MyACNetwork(
         environment=env,
         batch_size=32,
-        freeze_interval=args.epochs[1],
         random_state=rng)
 
 agent = NeuralAgent(
         env,
         network,
         train_policy=EpsilonGreedyPolicy(network, env.nActions(), rng, 0.0),
-        replay_memory_size=args.epochs[0]*args.epochs[1] * 2,
+        replay_memory_size=1000,
         batch_size=32,
         random_state=rng)
 
@@ -117,7 +112,7 @@ length_success = 0
 avg_rad = 0
 avg_h_cell_killed = 0
 avg_doses = 0
-k = 1
+k = 5
 for i in range(k):
     print(i)
     agent._runEpisode(100000)
@@ -158,17 +153,19 @@ make_img3(ticks, args.fname)
 ticks, counts, doses = env.dataset
 fig, ax1 = plt.subplots()
 
-color = 'tab:red'
+color = 'tab:orange'
 ax1.set_xlabel('time (h)')
 ax1.set_ylabel('Dose (Gy)', color=color)
 ax1.set_ylim(0, 5)
-ax1.plot(ticks, doses, color=color, marker='o')
+ax1.set_xlim(0, 450)
+ax1.plot(ticks, doses, color=color, marker='o', mew=8, linewidth=4)
 ax1.tick_params(axis='y', labelcolor=color)
 d_ticks = []
 d_counts = []
 for i in range(len(ticks)):
     d_ticks += [ticks[i], ticks[i]]
     d_counts += [counts[i][0], counts[i][1]]
+'''
 ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 color = 'tab:blue'
 ax2.set_ylabel('Number of cancer cells (log)', color=color)  # we already handled the x-label with ax1
@@ -176,9 +173,10 @@ ax2.set_ybound(0, 10000)
 ax2.plot(d_ticks, d_counts, color=color)
 ax2.set_yscale('log')
 ax2.tick_params(axis='y', labelcolor=color)
-
+'''
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.savefig('tmp/'+args.fname+'_treat')
 
 env.end()
+print(ticks, doses)
 

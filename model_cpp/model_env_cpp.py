@@ -151,20 +151,25 @@ class CellEnvironment(Environment):
         cppCellModel.delete_controller(self.controller_capsule)
 
     def inputDimensions(self):
-        if self.resize:
+        if self.obs_type == 'scalars':
+            tab = [(1,), (1,), (1,)]
+        elif self.resize:
             tab = [(1, 25, 25)]
         else:
             tab = [(1, 50, 50)]
         return tab
 
     def observe(self):
-        if self.obs_type == 'densities':
-            cells = (np.array(cppCellModel.observeDensity(self.controller_capsule), dtype=np.float32)) / 100.0
+        if self.obs_type == 'scalars':
+            return [cppCellModel.controllerTick(self.controller_capsule) / 2000, cppCellModel.HCellCount() / 100000, cppCellModel.CCellCount()/ 50000]
         else:
-            cells = (np.array(cppCellModel.observeSegmentation(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
-        if self.resize:
-            cells = cv2.resize(cells, dsize=(25,25), interpolation=cv2.INTER_CUBIC)
-        return [cells]
+            if self.obs_type == 'densities':
+                cells = (np.array(cppCellModel.observeDensity(self.controller_capsule), dtype=np.float32)) / 100.0
+            else:
+                cells = (np.array(cppCellModel.observeSegmentation(self.controller_capsule), dtype=np.float32) + 1.0) / 2.0 #  Obs from 0 to 1
+            if self.resize:
+                cells = cv2.resize(cells, dsize=(25,25), interpolation=cv2.INTER_CUBIC)
+            return [cells]
 
     def summarizePerformance(self, test_data_set, *args, **kwargs):
         print(test_data_set)
