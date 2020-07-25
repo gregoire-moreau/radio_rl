@@ -24,14 +24,7 @@ elif args.simulation == 'py':
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcol
 import numpy as np
-from deer.agent import NeuralAgent
-from deer.learning_algos.q_net_keras import MyQNetwork
-from deer.learning_algos.AC_net_keras import MyACNetwork
-import deer.experiment.base_controllers as bc
-from deer.policies import EpsilonGreedyPolicy
-from other_controllers import GaussianNoiseController, GridSearchController
-from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
-from draw_treatment import make_img, make_img3
+#from draw_treatment import make_img, make_img3
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 def save_tumor_image(data, tick):
@@ -71,14 +64,20 @@ class EmpiricalTreatmentAgent():
         env.reset(-1)
 
         while(not env.inTerminalState()):
-            if i < 35:
-                self.total_score += env.act(4)
+            if i < 4:
+                self.total_score += env.act(8)
                 i += 1
             else:
-                self.total_score += env.act(0)
+                self.total_score += env.act(4)
 
-
-
+'''
+from deer.agent import NeuralAgent
+from deer.learning_algos.q_net_keras import MyQNetwork
+from deer.learning_algos.AC_net_keras import MyACNetwork
+import deer.experiment.base_controllers as bc
+from deer.policies import EpsilonGreedyPolicy
+from other_controllers import GaussianNoiseController, GridSearchController
+from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
 
 rng = np.random.RandomState(123456)
 
@@ -105,8 +104,8 @@ agent = NeuralAgent(
 
 #agent.attach(bc.VerboseController())
 agent.setNetwork(args.fname)
-
-#agent = EmpiricalTreatmentAgent(env)
+'''
+agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
@@ -122,13 +121,13 @@ for i in range(k):
         avg_rad += env.total_dose
         avg_h_cell_killed += env.radiation_h_killed
         avg_doses += env.num_doses
-'''
+
 print("TCP = ", count / k)
 print("Avg rad", avg_rad / count)
 print("Avg length in successes", length_success / count)
 print("Avg number of doses", avg_doses / count)
 print("Avg hcells killed", avg_h_cell_killed / count)
-#agent.summarizeTestPerformance()
+agent.summarizeTestPerformance()
 '''
 env.init_dose_map()
 agent._runEpisode(100000)
@@ -165,18 +164,11 @@ d_counts = []
 for i in range(len(ticks)):
     d_ticks += [ticks[i], ticks[i]]
     d_counts += [counts[i][0], counts[i][1]]
-'''
-ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-color = 'tab:blue'
-ax2.set_ylabel('Number of cancer cells (log)', color=color)  # we already handled the x-label with ax1
-ax2.set_ybound(0, 10000)
-ax2.plot(d_ticks, d_counts, color=color)
-ax2.set_yscale('log')
-ax2.tick_params(axis='y', labelcolor=color)
-'''
+
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.savefig('tmp/'+args.fname+'_treat')
 
 env.end()
 print(ticks, doses)
 
+'''

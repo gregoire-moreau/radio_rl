@@ -1,74 +1,81 @@
 import math
 import matplotlib.pyplot as plt
-
+from model.cell import CancerCell, HealthyCell, OARCell
+import random
 
 alpha_tumor = 0.3
 beta_tumor = 0.03
 alpha_norm_tissue = 0.15
 beta_norm_tissue = 0.03
 
-INIT_COUNT = 100000000
 
 class ScalarModel:
 
     def __init__(self):
-        self.hcells = INIT_COUNT
-        self.ccells = INIT_COUNT
+        HealthyCell.cell_count = 0
+        CancerCell.cell_count = 0
         self.time = 0
         self.ticks = [self.time]
-        self.ccell_counts = [self.ccells]
-        self.hcell_counts = [self.hcells]
+        self.cells = [CancerCell(0)] + [HealthyCell(0) for _ in range(5)]
+        self.ccell_counts = [CancerCell.cell_count]
+        self.hcell_counts = [HealthyCell.cell_count]
+        self.glucose = 100
+        self.oxygen = 1000
 
-    def go(self):
-        self.time += 1
+    def cycle_cells(self):
+        to_add = []
+        count = HealthyCell.cell_count + CancerCell.cell_count
+        for cell in random.sample(self.cells, count):
+            res = cell.cycle(self.glucose, count / 5 , self.oxygen)
+            if len(res) > 2:  # If there are more than two arguments, a new cell must be created
+                if res[2] == 0:  # Mitosis of a healthy cell
+                    to_add.append(HealthyCell(0))
+                elif res[2] == 1:
+                    to_add.append(CancerCell(0))
+            self.glucose -= res[0]  # The local variables are updated according to the cell's consumption
+            self.oxygen -= res[1]
+        self.cells = [cell for cell in self.cells if cell.alive] + to_add
 
-        #effect from ccells on hcells
-        self.hcells -= int(round(self.hcells * 0.01 * self.ccells / INIT_COUNT))
+    def fill_sources(self):
+        self.glucose += 130
+        self.oxygen += 4500
 
-        #proliferation
-        self.ccells += int(round(self.ccells * 1 / 50))
-        if self.ccells + self.hcells < 2 * INIT_COUNT:
-            self.hcells += int(round(self.hcells * 1 / 50 * (2 * INIT_COUNT - self.hcells - self.ccells) / (2 * INIT_COUNT)))
+    def go(self, ticks=1):
+        for _ in range(ticks):
+            self.time += 1
+            self.fill_sources()
+            self.cycle_cells()
+            #graph
+            self.ticks.append(self.time)
+            self.ccell_counts.append(CancerCell.cell_count)
+            self.hcell_counts.append(HealthyCell.cell_count)
 
-        #graph
-        self.ticks.append(self.time)
-        self.ccell_counts.append(self.ccells)
-        self.hcell_counts.append(self.hcells)
+    def irradiate(self, dose):
+        for cell in self.cells:
+            cell.radiate(dose)
+        self.cells = [cell for cell in self.cells if cell.alive]
 
-    def act(self, dose):
-        self.ccells = int(round(math.exp((-alpha_tumor * dose - beta_tumor * (dose ** 2))) * self.ccells))
-        self.hcells = int(round(math.exp((-alpha_norm_tissue * dose - beta_norm_tissue * (dose ** 2))) * self.hcells))
-        for i in range(24):
-            self.go()
+    def draw(self, title):
+        plt.plot(self.ticks, self.ccell_counts, 'r', label='Cancer cells')
+        plt.plot(self.ticks, self.hcell_counts, 'b', label='Healthy cells')
+        #plt.yscale('log')
+        plt.xlabel('Hours')
+        plt.ylabel("Count")
+        plt.legend()
+        plt.title(title)
+        plt.savefig(''.join(title.lower().split()))
 
-    def draw(self):
-        plt.plot(self.ticks, self.ccell_counts, 'r')
-        plt.plot(self.ticks, self.hcell_counts, 'b')
-        plt.yscale('log')
-        plt.title('Single dose')
-        plt.savefig('dose')
-
-
-'''
-grays = 0
-surviving = 1
-while surviving > 0:
-    grays += 1
-    model = ScalarModel()
-    model.send_dose(grays)
-    surviving = model.ccells
-
-print(grays)
-'''
+random.seed(1234)
 avg = 0
 model = ScalarModel()
 k = 0
-ticks = [0]
-ccells = [model.ccells]
-hcells = [model.hcells]
-
-while model.ccells > 0 and k < 100:
+while CancerCell.cell_count > 0 and k < 200:
     k += 1
-    model.act(22)
+    model.go()
 
-model.draw()
+while CancerCell.cell_count > 0:
+    model.irradiate(5)
+    model.go(24)
+
+
+model.draw('Baseline treatment')

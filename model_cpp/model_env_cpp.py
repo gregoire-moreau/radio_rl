@@ -112,12 +112,12 @@ class CellEnvironment(Environment):
                 return -1
             else:
                 if self.reward == 'dose':
-                    return  - dose / 100
+                    return  - dose / 400 - 0.5 + (self.init_hcell_count - cppCellModel.HCellCount()) / 3000
                 else:
                     return 0.5 - (self.init_hcell_count - cppCellModel.HCellCount()) / 3000#(cppCellModel.HCellCount() / self.init_hcell_count) - 0.5 - (2 * hcells_lost/2500)
         else:
             if self.reward == 'dose' or self.reward == 'oar':
-                return - dose / 100
+                return - dose / 400 + (ccell_killed - 5 * hcells_lost)/100000
             elif self.reward == 'killed':
                 return (ccell_killed - 5 * hcells_lost)/100000
 

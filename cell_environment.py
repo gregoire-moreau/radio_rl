@@ -5,7 +5,7 @@ import numpy as np
 from model.cell import CancerCell, HealthyCell, OARCell
 import copy
 import math
-import cv2
+#import cv2
 import random
 
 
@@ -107,17 +107,17 @@ class CellEnvironment(Environment):
         return reward
 
     def adjust_reward(self, dose, ccell_killed, hcells_lost):
-        if self.special_reward and self.inTerminalState():
+        if self.special_reward and self.inTerminalState() or False:
             if self.end_type == "L" or self.end_type == "T":
                 return -1
             else:
                 if self.reward == 'dose':
-                    return - dose / 100
+                    return - dose / 400 + 0.5 - (self.init_hcell_count - HealthyCell.cell_count) / 3000
                 else:
                     return 0.5 - (self.init_hcell_count - HealthyCell.cell_count) / 3000#(cppCellModel.HCellCount() / self.init_hcell_count) - 0.5 - (2 * hcells_lost/2500)
         else:
             if self.reward == 'dose' or self.reward == 'oar':
-                return - dose / 100
+                return - dose / 400 + (ccell_killed - 5 * hcells_lost)/100000
             elif self.reward == 'killed':
                 return (ccell_killed - 5 * hcells_lost)/100000
 
