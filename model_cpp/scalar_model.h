@@ -35,7 +35,7 @@ public:
     void train(int steps, double alpha, double epsilon);
     void test(int steps, bool verbose);
     void run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon);
-    void save_Q(string name);
+    void save_Q(std::string name);
 private:
     ScalarModel * env;
     int cancer_cell_stages;

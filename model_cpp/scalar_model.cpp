@@ -7,8 +7,8 @@
 #include <random>
 
 using namespace std;
-default_random_engine generator(5);
-uniform_real_distribution<double> uni_distribution(0.0, 1.0);
+default_random_engine generator2(5);
+uniform_real_distribution<double> uni_distribution2(0.0, 1.0);
 
 ScalarModel::ScalarModel(char reward): reward(reward), cancer_cells(nullptr), healthy_cells(nullptr), time(0), glucose(0.0), oxygen(0.0), end_type('0'), init_hcell_count(0){
 }
@@ -162,7 +162,7 @@ int TabularAgent::state(){
 }
 
 int TabularAgent::choose_action(int state, double epsilon){
-    if(uni_distribution(generator) < epsilon) {
+    if(uni_distribution2(generator2) < epsilon) {
         return rand() % 4;
     } else {
         int max_ind = -1;

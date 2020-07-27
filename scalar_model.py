@@ -198,7 +198,16 @@ class TabularLearner:
 random.seed(1234)
 env = ScalarModel('killed')
 agent = TabularLearner(env, 50, 5, 4)
-#agent.run(10, 1000, 100, 0.5, 0.5, 0.8, 0.05)
-#agent.save_Q()
-agent.load_Q()
+agent.run(20, 2500, 100, 0.8, 0.5, 0.8, 0.05)
+agent.save_Q("Qvalkilled")
 agent.test(100, verbose=True)
+env = ScalarModel('dose')
+agent = TabularLearner(env, 50, 5, 4)
+agent.run(20, 2500, 100, 0.8, 0.5, 0.8, 0.05)
+agent.save_Q("Qvaldose")
+agent.test(100, verbose=True)
+
+
+
+
+
