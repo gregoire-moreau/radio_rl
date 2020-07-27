@@ -1,11 +1,11 @@
 CXX = g++
 CXXFLAGS = -Wall -std=gnu++11 -g
 
-main: controller.o cell.o grid.o
-	$(CXX) $(CXXFLAGS) -o main controller.o cell.o grid.o
+main: scalar_model.o cell.o grid.o
+	$(CXX) $(CXXFLAGS) -o main scalar_model.o cell.o grid.o
 
-controller.o: controller.cpp controller.h grid.h cell.h
-	$(CXX) $(CXXFLAGS) -c controller.cpp
+scalar_model.o: scalar_model.cpp scalar_model.h grid.h cell.h
+	$(CXX) $(CXXFLAGS) -c scalar_model.cpp
 
 cell.o: cell.h grid.h
 
@@ -17,8 +17,3 @@ clean :
 	rm -f main
 	rm -rf build
 
-
-condense:
-	cat cell.h grid.h controller.h > condensed.h
-	echo "#include \"condensed.h\"" > condensed.cpp
-	cat cell.cpp grid.cpp controller.cpp >> condensed.cpp
