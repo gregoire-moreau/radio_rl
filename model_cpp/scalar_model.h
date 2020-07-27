@@ -32,9 +32,9 @@ class TabularAgent{
 public:
     TabularAgent(ScalarModel * env, int cancer_cell_stages, int healthy_cell_stages, int actions);
     ~TabularAgent();
-    void train(int steps, double alpha, double epsilon);
+    void train(int steps, double alpha, double epsilon, double disc_factor);
     void test(int steps, bool verbose);
-    void run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon);
+    void run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon, double disc_factor);
     void save_Q(std::string name);
 private:
     ScalarModel * env;

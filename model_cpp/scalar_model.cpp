@@ -141,8 +141,7 @@ bool ScalarModel::inTerminalState(){
 TabularAgent::TabularAgent(ScalarModel * env, int cancer_cell_stages, int healthy_cell_stages, int actions): env(env), cancer_cell_stages(cancer_cell_stages), healthy_cell_stages(healthy_cell_stages), actions(actions){
     Q_values = new double*[cancer_cell_stages * healthy_cell_stages];
     for(int i = 0; i < cancer_cell_stages * healthy_cell_stages; i++){
-        Q_values[i] = new double[actions];
-        fill_n(Q_values[i], actions, 0.0);
+        Q_values[i] = new double[actions]();
     }
     log_base_hcells = exp(log(4000.0) / ((double) healthy_cell_stages - 1.0));
     log_base_ccells = exp(log(40000.0) / ((double) cancer_cell_stages - 1.0));
@@ -158,17 +157,17 @@ TabularAgent::~TabularAgent(){
 int TabularAgent::state(){
     int ccell_state = min(cancer_cell_stages - 1, (int) floor(log(CancerCell::count + 1) / log(log_base_ccells)));
     int hcell_state = min(healthy_cell_stages - 1, (int) floor(log(HealthyCell::count + 1) / log(log_base_hcells)));
-    return ccell_state * cancer_cell_stages + hcell_state;
+    return ccell_state * healthy_cell_stages + hcell_state;
 }
 
 int TabularAgent::choose_action(int state, double epsilon){
     if(uni_distribution2(generator2) < epsilon) {
-        return rand() % 4;
+        return rand() % actions;
     } else {
         int max_ind = -1;
         double max_val = - 999999.0;
         for(int i = 0; i < actions; i++){
-            if(max_val > Q_values[state][i]) {
+            if(max_val < Q_values[state][i]) {
                 max_val = Q_values[state][i];
                 max_ind = i;
             }
@@ -177,7 +176,7 @@ int TabularAgent::choose_action(int state, double epsilon){
     }
 }
 
-void TabularAgent::train(int steps, double alpha, double epsilon){
+void TabularAgent::train(int steps, double alpha, double epsilon, double disc_factor){
     env -> reset();
     while(steps > 0){
         while (!env->inTerminalState() && steps > 0){
@@ -190,7 +189,7 @@ void TabularAgent::train(int steps, double alpha, double epsilon){
                 if(Q_values[new_obs][i] > max_val)
                     max_val = Q_values[new_obs][i];
             }
-            Q_values[obs][action] = (1.0 - alpha) * Q_values[obs][action] + alpha * (r + max_val);
+            Q_values[obs][action] = (1.0 - alpha) * Q_values[obs][action] + alpha * (r + disc_factor * max_val);
             steps--;
         }
         if(steps > 0)
@@ -220,14 +219,14 @@ void TabularAgent::test(int steps, bool verbose){
     cout << "Average reward " << sum_r / (double) count << endl;
 }
 
-void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon){
+void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon, double disc_factor){
     test(test_steps, false);
     double alpha = init_alpha;
     double epsilon = init_epsilon;
     double epsilon_change = (double) (init_epsilon - end_epsilon) / (double) (n_epochs - 1);
     for(int i = 0; i < n_epochs; i++){
         cout << "Epoch " << i + 1 << endl;
-        train(train_steps, alpha, epsilon);
+        train(train_steps, alpha, epsilon, disc_factor);
         test(test_steps, false);
         alpha *= alpha_mult;
         epsilon -= epsilon_change;
@@ -250,7 +249,7 @@ void TabularAgent::save_Q(string name){
 int main(int argc, char * argv[]){
     ScalarModel * model_killed = new ScalarModel('k');
     TabularAgent * agent_killed = new TabularAgent(model_killed, 50, 5, 4);
-    agent_killed -> run(stoi(argv[1]), 2500, 500, 0.8, 0.5, 0.8, 0.01);
+    agent_killed -> run(stoi(argv[1]), 10000, 500, 0.8, 0.8, 0.8, 0.01, 0.95);
     agent_killed -> test(100, true);
     agent_killed -> save_Q("qvals_killed.csv");
     delete model_killed;
@@ -258,7 +257,7 @@ int main(int argc, char * argv[]){
 
     ScalarModel * model_dose = new ScalarModel('d');
     TabularAgent * agent_dose = new TabularAgent(model_dose, 50, 5, 4);
-    agent_dose -> run(stoi(argv[1]), 2500, 500, 0.8, 0.5, 0.8, 0.01);
+    agent_dose -> run(stoi(argv[1]), 10000, 500, 0.8, 0.8, 0.8, 0.01, 0.95);
     agent_dose -> test(100, true);
     agent_dose -> save_Q("qvals_dose.csv");
     delete model_dose;
