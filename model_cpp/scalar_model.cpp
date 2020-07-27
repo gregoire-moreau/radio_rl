@@ -138,13 +138,18 @@ bool ScalarModel::inTerminalState(){
     }
 }
 
-TabularAgent::TabularAgent(ScalarModel * env, int cancer_cell_stages, int healthy_cell_stages, int actions): env(env), cancer_cell_stages(cancer_cell_stages), healthy_cell_stages(healthy_cell_stages), actions(actions){
+TabularAgent::TabularAgent(ScalarModel * env, int cancer_cell_stages, int healthy_cell_stages, int actions, char state_type): env(env), cancer_cell_stages(cancer_cell_stages), healthy_cell_stages(healthy_cell_stages), actions(actions), state_type(state_type){
     Q_values = new double*[cancer_cell_stages * healthy_cell_stages];
     for(int i = 0; i < cancer_cell_stages * healthy_cell_stages; i++){
         Q_values[i] = new double[actions]();
     }
-    log_base_hcells = exp(log(4000.0) / ((double) healthy_cell_stages - 1.0));
-    log_base_ccells = exp(log(40000.0) / ((double) cancer_cell_stages - 1.0));
+    if(state_type == 'o') { //log
+        state_helper_hcells = exp(log(4000.0) / ((double) healthy_cell_stages - 1.0));
+        state_helper_ccells = exp(log(40000.0) / ((double) cancer_cell_stages - 1.0));
+    } else { // lin
+        state_helper_hcells = 4000.0 / ((double) healthy_cell_stages - 1.0);
+        state_helper_ccells = 40000.0 / ((double) cancer_cell_stages - 1.0);
+    }
 }
 
 TabularAgent::~TabularAgent(){
@@ -155,8 +160,13 @@ TabularAgent::~TabularAgent(){
 }
 
 int TabularAgent::state(){
-    int ccell_state = min(cancer_cell_stages - 1, (int) floor(log(CancerCell::count + 1) / log(log_base_ccells)));
-    int hcell_state = min(healthy_cell_stages - 1, (int) floor(log(HealthyCell::count + 1) / log(log_base_hcells)));
+    if(state_type == 'o') { //log
+        int ccell_state = min(cancer_cell_stages - 1, (int) floor(log(CancerCell::count + 1) / log(state_helper_ccells)));
+        int hcell_state = min(healthy_cell_stages - 1, (int) floor(log(HealthyCell::count + 1) / log(state_helper_hcells)));
+    } else{
+        int ccell_state = min(cancer_cell_stages - 1, (int) floor(CancerCell::count / state_helper_ccells) );
+        int hcell_state = min(healthy_cell_stages - 1, (int) floor(HealthyCell::count / state_helper_hcells) );
+    }
     return ccell_state * healthy_cell_stages + hcell_state;
 }
 
@@ -247,19 +257,16 @@ void TabularAgent::save_Q(string name){
 }
 
 int main(int argc, char * argv[]){
-    ScalarModel * model_killed = new ScalarModel('k');
-    TabularAgent * agent_killed = new TabularAgent(model_killed, 50, 5, 4);
-    agent_killed -> run(stoi(argv[1]), 10000, 500, 0.8, 0.8, 0.8, 0.01, 0.95);
-    agent_killed -> test(100, true);
-    agent_killed -> save_Q("qvals_killed.csv");
-    delete model_killed;
-    delete agent_killed;
-
-    ScalarModel * model_dose = new ScalarModel('d');
-    TabularAgent * agent_dose = new TabularAgent(model_dose, 50, 5, 4);
-    agent_dose -> run(stoi(argv[1]), 10000, 500, 0.8, 0.8, 0.8, 0.01, 0.95);
-    agent_dose -> test(100, true);
-    agent_dose -> save_Q("qvals_dose.csv");
-    delete model_dose;
-    delete agent_dose;
+    int n_epochs = stoi(argv[1]);
+    char reward = argv[2][0];
+    char state_type = argv[3][0];
+    int cancer_cell_stages = stoi(argv[4]);
+    int healthy_cell_stages = stoi(argv[5]);
+    ScalarModel * model = new ScalarModel(reward);
+    TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 4, state_type);
+    agent -> run(n_epochs, 10000, 500, 0.8, 0.95, 0.8, 0.01, 0.95);
+    agent -> test(100, true);
+    agent -> save_Q("qvals"+reward+state_type+".csv");
+    delete model;
+    delete agent;
 }

@@ -146,7 +146,7 @@ class TabularLearner:
         else:
             return np.argmax(self.Q[state])
 
-    def train(self, steps, alpha, epsilon):
+    def train(self, steps, alpha, epsilon, disc_factor):
         self.env.reset()
         while steps > 0:
             while not self.env.inTerminalState() and steps > 0:
@@ -154,7 +154,7 @@ class TabularLearner:
                 action = self.choose_action(state, epsilon)
                 r = self.env.act(action)
                 new_state = self.convert(self.env.observe())
-                self.Q[state][action] = (1 - alpha) * self.Q[state][action] + alpha * (r + np.max(self.Q[new_state]))
+                self.Q[state][action] = (1 - alpha) * self.Q[state][action] + alpha * (r + disc_factor * np.max(self.Q[new_state]))
                 steps -= 1
             if steps > 0:
                 self.env.reset()
@@ -176,14 +176,14 @@ class TabularLearner:
                 self.env.reset()
         print("Average reward = ", sum_r / count)
 
-    def run(self, n_epochs, train_steps, test_steps, init_alpha, alpha_mult, init_epsilon, final_epsilon):
+    def run(self, n_epochs, train_steps, test_steps, init_alpha, alpha_mult, init_epsilon, final_epsilon, disc_factor):
         self.test(test_steps)
         alpha = init_alpha
         epsilon = init_epsilon
         epsilon_change = (init_epsilon - final_epsilon) / (n_epochs - 1)
         for i in range(n_epochs):
             print("Epoch ", i + 1)
-            self.train(train_steps, alpha, epsilon)
+            self.train(train_steps, alpha, epsilon, disc_factor)
             self.test(test_steps)
             alpha *= alpha_mult
             epsilon -= epsilon_change
@@ -196,17 +196,23 @@ class TabularLearner:
 
 
 random.seed(1234)
-env = ScalarModel('killed')
+env = ScalarModel('killed', draw=True)
+env.reset()
+env.irradiate(15)
+print(HealthyCell.cell_count, CancerCell.cell_count)
+env.go()
+env.draw('Single dose')
+'''
 agent = TabularLearner(env, 50, 5, 4)
-agent.run(20, 2500, 100, 0.8, 0.5, 0.8, 0.05)
+agent.run(20, 2500, 100, 0.8, 0.5, 0.8, 0.05, 0.95)
 agent.save_Q("Qvalkilled")
 agent.test(100, verbose=True)
 env = ScalarModel('dose')
 agent = TabularLearner(env, 50, 5, 4)
-agent.run(20, 2500, 100, 0.8, 0.5, 0.8, 0.05)
+agent.run(20, 2500, 100, 0.8, 0.5, 0.8, 0.05, 0.95)
 agent.save_Q("Qvaldose")
 agent.test(100, verbose=True)
-
+'''
 
 
 

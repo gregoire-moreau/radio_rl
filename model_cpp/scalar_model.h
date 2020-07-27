@@ -30,7 +30,7 @@ private:
 
 class TabularAgent{
 public:
-    TabularAgent(ScalarModel * env, int cancer_cell_stages, int healthy_cell_stages, int actions);
+    TabularAgent(ScalarModel * env, int cancer_cell_stages, int healthy_cell_stages, int actions, char state_type);
     ~TabularAgent();
     void train(int steps, double alpha, double epsilon, double disc_factor);
     void test(int steps, bool verbose);
@@ -41,9 +41,10 @@ private:
     int cancer_cell_stages;
     int healthy_cell_stages;
     int actions;
+    char state_type;
     double ** Q_values;
-    double log_base_hcells;
-    double log_base_ccells;
+    double state_helper_hcells;
+    double state_helper_ccells;
     int state();
     int choose_action(int state, double epsilon);
 };
