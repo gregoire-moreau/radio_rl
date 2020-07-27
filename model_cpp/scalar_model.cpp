@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <random>
 
 using namespace std;
 default_random_engine generator(5);
@@ -104,20 +105,20 @@ double ScalarModel::act(int action){
     return adjust_reward(dose, pre_ccell - post_ccell, pre_hcell-min(post_hcell, m_hcell));
 }
 
-double ScalarModel::adjust_reward(int dose, ccell_killed, hcells_lost){
+double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
     if (inTerminalState()){
         if (end_type == 'L' || end_type == 'T'){
             return -1.0;
         } else{
-            if (self.reward == 'd')
+            if (reward == 'd')
                 return - (double) dose / 400.0 + 0.5 - (double) (init_hcell_count - HealthyCell::count) / 3000.0;
             else
                 return 0.5 - (double) (init_hcell_count - HealthyCell::count) / 3000.0;
         }
     } else {
-        if (self.reward == 'd')
+        if (reward == 'd')
             return - (double) dose / 400.0 + (double) (ccell_killed - 5 * hcells_lost)/100000.0;
-        else if (self.reward == 'k')
+        else if (reward == 'k')
             return (double) (ccell_killed - 5 * hcells_lost)/100000.0;
     }
 }
@@ -155,8 +156,8 @@ TabularAgent::~TabularAgent(){
 }
 
 int TabularAgent::state(){
-    int ccell_state = min(cancer_cell_stages - 1, (int) floor(logb(CancerCell::count + 1, log_base_ccells)));
-    int hcell_state = min(healthy_cell_stages - 1, (int) floor(logb(HealthyCell::count + 1, log_base_hcells)));
+    int ccell_state = min(cancer_cell_stages - 1, (int) floor(log(CancerCell::count + 1) / log(log_base_ccells)));
+    int hcell_state = min(healthy_cell_stages - 1, (int) floor(log(HealthyCell::count + 1) / log(log_base_hcells)));
     return ccell_state * cancer_cell_stages + hcell_state;
 }
 
@@ -219,7 +220,7 @@ void TabularAgent::test(int steps, bool verbose){
     cout << "Average reward " << sum_r / (double) count << endl;
 }
 
-void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init epsilon, double end_epsilon){
+void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon){
     test(test_steps, false);
     double alpha = init_alpha;
     double epsilon = init_epsilon;
@@ -233,7 +234,7 @@ void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double ini
     }
 }
 
-void TabularAgent::save_Q(char * name){
+void TabularAgent::save_Q(string name){
     ofstream myfile;
     myfile.open(name);
     myfile << cancer_cell_stages << " " << healthy_cell_stages << " " << actions << "\n";
