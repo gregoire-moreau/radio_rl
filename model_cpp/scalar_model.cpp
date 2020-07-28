@@ -257,6 +257,7 @@ void TabularAgent::save_Q(string name){
 }
 
 void no_treatment(){
+    cout << "No treatment" << endl;
     ScalarModel * model = new ScalarModel('a');
     model -> reset();
     for(int i = 350; i < 2000; i += 50){
@@ -266,8 +267,96 @@ void no_treatment(){
     delete model;
 }
 
+void low_treatment(char reward){
+    cout << "Low treatment" << endl;
+    ScalarModel * model = new ScalarModel(reward);
+    double sum_scores = 0.0;
+    for(int i = 0; i < 25; i++){
+        model -> reset();
+        double sum_r = 0;
+        int count = 0;
+        while (!env->inTerminalState()){
+            int obs = state();
+            sum_r += env -> act(0);
+            count++;
+        }
+        sum_scores += sum_r / (double) count;
+    }
+    cout << "Average reward " << (sum_scores / 25.0) << endl;
+    delete model;
+}
+
+void baseline_treatment(char reward){
+    cout << "Baseline treatment" << endl;
+    ScalarModel * model = new ScalarModel(reward);
+    double sum_scores = 0.0;
+    for(int i = 0; i < 25; i++){
+        model -> reset();
+        double sum_r = 0;
+        int count = 0;
+        while (!env->inTerminalState()){
+            int obs = state();
+            sum_r += env -> act(1);
+            count++;
+        }
+        sum_scores += sum_r / (double) count;
+    }
+    cout << "Average reward " << (sum_scores / 25.0) << endl;
+    delete model;
+}
+
+void high_treatment(char reward){
+    cout << "High treatment" << endl;
+    ScalarModel * model = new ScalarModel(reward);
+    double sum_scores = 0.0;
+    for(int i = 0; i < 25; i++){
+        model -> reset();
+        double sum_r = 0;
+        int count = 0;
+        while (!env->inTerminalState()){
+            int obs = state();
+            sum_r += env -> act(4);
+            count++;
+        }
+        sum_scores += sum_r / (double) count;
+    }
+    cout << "Average reward " << (sum_scores / 25.0) << endl;
+    delete model;
+}
+
+void high_low_treatment(char reward){
+    cout << "High low treatment" << endl;
+    ScalarModel * model = new ScalarModel(reward);
+    double sum_scores = 0.0;
+    for(int i = 0; i < 25; i++){
+        model -> reset();
+        double sum_r = 0;
+        int count = 0;
+        while (!env->inTerminalState()){
+            int obs = state();
+            if(count <= 3)
+                sum_r += env -> act(3);
+            else
+                sum_r += env -> act(1);
+            count++;
+        }
+        sum_scores += sum_r / (double) count;
+    }
+    cout << "Average reward " << (sum_scores / 25.0) << endl;
+    delete model;
+}
+
 int main(int argc, char * argv[]){
-    no_treatment();
+    cout << "Killed "<<endl;
+    low_treatment('k');
+    baseline_treatment('k');
+    high_treatment('k');
+    high_low_treatment('k');
+    cout << "Dose "<<endl;
+    low_treatment('d');
+    baseline_treatment('d');
+    high_treatment('d');
+    high_low_treatment('d');
     /*
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
