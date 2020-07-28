@@ -208,26 +208,25 @@ void TabularAgent::train(int steps, double alpha, double epsilon, double disc_fa
     }
 }
 
-void TabularAgent::test(int steps, bool verbose){
-    double sum_r = 0.0;
-    int count = steps;
-    env -> reset();
-    while(steps > 0){
-        while (!env->inTerminalState() && steps > 0){
+void TabularAgent::test(int episodes, bool verbose){
+    double sum_scores = 0.0;
+    for (int i = 0; i < episodes; i++){
+        env -> reset();
+        double sum_r = 0;
+        int count = 0;
+        while (!env->inTerminalState()){
             int obs = state();
             int action = choose_action(obs, 0.0);
             if (verbose)
                 cout << action + 1 << " grays" << endl;
             sum_r += env -> act(action);
-            steps--;
+            count++;
         }
-        if(steps > 0){
-            if(verbose)
-                cout << env -> end_type << endl;
-            env -> reset();
-        }
+        if(verbose)
+            cout << env -> end_type << endl;
+        sum_scores += sum_r / (double) count;
     }
-    cout << "Average reward " << sum_r / (double) count << endl;
+    cout << "Average reward " << sum_scores / (double) episodes << endl;
 }
 
 void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon, double disc_factor){
@@ -257,7 +256,19 @@ void TabularAgent::save_Q(string name){
     myfile.close();
 }
 
+void no_treatment(){
+    ScalarModel * model = new ScalarModel('a');
+    model -> reset();
+    for(int i = 350; i < 2000; i += 50){
+        cout << "Time: " << i << " Healthy cells: " <<  HealthyCell::count << " Cancer cells: " << CancerCell::count << endl;
+        model -> go(50);
+    }
+    delete model;
+}
+
 int main(int argc, char * argv[]){
+    no_treatment();
+    /*
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
@@ -270,4 +281,5 @@ int main(int argc, char * argv[]){
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
+    */
 }
