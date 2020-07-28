@@ -275,9 +275,9 @@ void low_treatment(char reward){
         model -> reset();
         double sum_r = 0;
         int count = 0;
-        while (!env->inTerminalState()){
-            int obs = state();
-            sum_r += env -> act(0);
+        while (!model->inTerminalState()){
+            //int obs = state();
+            sum_r += model -> act(0);
             count++;
         }
         sum_scores += sum_r / (double) count;
@@ -294,9 +294,9 @@ void baseline_treatment(char reward){
         model -> reset();
         double sum_r = 0;
         int count = 0;
-        while (!env->inTerminalState()){
-            int obs = state();
-            sum_r += env -> act(1);
+        while (!model->inTerminalState()){
+            //int obs = state();
+            sum_r += model -> act(1);
             count++;
         }
         sum_scores += sum_r / (double) count;
@@ -313,9 +313,9 @@ void high_treatment(char reward){
         model -> reset();
         double sum_r = 0;
         int count = 0;
-        while (!env->inTerminalState()){
-            int obs = state();
-            sum_r += env -> act(4);
+        while (!model->inTerminalState()){
+            //int obs = state();
+            sum_r += model -> act(4);
             count++;
         }
         sum_scores += sum_r / (double) count;
@@ -332,12 +332,12 @@ void high_low_treatment(char reward){
         model -> reset();
         double sum_r = 0;
         int count = 0;
-        while (!env->inTerminalState()){
-            int obs = state();
+        while (!model->inTerminalState()){
+            //int obs = state();
             if(count <= 3)
-                sum_r += env -> act(3);
+                sum_r += model -> act(3);
             else
-                sum_r += env -> act(1);
+                sum_r += model -> act(1);
             count++;
         }
         sum_scores += sum_r / (double) count;
