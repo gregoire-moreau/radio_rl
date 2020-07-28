@@ -10,6 +10,7 @@ public:
     ScalarModel(char reward);
     ~ScalarModel();
     void reset();
+    void go(int hours);
     double act(int action);
     bool inTerminalState();
     char end_type;
@@ -23,7 +24,6 @@ private:
     int init_hcell_count;
     void cycle_cells();
     void fill_sources();
-    void go(int i);
     void irradiate(int dose);
     double adjust_reward(int dose, int ccell_killed, int hcells_lost);
 };
