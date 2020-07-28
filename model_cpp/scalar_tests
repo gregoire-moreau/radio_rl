@@ -2,55 +2,113 @@ Average reward -0.0506505
 Epoch 1
 Average reward -0.0320516
 Epoch 2
-Average reward -0.0328467
+Average reward -0.033177
 Epoch 3
-Average reward -0.0355058
+Average reward -0.0347574
 Epoch 4
-Average reward -0.0369744
+Average reward -0.0299585
 Epoch 5
-Average reward -0.026404
+Average reward -0.0342899
 Epoch 6
-Average reward -0.0282071
+Average reward -0.0334747
 Epoch 7
-Average reward -0.0255354
+Average reward -0.0330983
 Epoch 8
-Average reward -0.0311355
+Average reward -0.0350622
 Epoch 9
-Average reward -0.0272985
+Average reward -0.0299038
 Epoch 10
-Average reward -0.0261659
+Average reward -0.0292515
 Epoch 11
-Average reward -0.024959
+Average reward -0.0305862
 Epoch 12
-Average reward -0.0279614
+Average reward -0.034957
 Epoch 13
-Average reward -0.0196787
+Average reward -0.0345967
 Epoch 14
-Average reward -0.0227712
+Average reward -0.0262978
 Epoch 15
-Average reward -0.0235988
+Average reward -0.0299222
 Epoch 16
-Average reward -0.0219563
+Average reward -0.0207805
 Epoch 17
-Average reward -0.0186741
+Average reward -0.0297009
 Epoch 18
-Average reward -0.0197503
+Average reward -0.0226224
 Epoch 19
-Average reward -0.0186741
+Average reward -0.0267889
 Epoch 20
-Average reward -0.0191518
-2 grays
+Average reward -0.0231912
+Epoch 21
+Average reward -0.0214299
+Epoch 22
+Average reward -0.0261101
+Epoch 23
+Average reward -0.0250097
+Epoch 24
+Average reward -0.022703
+Epoch 25
+Average reward -0.0201903
+Epoch 26
+Average reward -0.0222489
+Epoch 27
+Average reward -0.0199135
+Epoch 28
+Average reward -0.0199651
+Epoch 29
+Average reward -0.0202431
+Epoch 30
+Average reward -0.0411713
+Epoch 31
+Average reward -0.019893
+Epoch 32
+Average reward -0.022721
+Epoch 33
+Average reward -0.022378
+Epoch 34
+Average reward -0.0223365
+Epoch 35
+Average reward -0.0228815
+Epoch 36
+Average reward -0.0374371
+Epoch 37
+Average reward -0.0214943
+Epoch 38
+Average reward -0.0220812
+Epoch 39
+Average reward -0.0206696
+Epoch 40
+Average reward -0.0370031
+Epoch 41
+Average reward -0.0234109
+Epoch 42
+Average reward -0.0385534
+Epoch 43
+Average reward -0.0221958
+Epoch 44
+Average reward -0.0247984
+Epoch 45
+Average reward -0.020793
+Epoch 46
+Average reward -0.0197074
+Epoch 47
+Average reward -0.0235022
+Epoch 48
+Average reward -0.0200862
+Epoch 49
+Average reward -0.0215494
+Epoch 50
+Average reward -0.0210002
 4 grays
 2 grays
 1 grays
 1 grays
 2 grays
 1 grays
-3 grays
 1 grays
-1 grays
-1 grays
-1 grays
+2 grays
+2 grays
+2 grays
 2 grays
 1 grays
 1 grays
@@ -60,13 +118,6 @@ Average reward -0.0191518
 2 grays
 1 grays
 1 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-2 grays
 3 grays
 2 grays
 2 grays
@@ -74,34 +125,52 @@ Average reward -0.0191518
 1 grays
 2 grays
 1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+2 grays
+1 grays
+1 grays
 3 grays
-2 grays
-2 grays
 1 grays
-2 grays
 3 grays
-2 grays
 1 grays
 1 grays
+3 grays
 4 grays
 3 grays
-2 grays
+4 grays
+4 grays
 1 grays
-2 grays
-2 grays
-1 grays
-T
-2 grays
+3 grays
+3 grays
+3 grays
+W
 4 grays
 2 grays
 1 grays
 1 grays
 2 grays
 1 grays
+1 grays
 2 grays
+2 grays
+2 grays
+2 grays
+1 grays
 1 grays
 2 grays
 1 grays
+1 grays
+2 grays
+3 grays
+2 grays
+1 grays
+1 grays
+2 grays
 1 grays
 2 grays
 1 grays
@@ -114,175 +183,22 @@ T
 1 grays
 2 grays
 3 grays
-2 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-3 grays
-1 grays
-1 grays
-3 grays
-2 grays
 2 grays
 3 grays
 1 grays
 4 grays
-3 grays
 2 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-3 grays
-1 grays
-Average reward -0.0115178
-Average reward -0.0555642
-Epoch 1
-Average reward -0.0338342
-Epoch 2
-Average reward -0.0337385
-Epoch 3
-Average reward -0.0282559
-Epoch 4
-Average reward -0.0401966
-Epoch 5
-Average reward -0.0367876
-Epoch 6
-Average reward -0.039426
-Epoch 7
-Average reward -0.030864
-Epoch 8
-Average reward -0.0465307
-Epoch 9
-Average reward -0.0344602
-Epoch 10
-Average reward -0.0254522
-Epoch 11
-Average reward -0.0249614
-Epoch 12
-Average reward -0.031189
-Epoch 13
-Average reward -0.0271464
-Epoch 14
-Average reward -0.0275768
-Epoch 15
-Average reward -0.0232427
-Epoch 16
-Average reward -0.0272717
-Epoch 17
-Average reward -0.0235294
-Epoch 18
-Average reward -0.025638
-Epoch 19
-Average reward -0.0262933
-Epoch 20
-Average reward -0.0250444
-2 grays
-3 grays
-3 grays
-1 grays
-2 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
 3 grays
 4 grays
 1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-3 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-3 grays
-1 grays
-2 grays
-T
-2 grays
-3 grays
-3 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-3 grays
 4 grays
-L
-2 grays
-3 grays
-3 grays
 1 grays
-1 grays
-2 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-1 grays
-2 grays
-1 grays
-2 grays
-1 grays
-1 grays
-3 grays
 4 grays
-L
+4 grays
+W
+4 grays
 2 grays
-3 grays
-Average reward -0.036769
+1 grays
+1 grays
+2 grays
+Average reward -0.0201843
