@@ -106,7 +106,7 @@ double ScalarModel::act(int action){
 }
 
 double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
-    if (inTerminalState()){
+    if (inTerminalState() && reward != 'n'){
         if (end_type == 'L' || end_type == 'T'){
             return -1.0;
         } else{
@@ -116,7 +116,7 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
                 return 0.5 - (double) (init_hcell_count - HealthyCell::count) / 3000.0;
         }
     } else {
-        if (reward == 'd')
+        if (reward == 'd' || reward == 'n')
             return - (double) dose / 400.0 + (double) (ccell_killed - 5 * hcells_lost)/100000.0;
         else if (reward == 'k')
             return (double) (ccell_killed - 5 * hcells_lost)/100000.0;
@@ -224,7 +224,7 @@ void TabularAgent::test(int episodes, bool verbose){
         }
         if(verbose)
             cout << env -> end_type << endl;
-        sum_scores += sum_r / (double) count;
+        sum_scores += sum_r;
     }
     cout << "Average reward " << sum_scores / (double) episodes << endl;
 }
@@ -280,7 +280,7 @@ void low_treatment(char reward){
             sum_r += model -> act(0);
             count++;
         }
-        sum_scores += sum_r / (double) count;
+        sum_scores += sum_r;
     }
     cout << "Average reward " << (sum_scores / 25.0) << endl;
     delete model;
@@ -299,7 +299,7 @@ void baseline_treatment(char reward){
             sum_r += model -> act(1);
             count++;
         }
-        sum_scores += sum_r / (double) count;
+        sum_scores += sum_r;
     }
     cout << "Average reward " << (sum_scores / 25.0) << endl;
     delete model;
@@ -318,7 +318,7 @@ void high_treatment(char reward){
             sum_r += model -> act(4);
             count++;
         }
-        sum_scores += sum_r / (double) count;
+        sum_scores += sum_r;
     }
     cout << "Average reward " << (sum_scores / 25.0) << endl;
     delete model;
@@ -340,7 +340,7 @@ void high_low_treatment(char reward){
                 sum_r += model -> act(1);
             count++;
         }
-        sum_scores += sum_r / (double) count;
+        sum_scores += sum_r;
     }
     cout << "Average reward " << (sum_scores / 25.0) << endl;
     delete model;
@@ -357,6 +357,11 @@ int main(int argc, char * argv[]){
     baseline_treatment('d');
     high_treatment('d');
     high_low_treatment('d');
+    cout << "Dose no special"<<endl;
+    low_treatment('n');
+    baseline_treatment('n');
+    high_treatment('n');
+    high_low_treatment('n');
     /*
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
