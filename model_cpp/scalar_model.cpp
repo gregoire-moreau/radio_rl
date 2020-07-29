@@ -144,11 +144,11 @@ TabularAgent::TabularAgent(ScalarModel * env, int cancer_cell_stages, int health
         Q_values[i] = new double[actions]();
     }
     if(state_type == 'o') { //log
-        state_helper_hcells = exp(log(4000.0) / ((double) healthy_cell_stages - 1.0));
-        state_helper_ccells = exp(log(40000.0) / ((double) cancer_cell_stages - 1.0));
+        state_helper_hcells = exp(log(3500.0) / ((double) healthy_cell_stages - 2.0));
+        state_helper_ccells = exp(log(40000.0) / ((double) cancer_cell_stages - 2.0));
     } else { // lin
-        state_helper_hcells = 4000.0 / ((double) healthy_cell_stages - 1.0);
-        state_helper_ccells = 40000.0 / ((double) cancer_cell_stages - 1.0);
+        state_helper_hcells = 3500.0 / ((double) healthy_cell_stages - 2.0);
+        state_helper_ccells = 40000.0 / ((double) cancer_cell_stages - 2.0);
     }
 }
 
@@ -162,11 +162,11 @@ TabularAgent::~TabularAgent(){
 int TabularAgent::state(){
     int hcell_state, ccell_state;
     if(state_type == 'o') { //log
-        ccell_state = min(cancer_cell_stages - 1, (int) floor(log(CancerCell::count + 1) / log(state_helper_ccells)));
-        hcell_state = min(healthy_cell_stages - 1, (int) floor(log(HealthyCell::count + 1) / log(state_helper_hcells)));
+        ccell_state = min(cancer_cell_stages - 1, (int) ceil(log(CancerCell::count + 1) / log(state_helper_ccells)));
+        hcell_state = min(healthy_cell_stages - 1, (int) ceil(log(max(HealthyCell::count - 8, 1)) / log(state_helper_hcells)));
     } else{
-        ccell_state = min(cancer_cell_stages - 1, (int) floor(CancerCell::count / state_helper_ccells) );
-        hcell_state = min(healthy_cell_stages - 1, (int) floor(HealthyCell::count / state_helper_hcells) );
+        ccell_state = min(cancer_cell_stages - 1, (int) ceil((double) CancerCell::count / (double) state_helper_ccells) );
+        hcell_state = min(healthy_cell_stages - 1, (int) ceil((double)  max(HealthyCell::count - 9, 0) / (double) state_helper_hcells) );
     }
     return ccell_state * healthy_cell_stages + hcell_state;
 }
@@ -208,37 +208,49 @@ void TabularAgent::train(int steps, double alpha, double epsilon, double disc_fa
     }
 }
 
-void TabularAgent::test(int episodes, bool verbose){
+void TabularAgent::test(int episodes, bool verbose, double disc_factor){
     double sum_scores = 0.0;
+    double sum_error = 0.0;
     for (int i = 0; i < episodes; i++){
         env -> reset();
         double sum_r = 0;
+        double err = 0.0;
         int count = 0;
         while (!env->inTerminalState()){
             int obs = state();
             int action = choose_action(obs, 0.0);
             if (verbose)
                 cout << action + 1 << " grays" << endl;
-            sum_r += env -> act(action);
+            double r = env -> act(action);
+            sum_r += r;
+            int new_obs = state();
+            double max_val = - 99999.0;
+            for(int i = 0; i < actions; i++){
+                if(Q_values[new_obs][i] > max_val)
+                    max_val = Q_values[new_obs][i];
+            }
+            err += pow(r + disc_factor * max_val - Q_values[obs][action], 2.0);
             count++;
         }
         if(verbose)
             cout << env -> end_type << endl;
         sum_scores += sum_r;
+        sum_error += err / (double) count;
     }
-    cout << "Average reward " << sum_scores / (double) episodes << endl;
+    cout << "Average score: " << sum_scores / (double) episodes << " MSE: " << sum_error / (double) episodes << endl;
 }
 
 void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon, double disc_factor){
-    test(test_steps, false);
+    test(test_steps, false, disc_factor);
     double alpha = init_alpha;
     double epsilon = init_epsilon;
     double epsilon_change = (double) (init_epsilon - end_epsilon) / (double) (n_epochs - 1);
+    double alpha_change = (double) (init_alpha - alpha_mult) / (double) (n_epochs - 1);
     for(int i = 0; i < n_epochs; i++){
         cout << "Epoch " << i + 1 << endl;
         train(train_steps, alpha, epsilon, disc_factor);
-        test(test_steps, false);
-        alpha *= alpha_mult;
+        test(test_steps, false, disc_factor);
+        alpha -= alpha_change;
         epsilon -= epsilon_change;
     }
 }
@@ -347,6 +359,7 @@ void high_low_treatment(char reward){
 }
 
 int main(int argc, char * argv[]){
+    /*
     cout << "Killed "<<endl;
     low_treatment('k');
     baseline_treatment('k');
@@ -362,18 +375,17 @@ int main(int argc, char * argv[]){
     baseline_treatment('n');
     high_treatment('n');
     high_low_treatment('n');
-    /*
+    */
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
     int cancer_cell_stages = stoi(argv[4]);
     int healthy_cell_stages = stoi(argv[5]);
     ScalarModel * model = new ScalarModel(reward);
-    TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 4, state_type);
-    agent -> run(n_epochs, 10000, 500, 0.8, 0.95, 0.8, 0.01, 0.95);
-    agent -> test(100, true);
+    TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
+    agent -> run(n_epochs, 10000, 50, 0.8, 0.05, 0.8, 0.01, 0.99);
+    agent -> test(5, true, 0.99);
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
-    */
 }
