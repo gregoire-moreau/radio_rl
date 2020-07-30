@@ -1,0 +1,369 @@
+Average score: -1.37723 MSE: 0.0627348
+Epoch 1
+Average score: -2.04437 MSE: 0.0202276
+Epoch 2
+Average score: -1.51621 MSE: 0.0145822
+Epoch 3
+Average score: -0.914968 MSE: 0.0191522
+Epoch 4
+Average score: -1.17795 MSE: 0.0235642
+Epoch 5
+Average score: -0.994043 MSE: 0.0115288
+Epoch 6
+Average score: -0.828772 MSE: 0.0247647
+Epoch 7
+Average score: -1.76392 MSE: 0.0204326
+Epoch 8
+Average score: -1.39924 MSE: 0.023989
+Epoch 9
+Average score: -0.892555 MSE: 0.0236203
+Epoch 10
+Average score: -1.92804 MSE: 0.018773
+Epoch 11
+Average score: -1.22573 MSE: 0.0193659
+Epoch 12
+Average score: -1.87316 MSE: 0.020248
+Epoch 13
+Average score: -1.76074 MSE: 0.0221287
+Epoch 14
+Average score: -1.52944 MSE: 0.0156514
+Epoch 15
+Average score: -1.34513 MSE: 0.0147201
+Epoch 16
+Average score: -2.27184 MSE: 0.0304372
+Epoch 17
+Average score: -1.3232 MSE: 0.0233364
+Epoch 18
+Average score: -1.98497 MSE: 0.022674
+Epoch 19
+Average score: -1.87466 MSE: 0.0290048
+Epoch 20
+Average score: -1.22422 MSE: 0.0364788
+Epoch 21
+Average score: -2.00354 MSE: 0.0247701
+Epoch 22
+Average score: -1.66448 MSE: 0.0199672
+Epoch 23
+Average score: -1.64634 MSE: 0.0204652
+Epoch 24
+Average score: -1.21464 MSE: 0.0384627
+Epoch 25
+Average score: -2.11076 MSE: 0.0199863
+Epoch 26
+Average score: -1.21746 MSE: 0.0364017
+Epoch 27
+Average score: -1.90612 MSE: 0.0275711
+Epoch 28
+Average score: -2.18513 MSE: 0.0404048
+Epoch 29
+Average score: -1.80618 MSE: 0.0304071
+Epoch 30
+Average score: -1.61863 MSE: 0.029248
+Epoch 31
+Average score: -1.3553 MSE: 0.0337156
+Epoch 32
+Average score: -1.21751 MSE: 0.0369323
+Epoch 33
+Average score: -1.46037 MSE: 0.0519384
+Epoch 34
+Average score: -1.28891 MSE: 0.0278879
+Epoch 35
+Average score: -1.30405 MSE: 0.0275985
+Epoch 36
+Average score: -1.33932 MSE: 0.0400325
+Epoch 37
+Average score: -1.33519 MSE: 0.0343343
+Epoch 38
+Average score: -1.29191 MSE: 0.0267505
+Epoch 39
+Average score: -1.40236 MSE: 0.0267477
+Epoch 40
+Average score: -1.27406 MSE: 0.0346799
+Epoch 41
+Average score: -1.24154 MSE: 0.0347586
+Epoch 42
+Average score: -1.2837 MSE: 0.0235503
+Epoch 43
+Average score: -1.24 MSE: 0.0373887
+Epoch 44
+Average score: -1.25638 MSE: 0.0275425
+Epoch 45
+Average score: -1.26454 MSE: 0.0260984
+Epoch 46
+Average score: -1.27544 MSE: 0.023217
+Epoch 47
+Average score: -1.37602 MSE: 0.0196326
+Epoch 48
+Average score: -1.34256 MSE: 0.0229046
+Epoch 49
+Average score: -1.4021 MSE: 0.0195109
+Epoch 50
+Average score: -1.26685 MSE: 0.0321634
+Epoch 51
+Average score: -1.24517 MSE: 0.027932
+Epoch 52
+Average score: -1.29716 MSE: 0.0328618
+Epoch 53
+Average score: -1.17634 MSE: 0.0347798
+Epoch 54
+Average score: -1.31096 MSE: 0.0320307
+Epoch 55
+Average score: -1.187 MSE: 0.0358928
+Epoch 56
+Average score: -1.22146 MSE: 0.0331192
+Epoch 57
+Average score: -1.25631 MSE: 0.0341568
+Epoch 58
+Average score: -1.17164 MSE: 0.0384822
+Epoch 59
+Average score: -1.34589 MSE: 0.0259755
+Epoch 60
+Average score: -1.21386 MSE: 0.0319928
+Epoch 61
+Average score: -1.17746 MSE: 0.0370091
+Epoch 62
+Average score: -1.23599 MSE: 0.028774
+Epoch 63
+Average score: -1.16347 MSE: 0.0385516
+Epoch 64
+Average score: -1.33756 MSE: 0.0218424
+Epoch 65
+Average score: -1.1853 MSE: 0.0360922
+Epoch 66
+Average score: -1.76908 MSE: 0.0313842
+Epoch 67
+Average score: -1.19192 MSE: 0.0348224
+Epoch 68
+Average score: -1.19297 MSE: 0.0352553
+Epoch 69
+Average score: -1.25264 MSE: 0.0195961
+Epoch 70
+Average score: -1.31849 MSE: 0.0207181
+Epoch 71
+Average score: -1.24764 MSE: 0.0158399
+Epoch 72
+Average score: -1.19241 MSE: 0.0348709
+Epoch 73
+Average score: -1.21101 MSE: 0.0214
+Epoch 74
+Average score: -1.31728 MSE: 0.0207464
+Epoch 75
+Average score: -1.20599 MSE: 0.0304213
+Epoch 76
+Average score: -1.34475 MSE: 0.0221057
+Epoch 77
+Average score: -1.2429 MSE: 0.0280804
+Epoch 78
+Average score: -1.25112 MSE: 0.0278222
+Epoch 79
+Average score: -1.23553 MSE: 0.0187239
+Epoch 80
+Average score: -1.21291 MSE: 0.0123576
+Epoch 81
+Average score: -1.43436 MSE: 0.0279932
+Epoch 82
+Average score: -1.21861 MSE: 0.0147903
+Epoch 83
+Average score: -1.27168 MSE: 0.0230946
+Epoch 84
+Average score: -1.27768 MSE: 0.019753
+Epoch 85
+Average score: -1.26573 MSE: 0.0127557
+Epoch 86
+Average score: -1.24779 MSE: 0.0102589
+Epoch 87
+Average score: -1.39196 MSE: 0.0272769
+Epoch 88
+Average score: -1.25497 MSE: 0.00777456
+Epoch 89
+Average score: -1.34793 MSE: 0.0120804
+Epoch 90
+Average score: -1.46589 MSE: 0.0141546
+Epoch 91
+Average score: -1.16625 MSE: 0.00358118
+Epoch 92
+Average score: -1.32937 MSE: 0.0156902
+Epoch 93
+Average score: -1.43787 MSE: 0.0136414
+Epoch 94
+Average score: -1.45859 MSE: 0.0107157
+Epoch 95
+Average score: -1.12818 MSE: 0.00231565
+Epoch 96
+Average score: -1.17913 MSE: 0.00635803
+Epoch 97
+Average score: -1.34737 MSE: 0.00613814
+Epoch 98
+Average score: -1.18689 MSE: 0.00460213
+Epoch 99
+Average score: -1.24631 MSE: 0.0166059
+Epoch 100
+Average score: -1.1949 MSE: 0.00204479
+1 grays
+5 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+2 grays
+3 grays
+3 grays
+3 grays
+3 grays
+4 grays
+4 grays
+4 grays
+2 grays
+2 grays
+3 grays
+W
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+5 grays
+2 grays
+1 grays
+2 grays
+1 grays
+1 grays
+3 grays
+1 grays
+1 grays
+1 grays
+3 grays
+2 grays
+3 grays
+3 grays
+3 grays
+3 grays
+2 grays
+2 grays
+2 grays
+1 grays
+1 grays
+3 grays
+4 grays
+L
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+5 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+3 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+2 grays
+1 grays
+L
+1 grays
+5 grays
+2 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+1 grays
+1 grays
+3 grays
+2 grays
+3 grays
+3 grays
+3 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+2 grays
+2 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+2 grays
+4 grays
+5 grays
+2 grays
+3 grays
+3 grays
+3 grays
+W
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+5 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+2 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+3 grays
+1 grays
+1 grays
+1 grays
+1 grays
+1 grays
+3 grays
+1 grays
+1 grays
+1 grays
+1 grays
+2 grays
+L
+Average score: -1.22843 MSE: 0.00169889

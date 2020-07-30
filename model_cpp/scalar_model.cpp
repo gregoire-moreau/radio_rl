@@ -383,7 +383,7 @@ int main(int argc, char * argv[]){
     int healthy_cell_stages = stoi(argv[5]);
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
-    agent -> run(n_epochs, 10000, 50, 0.8, 0.05, 0.8, 0.01, 0.99);
+    agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     agent -> test(5, true, 0.99);
     agent -> save_Q(argv[6]);
     delete model;
