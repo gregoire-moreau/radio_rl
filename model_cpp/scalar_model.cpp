@@ -219,9 +219,9 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor){
         while (!env->inTerminalState()){
             int obs = state();
             int action = choose_action(obs, 0.0);
-            if (verbose)
-                cout << action + 1 << " grays" << endl;
             double r = env -> act(action);
+            if (verbose)
+                cout << action + 1 << " grays, reward =  " << r << endl;
             sum_r += r;
             int new_obs = state();
             double max_val = - 99999.0;
