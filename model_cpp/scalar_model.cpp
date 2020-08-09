@@ -121,7 +121,7 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
             return - (double) dose / 400.0 + (double) (ccell_killed - 5 * hcells_lost)/100000.0;
         else{
 	    //cout << ccell_killed << " " << hcells_lost <<endl;
-            return (double) (ccell_killed - (double) atoi(reward) * hcells_lost)/100000.0;
+            return (double) (ccell_killed - (double) (reward - '0') * hcells_lost)/100000.0;
 	    }
     }
 }
@@ -258,7 +258,7 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor, bool eva
 }
 
 void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon, double disc_factor){
-    test(test_steps, false, disc_factor);
+    test(test_steps, false, disc_factor, false);
     double alpha = init_alpha;
     double epsilon = init_epsilon;
     double epsilon_change = (double) (init_epsilon - end_epsilon) / (double) (n_epochs - 1);
