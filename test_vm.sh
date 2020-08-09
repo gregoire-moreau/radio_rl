@@ -1,5 +1,7 @@
 #!/bin/bash
 
-./model_cpp/main 100 d o 50 5 qvals_dose_log_5.csv > test_dose_log_5
-./model_cpp/main 100 n i 50 5 qvals_no_lin_5.csv > test_no_lin_5
-./model_cpp/main 100 n o 50 5 qvals_no_log_5.csv > test_no_log_5
+./model_cpp/main 100 1 i 50 5 qq > killed_1
+./model_cpp/main 100 2 i 50 5 qq > killed_2
+./model_cpp/main 100 3 i 50 5 qq > killed_3
+./model_cpp/main 100 4 i 50 5 qq > killed_4
+./model_cpp/main 100 5 i 50 5 qq > killed_5

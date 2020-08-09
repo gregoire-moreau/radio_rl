@@ -79,7 +79,7 @@ class CellEnvironment(Environment):
         return self.observe()
     
     def act(self, action):
-        dose = action / 2 if self.action_type == 'DQN' else action[0] * 4 + 1
+        dose = 1 + action / 2 if self.action_type == 'DQN' else action[0] * 4 + 1
         rest = 24 if self.action_type == 'DQN' else int(round(action[1] * 60 + 12))
         if self.dose_map is not None:
             tumor_radius = cppCellModel.tumor_radius(self.controller_capsule)

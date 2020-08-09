@@ -119,10 +119,10 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
     } else {
         if (reward == 'd' || reward == 'n')
             return - (double) dose / 400.0 + (double) (ccell_killed - 5 * hcells_lost)/100000.0;
-        else if (reward == 'k'){
+        else{
 	    //cout << ccell_killed << " " << hcells_lost <<endl;
-            return (double) (ccell_killed - 1.0 * hcells_lost)/100000.0;
-	}
+            return (double) (ccell_killed - (double) atoi(reward) * hcells_lost)/100000.0;
+	    }
     }
 }
 
@@ -211,20 +211,27 @@ void TabularAgent::train(int steps, double alpha, double epsilon, double disc_fa
     }
 }
 
-void TabularAgent::test(int episodes, bool verbose, double disc_factor){
+void TabularAgent::test(int episodes, bool verbose, double disc_factor, bool eval){
     double sum_scores = 0.0;
     double sum_error = 0.0;
+    int sum_fracs = 0;
+    int sum_doses = 0;
+    int sum_w = 0;
+    double survival = 0.0;
     for (int i = 0; i < episodes; i++){
         env -> reset();
         double sum_r = 0;
         double err = 0.0;
         int count = 0;
+        int init_hcell = HealthyCell::count;
         while (!env->inTerminalState()){
             int obs = state();
             int action = choose_action(obs, 0.0);
             double r = env -> act(action);
             if (verbose)
                 cout << action + 1 << " grays, reward =  " << r << endl;
+            sum_fracs++;
+            sum_doses += action + 1;
             sum_r += r;
             int new_obs = state();
             double max_val = - 99999.0;
@@ -237,10 +244,17 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor){
         }
         if(verbose)
             cout << env -> end_type << endl;
+        survival += (double) HealthyCell::count / (double) init_hcell;
+        if (env -> end_type == 'W')
+            sum_w++;
         sum_scores += sum_r;
         sum_error += err / (double) count;
     }
     cout << "Average score: " << sum_scores / (double) episodes << " MSE: " << sum_error / (double) episodes << endl;
+    if(eval){
+        cout << "TCP: " << 100.0 * (double) sum_w / (double) episodes << endl;
+        cout << "Average num of fractions: " << (double) sum_fracs / (double) episodes << " Average dose: "  << (double) sum_fracs / (double) episodes << " Average survival: " << survival / (double) episodes << endl;
+    }
 }
 
 void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double init_alpha, double alpha_mult, double init_epsilon, double end_epsilon, double disc_factor){
@@ -252,7 +266,7 @@ void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double ini
     for(int i = 0; i < n_epochs; i++){
         cout << "Epoch " << i + 1 << endl;
         train(train_steps, alpha, epsilon, disc_factor);
-        test(test_steps, false, disc_factor);
+        test(test_steps, false, disc_factor, false);
         alpha -= alpha_change;
         epsilon -= epsilon_change;
     }
@@ -387,7 +401,8 @@ int main(int argc, char * argv[]){
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
     agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
-    agent -> test(5, true, 0.99);
+    agent -> test(5, true, 0.99, false);
+    agent -> test(100, false, 0.99, true);
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
