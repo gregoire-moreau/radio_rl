@@ -106,6 +106,7 @@ double ScalarModel::act(int action){
 }
 
 double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
+    //cout << dose << " " << reward << " " << ccell_killed << " " << hcells_lost << endl;
     if (inTerminalState() && reward != 'n'){
         if (end_type == 'L' || end_type == 'T'){
             return -1.0;
@@ -118,8 +119,10 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
     } else {
         if (reward == 'd' || reward == 'n')
             return - (double) dose / 400.0 + (double) (ccell_killed - 5 * hcells_lost)/100000.0;
-        else if (reward == 'k')
-            return (double) (ccell_killed - 3 * hcells_lost)/100000.0;
+        else if (reward == 'k'){
+	    //cout << ccell_killed << " " << hcells_lost <<endl;
+            return (double) (ccell_killed - 1.0 * hcells_lost)/100000.0;
+	}
     }
 }
 
@@ -389,3 +392,6 @@ int main(int argc, char * argv[]){
     delete model;
     delete agent;
 }
+
+
+
