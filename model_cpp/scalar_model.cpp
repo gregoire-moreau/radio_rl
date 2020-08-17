@@ -114,7 +114,7 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
             if (reward == 'd')
                 return - (double) dose / 400.0 + 0.5 - (double) (init_hcell_count - HealthyCell::count) / 3000.0;
             else
-                return 0.5 - (double) (init_hcell_count - HealthyCell::count) / 3000.0;
+                return 1.0 - (double) (init_hcell_count - HealthyCell::count) / 2000.0;
         }
     } else {
         if (reward == 'd' || reward == 'n')
@@ -285,6 +285,25 @@ void TabularAgent::save_Q(string name){
     myfile.close();
 }
 
+void TabularAgent::load_Q(string name){
+    ifstream f;
+    f.open(filename);
+    if(!f.is_open()) throw std::runtime_error("Could not open file");
+    string line;
+    get_line(f, line);
+    if(line.compare(cancer_cell_stages + " " + healthy_cell_stages + " " + actions))
+        throw std::runtime_error("Parameters do not match");
+    get_line(f, line);
+    for(int i = 0; i < cancer_cell_stages * healthy_cell_stages; i++){
+        for(int j = 0; j < actions; j++){
+            get_line(f, line, ',');
+            Q_values[i][j] = stof(line);
+        }
+        get_line(f, line);
+    }
+    f.close();
+}
+
 void no_treatment(){
     cout << "No treatment" << endl;
     ScalarModel * model = new ScalarModel('a');
@@ -376,28 +395,21 @@ void high_low_treatment(char reward){
 }
 
 int main(int argc, char * argv[]){
-    /*
+
     cout << "Killed "<<endl;
-    low_treatment('k');
-    baseline_treatment('k');
-    high_treatment('k');
-    high_low_treatment('k');
-    cout << "Dose "<<endl;
-    low_treatment('d');
-    baseline_treatment('d');
-    high_treatment('d');
-    high_low_treatment('d');
-    cout << "Dose no special"<<endl;
-    low_treatment('n');
-    baseline_treatment('n');
-    high_treatment('n');
-    high_low_treatment('n');
-    */
+    low_treatment('4');
+    baseline_treatment('4');
+    high_treatment('4');
+    high_low_treatment('4');
+
+    /*
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
     int cancer_cell_stages = stoi(argv[4]);
     int healthy_cell_stages = stoi(argv[5]);
+    if(argc == 8 && argv[7].compare('load') == 0)
+        agent -> load_Q(argv[6]);
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
     agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
@@ -406,6 +418,7 @@ int main(int argc, char * argv[]){
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
+    */
 }
 
 
