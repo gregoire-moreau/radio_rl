@@ -287,19 +287,24 @@ void TabularAgent::save_Q(string name){
 
 void TabularAgent::load_Q(string name){
     ifstream f;
-    f.open(filename);
+    f.open(name);
     if(!f.is_open()) throw std::runtime_error("Could not open file");
     string line;
-    get_line(f, line);
-    if(line.compare(cancer_cell_stages + " " + healthy_cell_stages + " " + actions))
+    getline(f, line);
+    int pos_space_1 = line.find(" ");
+    int pos_space_2 = line.find(" ", pos_space_1);
+    int t_cstage = stoi(line.substr(0, pos_space_1));
+    int t_hstage = stoi(line.substr(pos_space_1 + 1, pos_space_2 - pos_space_1 - 1));
+    int t_actions = stoi(line.substr(pos_space_2 + 1));
+    if(t_cstage != cancer_cell_stages || t_hstage != healthy_cell_stages || t_actions != actions)
         throw std::runtime_error("Parameters do not match");
-    get_line(f, line);
+    getline(f, line);
     for(int i = 0; i < cancer_cell_stages * healthy_cell_stages; i++){
         for(int j = 0; j < actions; j++){
-            get_line(f, line, ',');
+            getline(f, line, ',');
             Q_values[i][j] = stof(line);
         }
-        get_line(f, line);
+        getline(f, line);
     }
     f.close();
 }
