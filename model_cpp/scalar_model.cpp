@@ -400,20 +400,19 @@ void high_low_treatment(char reward){
 }
 
 int main(int argc, char * argv[]){
-
+    /*
     cout << "Killed "<<endl;
     low_treatment('4');
     baseline_treatment('4');
     high_treatment('4');
     high_low_treatment('4');
-
-    /*
+    */
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
     int cancer_cell_stages = stoi(argv[4]);
     int healthy_cell_stages = stoi(argv[5]);
-    if(argc == 8 && argv[7].compare('load') == 0)
+    if(argc == 8 && argv[7].compare("load") == 0)
         agent -> load_Q(argv[6]);
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
@@ -423,7 +422,7 @@ int main(int argc, char * argv[]){
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
-    */
+
 }
 
 
