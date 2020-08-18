@@ -1,0 +1,413 @@
+Average score: -1.27359 MSE: 0.0628141
+Epoch 1
+Average score: -0.934677 MSE: 0.0133563
+Epoch 2
+Average score: -1.25446 MSE: 0.0197267
+Epoch 3
+Average score: -1.04411 MSE: 0.0343099
+Epoch 4
+Average score: -1.05418 MSE: 0.0262529
+Epoch 5
+Average score: -1.0549 MSE: 0.0327817
+Epoch 6
+Average score: -1.20711 MSE: 0.0275003
+Epoch 7
+Average score: -1.17361 MSE: 0.0250736
+Epoch 8
+Average score: -1.04852 MSE: 0.0319921
+Epoch 9
+Average score: -1.04855 MSE: 0.0196796
+Epoch 10
+Average score: -1.18191 MSE: 0.0214179
+Epoch 11
+Average score: -1.25856 MSE: 0.0206253
+Epoch 12
+Average score: -1.1742 MSE: 0.0271679
+Epoch 13
+Average score: -0.732251 MSE: 0.0103132
+Epoch 14
+Average score: -1.11048 MSE: 0.0331191
+Epoch 15
+Average score: -1.31005 MSE: 0.0192983
+Epoch 16
+Average score: -1.11073 MSE: 0.0322472
+Epoch 17
+Average score: -1.08306 MSE: 0.0263328
+Epoch 18
+Average score: -1.09005 MSE: 0.0301855
+Epoch 19
+Average score: -1.13425 MSE: 0.0328828
+Epoch 20
+Average score: -0.961828 MSE: 0.0553276
+Epoch 21
+Average score: -1.11437 MSE: 0.0306619
+Epoch 22
+Average score: -1.13595 MSE: 0.0223349
+Epoch 23
+Average score: -1.11368 MSE: 0.0295475
+Epoch 24
+Average score: -1.17235 MSE: 0.0333706
+Epoch 25
+Average score: -1.24942 MSE: 0.0330741
+Epoch 26
+Average score: -1.14709 MSE: 0.0324885
+Epoch 27
+Average score: -1.11173 MSE: 0.0291281
+Epoch 28
+Average score: -1.11376 MSE: 0.0288937
+Epoch 29
+Average score: -1.1407 MSE: 0.0322772
+Epoch 30
+Average score: -1.14843 MSE: 0.0315695
+Epoch 31
+Average score: -1.15151 MSE: 0.0316233
+Epoch 32
+Average score: -1.15459 MSE: 0.0304275
+Epoch 33
+Average score: -1.12268 MSE: 0.0294612
+Epoch 34
+Average score: -1.15922 MSE: 0.0310037
+Epoch 35
+Average score: -1.16029 MSE: 0.0305428
+Epoch 36
+Average score: -1.12317 MSE: 0.0298718
+Epoch 37
+Average score: -1.18194 MSE: 0.0328522
+Epoch 38
+Average score: -1.17169 MSE: 0.0305506
+Epoch 39
+Average score: -1.17852 MSE: 0.0313637
+Epoch 40
+Average score: -1.18607 MSE: 0.0301409
+Epoch 41
+Average score: -1.16137 MSE: 0.0290253
+Epoch 42
+Average score: -1.14782 MSE: 0.0278931
+Epoch 43
+Average score: -1.16134 MSE: 0.0290918
+Epoch 44
+Average score: -1.10336 MSE: 0.0266564
+Epoch 45
+Average score: -1.13589 MSE: 0.0292587
+Epoch 46
+Average score: -1.13929 MSE: 0.027789
+Epoch 47
+Average score: -1.1614 MSE: 0.0288404
+Epoch 48
+Average score: -1.17044 MSE: 0.0290151
+Epoch 49
+Average score: -1.197 MSE: 0.0302847
+Epoch 50
+Average score: -1.13604 MSE: 0.0271439
+Epoch 51
+Average score: -1.20635 MSE: 0.0305534
+Epoch 52
+Average score: -1.18101 MSE: 0.028779
+Epoch 53
+Average score: -1.20658 MSE: 0.0294237
+Epoch 54
+Average score: -1.1931 MSE: 0.0289342
+Epoch 55
+Average score: -1.18366 MSE: 0.0298641
+Epoch 56
+Average score: -1.15698 MSE: 0.0262384
+Epoch 57
+Average score: -1.15245 MSE: 0.026067
+Epoch 58
+Average score: -1.20289 MSE: 0.0288532
+Epoch 59
+Average score: -1.10525 MSE: 0.0246518
+Epoch 60
+Average score: -1.08457 MSE: 0.0230654
+Epoch 61
+Average score: -1.21688 MSE: 0.0293826
+Epoch 62
+Average score: -1.17771 MSE: 0.0269353
+Epoch 63
+Average score: -1.21153 MSE: 0.0281853
+Epoch 64
+Average score: -1.23537 MSE: 0.0314019
+Epoch 65
+Average score: -1.16084 MSE: 0.0210341
+Epoch 66
+Average score: -1.04034 MSE: 0.0198267
+Epoch 67
+Average score: -1.12201 MSE: 0.0232705
+Epoch 68
+Average score: -1.11865 MSE: 0.0203878
+Epoch 69
+Average score: -1.1104 MSE: 0.0222583
+Epoch 70
+Average score: -1.0766 MSE: 0.0183969
+Epoch 71
+Average score: -1.20605 MSE: 0.025654
+Epoch 72
+Average score: -1.13689 MSE: 0.0216644
+Epoch 73
+Average score: -1.22729 MSE: 0.0220792
+Epoch 74
+Average score: -1.21216 MSE: 0.0258424
+Epoch 75
+Average score: -1.24968 MSE: 0.0270042
+Epoch 76
+Average score: -1.10143 MSE: 0.0198422
+Epoch 77
+Average score: -1.14211 MSE: 0.0220037
+Epoch 78
+Average score: -1.11387 MSE: 0.0171643
+Epoch 79
+Average score: -0.917451 MSE: 0.00989497
+Epoch 80
+Average score: -1.14826 MSE: 0.0236657
+Epoch 81
+Average score: -1.21393 MSE: 0.0229261
+Epoch 82
+Average score: -1.26426 MSE: 0.0260036
+Epoch 83
+Average score: -1.03224 MSE: 0.00791805
+Epoch 84
+Average score: -1.18608 MSE: 0.0170464
+Epoch 85
+Average score: -1.10828 MSE: 0.0132135
+Epoch 86
+Average score: -1.19846 MSE: 0.0170811
+Epoch 87
+Average score: -1.24049 MSE: 0.0271125
+Epoch 88
+Average score: -1.10984 MSE: 0.0108719
+Epoch 89
+Average score: -1.16288 MSE: 0.0143232
+Epoch 90
+Average score: -1.12558 MSE: 0.0138324
+Epoch 91
+Average score: -1.25765 MSE: 0.0186526
+Epoch 92
+Average score: -1.2025 MSE: 0.0131176
+Epoch 93
+Average score: -1.33784 MSE: 0.0204638
+Epoch 94
+Average score: -1.03994 MSE: 0.00459921
+Epoch 95
+Average score: -0.987941 MSE: 0.00613055
+Epoch 96
+Average score: -1.26349 MSE: 0.0166735
+Epoch 97
+Average score: -0.902994 MSE: 0.00361291
+Epoch 98
+Average score: -1.13918 MSE: 0.0139859
+Epoch 99
+Average score: -0.765601 MSE: 0.00267546
+Epoch 100
+Average score: -0.777129 MSE: 0.00036015
+1 grays, reward =  -0.08899
+1 grays, reward =  -0.03132
+1 grays, reward =  -0.04703
+1 grays, reward =  -0.05157
+1 grays, reward =  -0.05434
+1 grays, reward =  -0.05761
+2 grays, reward =  0.06785
+1 grays, reward =  -0.04723
+5 grays, reward =  0.26054
+1 grays, reward =  -0.00979
+5 grays, reward =  0.05197
+2 grays, reward =  0.00174
+2 grays, reward =  0.00169
+2 grays, reward =  0.0004
+2 grays, reward =  -0.00066
+2 grays, reward =  -0.00058
+2 grays, reward =  -0.00134
+2 grays, reward =  -0.00133
+2 grays, reward =  -0.00154
+2 grays, reward =  -0.00162
+2 grays, reward =  -0.00235
+2 grays, reward =  -0.00259
+2 grays, reward =  -0.00253
+2 grays, reward =  -0.00243
+2 grays, reward =  -0.00301
+2 grays, reward =  -0.00255
+2 grays, reward =  -0.00218
+2 grays, reward =  -0.00265
+2 grays, reward =  -0.00259
+2 grays, reward =  -0.00283
+2 grays, reward =  -0.00249
+2 grays, reward =  -0.00296
+2 grays, reward =  -0.00324
+2 grays, reward =  -0.0026
+2 grays, reward =  -0.00224
+2 grays, reward =  -0.0029
+2 grays, reward =  -0.00337
+2 grays, reward =  -0.00329
+2 grays, reward =  -0.00291
+2 grays, reward =  -0.00313
+2 grays, reward =  -0.00273
+2 grays, reward =  -0.0039
+2 grays, reward =  -0.00311
+2 grays, reward =  -0.727667
+W
+1 grays, reward =  -0.08608
+1 grays, reward =  -0.03456
+1 grays, reward =  -0.0453
+1 grays, reward =  -0.05304
+5 grays, reward =  0.19413
+1 grays, reward =  -0.01207
+1 grays, reward =  -0.01306
+5 grays, reward =  0.04789
+2 grays, reward =  0.0008
+2 grays, reward =  -0.00216
+2 grays, reward =  -0.00152
+2 grays, reward =  -0.00251
+2 grays, reward =  -0.0036
+2 grays, reward =  -0.00288
+2 grays, reward =  -0.00341
+2 grays, reward =  -0.00428
+2 grays, reward =  -0.00511
+2 grays, reward =  -0.00346
+2 grays, reward =  -0.00549
+2 grays, reward =  -0.0057
+2 grays, reward =  -0.00617
+2 grays, reward =  -0.00635
+2 grays, reward =  -0.00582
+2 grays, reward =  -0.0064
+2 grays, reward =  -0.0061
+2 grays, reward =  -0.00652
+2 grays, reward =  -0.00646
+2 grays, reward =  -0.00782
+2 grays, reward =  -0.00775
+2 grays, reward =  -0.00842
+2 grays, reward =  -0.0088
+2 grays, reward =  -0.00981
+2 grays, reward =  -0.00938
+2 grays, reward =  -0.00989
+2 grays, reward =  -0.01059
+2 grays, reward =  -0.00964
+2 grays, reward =  -0.522667
+W
+1 grays, reward =  -0.0875
+1 grays, reward =  -0.0327
+1 grays, reward =  -0.04687
+1 grays, reward =  -0.05423
+1 grays, reward =  -0.05164
+1 grays, reward =  -0.06091
+2 grays, reward =  0.06939
+1 grays, reward =  -0.05097
+5 grays, reward =  0.26276
+1 grays, reward =  -0.0107
+5 grays, reward =  0.05701
+2 grays, reward =  0.00138
+2 grays, reward =  0.0005
+2 grays, reward =  -0.00043
+2 grays, reward =  -0.0007
+2 grays, reward =  -0.0023
+2 grays, reward =  -0.00071
+2 grays, reward =  -0.00142
+2 grays, reward =  -0.00082
+2 grays, reward =  -0.00128
+2 grays, reward =  -0.00149
+2 grays, reward =  -0.00194
+2 grays, reward =  -0.00239
+2 grays, reward =  -0.00197
+2 grays, reward =  -0.0023
+2 grays, reward =  -0.00228
+2 grays, reward =  -0.00312
+2 grays, reward =  -0.00312
+2 grays, reward =  -0.00314
+2 grays, reward =  -0.00246
+2 grays, reward =  -0.00272
+2 grays, reward =  -0.00399
+2 grays, reward =  -0.00271
+2 grays, reward =  -0.00323
+2 grays, reward =  -0.00378
+2 grays, reward =  -0.00421
+2 grays, reward =  -0.00469
+2 grays, reward =  -0.00435
+2 grays, reward =  -0.00562
+2 grays, reward =  -0.00601
+2 grays, reward =  -0.699
+W
+1 grays, reward =  -0.08668
+1 grays, reward =  -0.0351
+1 grays, reward =  -0.04575
+1 grays, reward =  -0.05344
+1 grays, reward =  -0.05261
+1 grays, reward =  -0.05743
+2 grays, reward =  0.06774
+1 grays, reward =  -0.04742
+4 grays, reward =  0.21683
+1 grays, reward =  -0.01722
+1 grays, reward =  -0.01825
+1 grays, reward =  -0.02291
+3 grays, reward =  0.07825
+1 grays, reward =  -0.01117
+2 grays, reward =  0.01964
+1 grays, reward =  -0.00969
+5 grays, reward =  0.06433
+2 grays, reward =  0.00263
+2 grays, reward =  0.00255
+2 grays, reward =  0.00153
+2 grays, reward =  0.00147
+2 grays, reward =  0.00051
+2 grays, reward =  0.00028
+2 grays, reward =  0.00076
+2 grays, reward =  6e-05
+2 grays, reward =  -0.0003
+2 grays, reward =  -0.00039
+2 grays, reward =  -0.00013
+2 grays, reward =  -0.00055
+2 grays, reward =  -0.00065
+2 grays, reward =  -0.00031
+2 grays, reward =  -0.00023
+2 grays, reward =  -0.00041
+2 grays, reward =  -0.00054
+2 grays, reward =  -0.00049
+2 grays, reward =  -0.00028
+2 grays, reward =  -0.00075
+2 grays, reward =  -0.00074
+2 grays, reward =  -0.00032
+2 grays, reward =  -0.00047
+2 grays, reward =  -0.821667
+W
+1 grays, reward =  -0.09207
+1 grays, reward =  -0.0336
+5 grays, reward =  0.12019
+2 grays, reward =  -0.00012
+2 grays, reward =  0.00111
+2 grays, reward =  0.00131
+3 grays, reward =  0.00286
+2 grays, reward =  -0.00147
+2 grays, reward =  -0.00223
+2 grays, reward =  -0.00218
+2 grays, reward =  -0.00334
+2 grays, reward =  -0.00495
+2 grays, reward =  -0.00426
+2 grays, reward =  -0.00414
+2 grays, reward =  -0.00425
+2 grays, reward =  -0.00598
+2 grays, reward =  -0.00585
+2 grays, reward =  -0.00678
+2 grays, reward =  -0.00634
+2 grays, reward =  -0.00691
+2 grays, reward =  -0.0072
+2 grays, reward =  -0.00746
+2 grays, reward =  -0.00711
+2 grays, reward =  -0.00859
+2 grays, reward =  -0.00837
+2 grays, reward =  -0.00751
+2 grays, reward =  -0.01
+2 grays, reward =  -0.00976
+2 grays, reward =  -0.01099
+2 grays, reward =  -0.01062
+2 grays, reward =  -0.01122
+2 grays, reward =  -0.01228
+2 grays, reward =  -0.01155
+2 grays, reward =  -0.01132
+2 grays, reward =  -0.0127
+2 grays, reward =  -0.01378
+2 grays, reward =  -0.01292
+2 grays, reward =  -0.01463
+2 grays, reward =  -0.01373
+2 grays, reward =  -0.457667
+W
+Average score: -0.763477 MSE: 0.00242579
+Average score: -0.796114 MSE: 0.00174391
+TCP: 95
+Average num of fractions: 38.75 Average dose: 38.75 Average survival: 0.0812375
