@@ -253,7 +253,7 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor, bool eva
     cout << "Average score: " << sum_scores / (double) episodes << " MSE: " << sum_error / (double) episodes << endl;
     if(eval){
         cout << "TCP: " << 100.0 * (double) sum_w / (double) episodes << endl;
-        cout << "Average num of fractions: " << (double) sum_fracs / (double) episodes << " Average dose: "  << (double) sum_fracs / (double) episodes << " Average survival: " << survival / (double) episodes << endl;
+        cout << "Average num of fractions: " << (double) sum_fracs / (double) episodes << " Average dose: "  << (double) sum_doses / (double) episodes << " Average survival: " << survival / (double) episodes << endl;
     }
 }
 
@@ -399,14 +399,28 @@ void high_low_treatment(char reward){
     delete model;
 }
 
+void test_suite(char reward){
+    low_treatment(reward);
+    baseline_treatment(reward);
+    high_treatment(reward);
+    high_low_treatment(reward);
+}
+
 int main(int argc, char * argv[]){
+
+    cout << "Dose "<<endl;
+    test_suite('d');
+    cout << "Killed 1"<<endl;
+    test_suite('1');
+    cout << "Killed 2"<<endl;
+    test_suite('2');
+    cout << "Killed 3"<<endl;
+    test_suite('3');
+    cout << "Killed 4"<<endl;
+    test_suite('4');
+    cout << "Killed 5"<<endl;
+    test_suite('5');
     /*
-    cout << "Killed "<<endl;
-    low_treatment('4');
-    baseline_treatment('4');
-    high_treatment('4');
-    high_low_treatment('4');
-    */
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
@@ -422,7 +436,7 @@ int main(int argc, char * argv[]){
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
-
+    */
 }
 
 
