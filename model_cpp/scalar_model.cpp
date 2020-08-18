@@ -112,9 +112,9 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
             return -1.0;
         } else{
             if (reward == 'd')
-                return - (double) dose / 400.0 + 1.0 - (double) (init_hcell_count - HealthyCell::count) / 1000.0;
+                return - (double) dose / 400.0 + 0.5 + (double) (HealthyCell::count) / 4000.0;
             else
-                return 1.0 - (double) (init_hcell_count - HealthyCell::count) / 1000.0;
+                return 0.5 + (double) (HealthyCell::count) / 4000.0;
         }
     } else {
         if (reward == 'd' || reward == 'n')
