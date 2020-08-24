@@ -70,7 +70,7 @@ class EmpiricalTreatmentAgent():
             else:
                 self.total_score += env.act(4)
 
-'''
+
 from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
 from deer.learning_algos.AC_net_keras import MyACNetwork
@@ -104,8 +104,8 @@ agent = NeuralAgent(
 
 #agent.attach(bc.VerboseController())
 agent.setNetwork(args.fname)
-'''
-agent = EmpiricalTreatmentAgent(env)
+
+#agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
