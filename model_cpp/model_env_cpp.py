@@ -106,6 +106,9 @@ class CellEnvironment(Environment):
                 print("Radiation dose :", dose, "Gy ", "remaining :", post_ccell,  "time =", rest, "reward=", reward)
         return reward
 
+    def surviving_fraction(self):
+        return cppCellModel.HCellCount() / self.init_hcell_count
+
     def adjust_reward(self, dose, ccell_killed, hcells_lost):
         if self.special_reward and self.inTerminalState():
             if self.end_type == "L" or self.end_type == "T":

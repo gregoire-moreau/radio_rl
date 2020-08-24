@@ -24,7 +24,7 @@ elif args.simulation == 'py':
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcol
 import numpy as np
-#from draw_treatment import make_img, make_img3
+from draw_treatment import make_img, make_img3
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 def save_tumor_image(data, tick):
@@ -110,8 +110,9 @@ count = 0
 length_success = 0
 avg_rad = 0
 avg_h_cell_killed = 0
+avg_percentage = 0
 avg_doses = 0
-k = 5
+k = 500
 for i in range(k):
     print(i)
     agent._runEpisode(100000)
@@ -119,6 +120,7 @@ for i in range(k):
         count += 1
         length_success += env.get_tick() - 350
         avg_rad += env.total_dose
+        avg_percentage += env.surviving_fraction()
         avg_h_cell_killed += env.radiation_h_killed
         avg_doses += env.num_doses
 
@@ -127,8 +129,9 @@ print("Avg rad", avg_rad / count)
 print("Avg length in successes", length_success / count)
 print("Avg number of doses", avg_doses / count)
 print("Avg hcells killed", avg_h_cell_killed / count)
+print("Avg surviving fraction: ", avg_percentage / count)
 agent.summarizeTestPerformance()
-'''
+
 env.init_dose_map()
 agent._runEpisode(100000)
 #env.show_dose_map()
@@ -171,4 +174,3 @@ plt.savefig('tmp/'+args.fname+'_treat')
 env.end()
 print(ticks, doses)
 
-'''
