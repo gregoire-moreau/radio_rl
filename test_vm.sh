@@ -1,6 +1,9 @@
 #!/bin/bash
 
-./model_cpp/main 50 d i 50 5 dose_small.csv > dose_smal
-./model_cpp/main 50 1 i 50 5 k1.csv > k1
-./model_cpp/main 50 2 i 50 5 k2.csv > k2
-./model_cpp/main 50 4 i 50 5 k4.csv > k4
+./model_cpp/main 500 d i 100 10 dose_big4.csv > dose_big4
+
+cd model_cpp
+make
+cd ..
+
+./model_cpp/main 500 d i 100 10 dose_big5.csv > dose_big5

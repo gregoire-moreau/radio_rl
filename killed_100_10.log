@@ -1,0 +1,1173 @@
+Average score: -1.15391 MSE: 0.0633103
+Epoch 1
+Average score: 0.473278 MSE: 0.0326081
+Epoch 2
+Average score: 0.326038 MSE: 0.0375697
+Epoch 3
+Average score: 0.685102 MSE: 0.000316979
+Epoch 4
+Average score: 0.479525 MSE: 0.0180957
+Epoch 5
+Average score: 0.173207 MSE: 0.0749385
+Epoch 6
+Average score: -0.277149 MSE: 0.177612
+Epoch 7
+Average score: 0.684338 MSE: 0.000382726
+Epoch 8
+Average score: 0.628289 MSE: 4.21449e-05
+Epoch 9
+Average score: 0.626796 MSE: 3.73762e-05
+Epoch 10
+Average score: 0.708289 MSE: 0.000453351
+Epoch 11
+Average score: 0.611697 MSE: 4.44096e-05
+Epoch 12
+Average score: 0.630474 MSE: 2.96518e-05
+Epoch 13
+Average score: 0.631527 MSE: 2.38176e-05
+Epoch 14
+Average score: 0.323208 MSE: 0.049612
+Epoch 15
+Average score: 0.324687 MSE: 0.0474561
+Epoch 16
+Average score: 0.17632 MSE: 0.0507865
+Epoch 17
+Average score: 0.474107 MSE: 0.0280527
+Epoch 18
+Average score: 0.74399 MSE: 0.00135393
+Epoch 19
+Average score: 0.627781 MSE: 2.00675e-05
+Epoch 20
+Average score: 0.631708 MSE: 5.26534e-05
+Epoch 21
+Average score: 0.475417 MSE: 0.0250644
+Epoch 22
+Average score: 0.175832 MSE: 0.0931109
+Epoch 23
+Average score: 0.700608 MSE: 0.000403032
+Epoch 24
+Average score: 0.324204 MSE: 0.0500584
+Epoch 25
+Average score: 0.621733 MSE: 3.29306e-05
+Epoch 26
+Average score: 0.475429 MSE: 0.0282309
+Epoch 27
+Average score: -0.276193 MSE: 0.198441
+Epoch 28
+Average score: 0.478946 MSE: 0.0143205
+Epoch 29
+Average score: 0.658696 MSE: 0.000236059
+Epoch 30
+Average score: 0.624326 MSE: 4.77275e-05
+Epoch 31
+Average score: 0.324504 MSE: 0.0642926
+Epoch 32
+Average score: 0.022866 MSE: 0.0919849
+Epoch 33
+Average score: 0.628177 MSE: 3.31641e-05
+Epoch 34
+Average score: 0.173881 MSE: 0.0827174
+Epoch 35
+Average score: 0.324265 MSE: 0.0751719
+Epoch 36
+Average score: 0.325516 MSE: 0.0530919
+Epoch 37
+Average score: 0.464825 MSE: 0.0205378
+Epoch 38
+Average score: 0.174461 MSE: 0.107885
+Epoch 39
+Average score: -0.276225 MSE: 0.215212
+Epoch 40
+Average score: 0.705509 MSE: 0.000574573
+Epoch 41
+Average score: 0.692883 MSE: 0.000480522
+Epoch 42
+Average score: 0.661358 MSE: 0.000303006
+Epoch 43
+Average score: 0.024746 MSE: 0.106933
+Epoch 44
+Average score: 0.475962 MSE: 0.0250301
+Epoch 45
+Average score: -0.126036 MSE: 0.139319
+Epoch 46
+Average score: 0.67744 MSE: 0.000348477
+Epoch 47
+Average score: 0.174925 MSE: 0.0749833
+Epoch 48
+Average score: 0.68417 MSE: 0.000306643
+Epoch 49
+Average score: 0.473961 MSE: 0.0375511
+Epoch 50
+Average score: 0.024126 MSE: 0.106353
+Epoch 51
+Average score: 0.475529 MSE: 0.0283941
+Epoch 52
+Average score: 0.476343 MSE: 0.0172896
+Epoch 53
+Average score: 0.023696 MSE: 0.127001
+Epoch 54
+Average score: 0.174724 MSE: 0.107265
+Epoch 55
+Average score: 0.702776 MSE: 0.000464543
+Epoch 56
+Average score: 0.77097 MSE: 0.00210557
+Epoch 57
+Average score: 0.626658 MSE: 2.3042e-05
+Epoch 58
+Average score: 0.323988 MSE: 0.0597788
+Epoch 59
+Average score: 0.739629 MSE: 0.00101982
+Epoch 60
+Average score: 0.798158 MSE: 0.00185127
+Epoch 61
+Average score: 0.689933 MSE: 0.000435094
+Epoch 62
+Average score: 0.625187 MSE: 1.51678e-05
+Epoch 63
+Average score: 0.024237 MSE: 0.133149
+Epoch 64
+Average score: 0.474611 MSE: 0.0250906
+Epoch 65
+Average score: 0.4768 MSE: 0.017417
+Epoch 66
+Average score: 0.628424 MSE: 3.89942e-05
+Epoch 67
+Average score: 0.324206 MSE: 0.0749434
+Epoch 68
+Average score: 0.682241 MSE: 0.000297692
+Epoch 69
+Average score: 0.628878 MSE: 3.58732e-05
+Epoch 70
+Average score: 0.324647 MSE: 0.0498389
+Epoch 71
+Average score: 0.024127 MSE: 0.138818
+Epoch 72
+Average score: -0.2759 MSE: 0.223481
+Epoch 73
+Average score: 0.327263 MSE: 0.0375702
+Epoch 74
+Average score: 0.666591 MSE: 0.000351451
+Epoch 75
+Average score: 0.173418 MSE: 0.107149
+Epoch 76
+Average score: 0.626903 MSE: 2.20387e-05
+Epoch 77
+Average score: 0.02423 MSE: 0.157433
+Epoch 78
+Average score: 0.622391 MSE: 3.22547e-05
+Epoch 79
+Average score: 0.629118 MSE: 0.000106624
+Epoch 80
+Average score: 0.325047 MSE: 0.0633282
+Epoch 81
+Average score: 0.324471 MSE: 0.0643191
+Epoch 82
+Average score: 0.327273 MSE: 0.0340715
+Epoch 83
+Average score: 0.323771 MSE: 0.0692754
+Epoch 84
+Average score: 0.673206 MSE: 0.00032393
+Epoch 85
+Average score: 0.628757 MSE: 4.59615e-05
+Epoch 86
+Average score: 0.475064 MSE: 0.0320695
+Epoch 87
+Average score: 0.677512 MSE: 0.000387807
+Epoch 88
+Average score: 0.625874 MSE: 3.80949e-05
+Epoch 89
+Average score: 0.695928 MSE: 0.00117135
+Epoch 90
+Average score: 0.477278 MSE: 0.0174223
+Epoch 91
+Average score: 0.174733 MSE: 0.0923463
+Epoch 92
+Average score: 0.664673 MSE: 0.000181732
+Epoch 93
+Average score: 0.175421 MSE: 0.0810205
+Epoch 94
+Average score: 0.474735 MSE: 0.0321868
+Epoch 95
+Average score: 0.47541 MSE: 0.0251399
+Epoch 96
+Average score: 0.628518 MSE: 3.12966e-05
+Epoch 97
+Average score: 0.325138 MSE: 0.0513202
+Epoch 98
+Average score: 0.476278 MSE: 0.0321219
+Epoch 99
+Average score: 0.661089 MSE: 0.000245302
+Epoch 100
+Average score: 0.172013 MSE: 0.088453
+Epoch 101
+Average score: 0.175345 MSE: 0.0820468
+Epoch 102
+Average score: 0.68542 MSE: 0.000516699
+Epoch 103
+Average score: 0.024266 MSE: 0.139197
+Epoch 104
+Average score: 0.630178 MSE: 8.83706e-05
+Epoch 105
+Average score: 0.698627 MSE: 0.000474188
+Epoch 106
+Average score: 0.174458 MSE: 0.0814451
+Epoch 107
+Average score: 0.62809 MSE: 7.61422e-05
+Epoch 108
+Average score: 0.767427 MSE: 0.00128705
+Epoch 109
+Average score: 0.681474 MSE: 0.000277361
+Epoch 110
+Average score: 0.328318 MSE: 0.0347972
+Epoch 111
+Average score: 0.324136 MSE: 0.0742216
+Epoch 112
+Average score: 0.175148 MSE: 0.0837645
+Epoch 113
+Average score: 0.471832 MSE: 0.0248692
+Epoch 114
+Average score: 0.690003 MSE: 0.000350772
+Epoch 115
+Average score: 0.679491 MSE: 0.000404557
+Epoch 116
+Average score: 0.473176 MSE: 0.0319074
+Epoch 117
+Average score: 0.174613 MSE: 0.112389
+Epoch 118
+Average score: 0.477795 MSE: 0.0201876
+Epoch 119
+Average score: 0.175149 MSE: 0.0840939
+Epoch 120
+Average score: 0.023938 MSE: 0.129799
+Epoch 121
+Average score: 0.707816 MSE: 0.000786629
+Epoch 122
+Average score: 0.668765 MSE: 0.000417352
+Epoch 123
+Average score: 0.680717 MSE: 0.000385088
+Epoch 124
+Average score: 0.62864 MSE: 7.49562e-05
+Epoch 125
+Average score: 0.477025 MSE: 0.0149508
+Epoch 126
+Average score: 0.321619 MSE: 0.0589425
+Epoch 127
+Average score: 0.175303 MSE: 0.0796849
+Epoch 128
+Average score: 0.62315 MSE: 3.56344e-05
+Epoch 129
+Average score: 0.706519 MSE: 0.00113966
+Epoch 130
+Average score: 0.474445 MSE: 0.0373972
+Epoch 131
+Average score: 0.474877 MSE: 0.0223863
+Epoch 132
+Average score: 0.662046 MSE: 0.000305574
+Epoch 133
+Average score: 0.628683 MSE: 6.25462e-05
+Epoch 134
+Average score: 0.17432 MSE: 0.0699555
+Epoch 135
+Average score: 0.476633 MSE: 0.0172241
+Epoch 136
+Average score: 0.629191 MSE: 0.00015854
+Epoch 137
+Average score: 0.022828 MSE: 0.139808
+Epoch 138
+Average score: 0.70019 MSE: 0.000584116
+Epoch 139
+Average score: 0.325203 MSE: 0.0478466
+Epoch 140
+Average score: 0.742021 MSE: 0.00138887
+Epoch 141
+Average score: 0.701945 MSE: 0.000511283
+Epoch 142
+Average score: 0.679611 MSE: 0.000630098
+Epoch 143
+Average score: 0.324075 MSE: 0.0642997
+Epoch 144
+Average score: 0.475339 MSE: 0.0277906
+Epoch 145
+Average score: 0.323958 MSE: 0.0640674
+Epoch 146
+Average score: 0.627887 MSE: 4.27663e-05
+Epoch 147
+Average score: 0.626855 MSE: 2.4611e-05
+Epoch 148
+Average score: 0.474875 MSE: 0.0279294
+Epoch 149
+Average score: 0.324481 MSE: 0.0631279
+Epoch 150
+Average score: 0.683952 MSE: 0.000499232
+Epoch 151
+Average score: 0.473648 MSE: 0.0245594
+Epoch 152
+Average score: 0.32672 MSE: 0.0318115
+Epoch 153
+Average score: 0.174769 MSE: 0.0749752
+Epoch 154
+Average score: 0.325336 MSE: 0.0749409
+Epoch 155
+Average score: 0.626778 MSE: 5.03661e-05
+Epoch 156
+Average score: 0.324297 MSE: 0.0691607
+Epoch 157
+Average score: 0.695327 MSE: 0.000613463
+Epoch 158
+Average score: 0.173758 MSE: 0.106466
+Epoch 159
+Average score: 0.624973 MSE: 1.8492e-05
+Epoch 160
+Average score: 0.324801 MSE: 0.0494257
+Epoch 161
+Average score: 0.703842 MSE: 0.000690773
+Epoch 162
+Average score: 0.173793 MSE: 0.111314
+Epoch 163
+Average score: 0.627783 MSE: 5.34021e-05
+Epoch 164
+Average score: 0.700508 MSE: 0.000571857
+Epoch 165
+Average score: 0.324581 MSE: 0.0685606
+Epoch 166
+Average score: 0.695611 MSE: 0.000489777
+Epoch 167
+Average score: 0.475225 MSE: 0.0278604
+Epoch 168
+Average score: 0.698455 MSE: 0.000478499
+Epoch 169
+Average score: 0.324737 MSE: 0.0524015
+Epoch 170
+Average score: 0.676162 MSE: 0.000368334
+Epoch 171
+Average score: 0.473466 MSE: 0.0252013
+Epoch 172
+Average score: 0.475417 MSE: 0.0139108
+Epoch 173
+Average score: 0.690483 MSE: 0.000454475
+Epoch 174
+Average score: 0.699855 MSE: 0.000736848
+Epoch 175
+Average score: 0.628302 MSE: 0.000297061
+Epoch 176
+Average score: 0.170455 MSE: 0.0642323
+Epoch 177
+Average score: 0.62725 MSE: 4.90736e-05
+Epoch 178
+Average score: 0.473472 MSE: 0.0281122
+Epoch 179
+Average score: 0.69664 MSE: 0.000603554
+Epoch 180
+Average score: 0.173366 MSE: 0.0972088
+Epoch 181
+Average score: 0.023581 MSE: 0.132043
+Epoch 182
+Average score: 0.669009 MSE: 0.000367409
+Epoch 183
+Average score: 0.023795 MSE: 0.126319
+Epoch 184
+Average score: 0.32389 MSE: 0.0526497
+Epoch 185
+Average score: 0.681362 MSE: 0.00037647
+Epoch 186
+Average score: 0.691805 MSE: 0.000918392
+Epoch 187
+Average score: 0.32476 MSE: 0.0690598
+Epoch 188
+Average score: 0.326589 MSE: 0.0564071
+Epoch 189
+Average score: 0.475327 MSE: 0.0281142
+Epoch 190
+Average score: 0.628162 MSE: 3.68981e-05
+Epoch 191
+Average score: 0.628626 MSE: 7.10657e-05
+Epoch 192
+Average score: 0.628786 MSE: 9.30838e-05
+Epoch 193
+Average score: 0.69428 MSE: 0.000453616
+Epoch 194
+Average score: 0.173356 MSE: 0.0920433
+Epoch 195
+Average score: 0.717517 MSE: 0.00128804
+Epoch 196
+Average score: 0.324508 MSE: 0.060214
+Epoch 197
+Average score: 0.684459 MSE: 0.000383485
+Epoch 198
+Average score: 0.477952 MSE: 0.0159911
+Epoch 199
+Average score: 0.173595 MSE: 0.10719
+Epoch 200
+Average score: 0.02371 MSE: 0.113067
+Epoch 201
+Average score: 0.629279 MSE: 4.26264e-05
+Epoch 202
+Average score: 0.699209 MSE: 0.000666881
+Epoch 203
+Average score: 0.698588 MSE: 0.000597015
+Epoch 204
+Average score: 0.625316 MSE: 3.69941e-05
+Epoch 205
+Average score: 0.626363 MSE: 3.56796e-05
+Epoch 206
+Average score: 0.624809 MSE: 1.72638e-05
+Epoch 207
+Average score: 0.840512 MSE: 0.00454391
+Epoch 208
+Average score: 0.627964 MSE: 0.00353411
+Epoch 209
+Average score: -0.426688 MSE: 0.199501
+Epoch 210
+Average score: 0.487131 MSE: 0.0205806
+Epoch 211
+Average score: 0.817069 MSE: 0.00133787
+Epoch 212
+Average score: 0.759964 MSE: 0.000814144
+Epoch 213
+Average score: 0.188892 MSE: 0.0768283
+Epoch 214
+Average score: 0.750561 MSE: 0.00214247
+Epoch 215
+Average score: 0.852204 MSE: 0.000695644
+Epoch 216
+Average score: 0.94982 MSE: 0.00346788
+Epoch 217
+Average score: 0.858287 MSE: 0.00158865
+Epoch 218
+Average score: 0.770299 MSE: 0.00327931
+Epoch 219
+Average score: 0.977201 MSE: 0.00355611
+Epoch 220
+Average score: 0.970917 MSE: 0.0025544
+Epoch 221
+Average score: 0.878293 MSE: 0.00133889
+Epoch 222
+Average score: 0.90719 MSE: 0.00111367
+Epoch 223
+Average score: 0.991922 MSE: 0.00163565
+Epoch 224
+Average score: 0.834046 MSE: 0.00411869
+Epoch 225
+Average score: 0.967264 MSE: 0.00200273
+Epoch 226
+Average score: -1.11195 MSE: 0.0235426
+Epoch 227
+Average score: 0.997235 MSE: 0.00382904
+Epoch 228
+Average score: 0.889446 MSE: 0.00161373
+Epoch 229
+Average score: 0.785415 MSE: 0.000353477
+Epoch 230
+Average score: 0.925064 MSE: 0.00191532
+Epoch 231
+Average score: 0.829115 MSE: 0.000301779
+Epoch 232
+Average score: 0.963536 MSE: 0.00298133
+Epoch 233
+Average score: -1.07133 MSE: 0.0317801
+Epoch 234
+Average score: -1.07076 MSE: 0.0200633
+Epoch 235
+Average score: -0.635446 MSE: 0.0175052
+Epoch 236
+Average score: 0.904052 MSE: 0.00355595
+Epoch 237
+Average score: 0.839795 MSE: 0.000948794
+Epoch 238
+Average score: 0.835701 MSE: 0.000368863
+Epoch 239
+Average score: 0.845239 MSE: 0.00512973
+Epoch 240
+Average score: 0.369477 MSE: 0.00797747
+Epoch 241
+Average score: 0.782494 MSE: 0.000531524
+Epoch 242
+Average score: 0.743151 MSE: 0.00474839
+Epoch 243
+Average score: 0.833013 MSE: 0.000179063
+Epoch 244
+Average score: 0.90054 MSE: 0.00212344
+Epoch 245
+Average score: 1.03044 MSE: 0.00142202
+Epoch 246
+Average score: 0.862383 MSE: 0.000473277
+Epoch 247
+Average score: 0.945193 MSE: 0.00149459
+Epoch 248
+Average score: 0.836093 MSE: 0.000349419
+Epoch 249
+Average score: 1.039 MSE: 0.0113492
+Epoch 250
+Average score: 0.913085 MSE: 0.000896538
+Epoch 251
+Average score: 0.480735 MSE: 0.00550099
+Epoch 252
+Average score: -0.040339 MSE: 0.0121305
+Epoch 253
+Average score: 0.763674 MSE: 0.0051924
+Epoch 254
+Average score: 0.89846 MSE: 0.00126103
+Epoch 255
+Average score: 0.330915 MSE: 0.00868781
+Epoch 256
+Average score: -1.05709 MSE: 0.0323402
+Epoch 257
+Average score: 0.610544 MSE: 0.00737674
+Epoch 258
+Average score: 0.483035 MSE: 0.00490087
+Epoch 259
+Average score: -1.08994 MSE: 0.0258958
+Epoch 260
+Average score: 1.02835 MSE: 0.00278995
+Epoch 261
+Average score: 0.871249 MSE: 0.00178948
+Epoch 262
+Average score: 0.792725 MSE: 0.000766981
+Epoch 263
+Average score: 0.915476 MSE: 0.00135541
+Epoch 264
+Average score: -1.0942 MSE: 0.0385821
+Epoch 265
+Average score: 0.920353 MSE: 0.000833364
+Epoch 266
+Average score: 0.701939 MSE: 0.000991848
+Epoch 267
+Average score: 0.287073 MSE: 0.00949706
+Epoch 268
+Average score: 0.820734 MSE: 0.000509698
+Epoch 269
+Average score: 0.733206 MSE: 0.00504423
+Epoch 270
+Average score: 0.895143 MSE: 0.00287504
+Epoch 271
+Average score: 0.964428 MSE: 0.00273695
+Epoch 272
+Average score: 0.840344 MSE: 0.00711988
+Epoch 273
+Average score: 0.992428 MSE: 0.00545287
+Epoch 274
+Average score: 1.08686 MSE: 0.00312545
+Epoch 275
+Average score: 0.516445 MSE: 0.00537699
+Epoch 276
+Average score: 0.489195 MSE: 0.0108906
+Epoch 277
+Average score: 0.920034 MSE: 0.00203139
+Epoch 278
+Average score: 0.922031 MSE: 0.00942733
+Epoch 279
+Average score: 0.975714 MSE: 0.00210895
+Epoch 280
+Average score: 1.01479 MSE: 0.00260752
+Epoch 281
+Average score: 0.251486 MSE: 0.00937623
+Epoch 282
+Average score: 0.834581 MSE: 0.000707901
+Epoch 283
+Average score: 0.53577 MSE: 0.00631176
+Epoch 284
+Average score: 0.872818 MSE: 0.000620926
+Epoch 285
+Average score: 0.851547 MSE: 0.00378208
+Epoch 286
+Average score: 0.961193 MSE: 0.00421148
+Epoch 287
+Average score: 0.992023 MSE: 0.00616329
+Epoch 288
+Average score: 0.978213 MSE: 0.00203459
+Epoch 289
+Average score: -0.476223 MSE: 0.014715
+Epoch 290
+Average score: 0.853303 MSE: 0.00183463
+Epoch 291
+Average score: 0.910896 MSE: 0.000835184
+Epoch 292
+Average score: 0.846068 MSE: 0.000261511
+Epoch 293
+Average score: 0.930118 MSE: 0.00509268
+Epoch 294
+Average score: 0.831994 MSE: 0.00183636
+Epoch 295
+Average score: 0.775296 MSE: 0.00881249
+Epoch 296
+Average score: 0.915483 MSE: 0.00189754
+Epoch 297
+Average score: 0.838085 MSE: 0.00141672
+Epoch 298
+Average score: 0.893484 MSE: 0.00158392
+Epoch 299
+Average score: 0.951093 MSE: 0.00333519
+Epoch 300
+Average score: 0.857195 MSE: 0.000616198
+Epoch 301
+Average score: 0.899333 MSE: 0.00166552
+Epoch 302
+Average score: 1.01115 MSE: 0.0027164
+Epoch 303
+Average score: 0.776138 MSE: 0.000730122
+Epoch 304
+Average score: 0.679768 MSE: 0.000835696
+Epoch 305
+Average score: -1.05365 MSE: 0.0211816
+Epoch 306
+Average score: 0.968658 MSE: 0.00292535
+Epoch 307
+Average score: 0.996025 MSE: 0.00313399
+Epoch 308
+Average score: 0.71632 MSE: 0.00473879
+Epoch 309
+Average score: 0.982305 MSE: 0.00786343
+Epoch 310
+Average score: 0.819984 MSE: 0.000665124
+Epoch 311
+Average score: 0.398307 MSE: 0.00549698
+Epoch 312
+Average score: 0.713517 MSE: 0.000149819
+Epoch 313
+Average score: 0.857404 MSE: 0.00229265
+Epoch 314
+Average score: 0.910891 MSE: 0.00109998
+Epoch 315
+Average score: 1.11298 MSE: 0.00324026
+Epoch 316
+Average score: 0.722531 MSE: 0.00369745
+Epoch 317
+Average score: 0.995801 MSE: 0.00260573
+Epoch 318
+Average score: 0.887502 MSE: 0.00174334
+Epoch 319
+Average score: 0.953987 MSE: 0.0070971
+Epoch 320
+Average score: 0.921224 MSE: 0.00207345
+Epoch 321
+Average score: 0.692822 MSE: 0.00149344
+Epoch 322
+Average score: 0.835732 MSE: 0.00061198
+Epoch 323
+Average score: 0.886824 MSE: 0.00147767
+Epoch 324
+Average score: 0.8241 MSE: 0.000892058
+Epoch 325
+Average score: 1.05372 MSE: 0.00244632
+Epoch 326
+Average score: 0.702627 MSE: 0.0012861
+Epoch 327
+Average score: 0.309118 MSE: 0.0115016
+Epoch 328
+Average score: 0.505502 MSE: 0.00758127
+Epoch 329
+Average score: 0.879597 MSE: 0.00150705
+Epoch 330
+Average score: 1.04535 MSE: 0.00587651
+Epoch 331
+Average score: 0.937193 MSE: 0.0035453
+Epoch 332
+Average score: 1.06781 MSE: 0.00571342
+Epoch 333
+Average score: -1.08712 MSE: 0.0260343
+Epoch 334
+Average score: 1.00446 MSE: 0.00292183
+Epoch 335
+Average score: -1.0833 MSE: 0.021052
+Epoch 336
+Average score: 0.986281 MSE: 0.00236851
+Epoch 337
+Average score: 1.07916 MSE: 0.00652432
+Epoch 338
+Average score: -0.209787 MSE: 0.0134635
+Epoch 339
+Average score: 0.980139 MSE: 0.00210673
+Epoch 340
+Average score: 0.515832 MSE: 0.00685202
+Epoch 341
+Average score: 0.916038 MSE: 0.00149811
+Epoch 342
+Average score: 0.97451 MSE: 0.00400242
+Epoch 343
+Average score: 0.769806 MSE: 0.00454925
+Epoch 344
+Average score: 0.964068 MSE: 0.00377905
+Epoch 345
+Average score: 0.66834 MSE: 0.00268885
+Epoch 346
+Average score: 0.973005 MSE: 0.00116527
+Epoch 347
+Average score: -1.07735 MSE: 0.0215403
+Epoch 348
+Average score: 0.799989 MSE: 0.000707302
+Epoch 349
+Average score: 0.893006 MSE: 0.000625282
+Epoch 350
+Average score: 1.01207 MSE: 0.00298802
+Epoch 351
+Average score: 0.821026 MSE: 0.000586606
+Epoch 352
+Average score: -0.008806 MSE: 0.0113067
+Epoch 353
+Average score: 1.11765 MSE: 0.00649299
+Epoch 354
+Average score: 0.883013 MSE: 0.00142984
+Epoch 355
+Average score: 1.00468 MSE: 0.00275409
+Epoch 356
+Average score: 0.962993 MSE: 0.00195617
+Epoch 357
+Average score: 0.850088 MSE: 0.00055808
+Epoch 358
+Average score: 0.889913 MSE: 0.00205229
+Epoch 359
+Average score: 0.971776 MSE: 0.00198464
+Epoch 360
+Average score: 1.00199 MSE: 0.00508534
+Epoch 361
+Average score: 1.0059 MSE: 0.00587542
+Epoch 362
+Average score: 0.170791 MSE: 0.0682467
+Epoch 363
+Average score: 0.871437 MSE: 0.00145406
+Epoch 364
+Average score: 0.843761 MSE: 0.00132092
+Epoch 365
+Average score: 0.542112 MSE: 0.0104449
+Epoch 366
+Average score: 0.68197 MSE: 0.000265959
+Epoch 367
+Average score: 0.851841 MSE: 0.00100887
+Epoch 368
+Average score: 0.926761 MSE: 0.00266039
+Epoch 369
+Average score: 0.764981 MSE: 0.00610264
+Epoch 370
+Average score: 0.965102 MSE: 0.00309401
+Epoch 371
+Average score: 0.742174 MSE: 0.00481858
+Epoch 372
+Average score: 0.888741 MSE: 0.00168093
+Epoch 373
+Average score: 0.995412 MSE: 0.0031542
+Epoch 374
+Average score: -0.546688 MSE: 0.0143034
+Epoch 375
+Average score: 0.969194 MSE: 0.00237299
+Epoch 376
+Average score: 0.861689 MSE: 0.00161379
+Epoch 377
+Average score: 1.00485 MSE: 0.00339357
+Epoch 378
+Average score: 0.780199 MSE: 0.00514641
+Epoch 379
+Average score: 0.804303 MSE: 0.00122473
+Epoch 380
+Average score: 0.977323 MSE: 0.00188751
+Epoch 381
+Average score: 0.775893 MSE: 0.000208871
+Epoch 382
+Average score: 0.888895 MSE: 0.00216552
+Epoch 383
+Average score: 0.935316 MSE: 0.00188872
+Epoch 384
+Average score: 0.836198 MSE: 0.000532835
+Epoch 385
+Average score: 0.958323 MSE: 0.00206537
+Epoch 386
+Average score: 1.0702 MSE: 0.00549669
+Epoch 387
+Average score: 0.804538 MSE: 0.000580883
+Epoch 388
+Average score: 0.379281 MSE: 0.0053145
+Epoch 389
+Average score: 0.883548 MSE: 0.00819359
+Epoch 390
+Average score: 0.844626 MSE: 0.000870409
+Epoch 391
+Average score: 0.924738 MSE: 0.00213141
+Epoch 392
+Average score: 0.923947 MSE: 0.00213411
+Epoch 393
+Average score: 1.11474 MSE: 0.0035149
+Epoch 394
+Average score: 0.963971 MSE: 0.00229678
+Epoch 395
+Average score: 0.817515 MSE: 0.000982828
+Epoch 396
+Average score: 0.887862 MSE: 0.000852452
+Epoch 397
+Average score: 0.467622 MSE: 0.00587681
+Epoch 398
+Average score: 0.981283 MSE: 0.00215636
+Epoch 399
+Average score: 0.897328 MSE: 0.00238429
+Epoch 400
+Average score: 0.840767 MSE: 0.000797669
+Epoch 401
+Average score: 1.00731 MSE: 0.00314215
+Epoch 402
+Average score: 0.786799 MSE: 0.00572062
+Epoch 403
+Average score: -1.05102 MSE: 0.0218923
+Epoch 404
+Average score: 0.827009 MSE: 0.000692083
+Epoch 405
+Average score: 0.907883 MSE: 0.00255213
+Epoch 406
+Average score: 0.823781 MSE: 0.000958945
+Epoch 407
+Average score: 1.13358 MSE: 0.00572097
+Epoch 408
+Average score: 0.804425 MSE: 0.00588286
+Epoch 409
+Average score: 0.872754 MSE: 0.00115708
+Epoch 410
+Average score: 0.934788 MSE: 0.00267177
+Epoch 411
+Average score: 0.95053 MSE: 0.00152301
+Epoch 412
+Average score: 0.900909 MSE: 0.00141098
+Epoch 413
+Average score: 0.996364 MSE: 0.00322918
+Epoch 414
+Average score: 0.631951 MSE: 0.00325912
+Epoch 415
+Average score: 0.981612 MSE: 0.00221254
+Epoch 416
+Average score: 0.870226 MSE: 0.00248346
+Epoch 417
+Average score: 0.979495 MSE: 0.00230371
+Epoch 418
+Average score: 0.896623 MSE: 0.00139321
+Epoch 419
+Average score: 0.904144 MSE: 0.00196268
+Epoch 420
+Average score: 0.088882 MSE: 0.00870889
+Epoch 421
+Average score: 0.244088 MSE: 0.0070477
+Epoch 422
+Average score: -1.07813 MSE: 0.0201016
+Epoch 423
+Average score: 0.863442 MSE: 0.00246849
+Epoch 424
+Average score: 0.922156 MSE: 0.00213712
+Epoch 425
+Average score: 0.870087 MSE: 0.00135293
+Epoch 426
+Average score: 0.740368 MSE: 0.00521583
+Epoch 427
+Average score: 1.01206 MSE: 0.00429902
+Epoch 428
+Average score: 0.894048 MSE: 0.00186325
+Epoch 429
+Average score: 0.962233 MSE: 0.00259505
+Epoch 430
+Average score: 0.707687 MSE: 0.000192918
+Epoch 431
+Average score: 1.04221 MSE: 0.00415503
+Epoch 432
+Average score: 0.264164 MSE: 0.00877828
+Epoch 433
+Average score: 0.494663 MSE: 0.00597606
+Epoch 434
+Average score: 0.839433 MSE: 0.00105049
+Epoch 435
+Average score: 1.00378 MSE: 0.00422818
+Epoch 436
+Average score: 0.840247 MSE: 0.0011822
+Epoch 437
+Average score: 0.855588 MSE: 0.0011183
+Epoch 438
+Average score: 0.879156 MSE: 0.00194281
+Epoch 439
+Average score: 0.70687 MSE: 0.00367393
+Epoch 440
+Average score: 0.875041 MSE: 0.00162733
+Epoch 441
+Average score: 0.808731 MSE: 0.000748624
+Epoch 442
+Average score: 0.903141 MSE: 0.00227878
+Epoch 443
+Average score: 0.910107 MSE: 0.00316254
+Epoch 444
+Average score: 0.926921 MSE: 0.00256278
+Epoch 445
+Average score: 1.04179 MSE: 0.00401857
+Epoch 446
+Average score: 0.4879 MSE: 0.00510616
+Epoch 447
+Average score: 0.969437 MSE: 0.00261326
+Epoch 448
+Average score: 0.738029 MSE: 0.00475554
+Epoch 449
+Average score: 0.907493 MSE: 0.00405664
+Epoch 450
+Average score: 0.955008 MSE: 0.00297515
+Epoch 451
+Average score: 1.07753 MSE: 0.00546373
+Epoch 452
+Average score: 0.842067 MSE: 0.00103484
+Epoch 453
+Average score: 0.788253 MSE: 0.00214969
+Epoch 454
+Average score: 0.878982 MSE: 0.00108234
+Epoch 455
+Average score: 1.05082 MSE: 0.00471843
+Epoch 456
+Average score: 0.964448 MSE: 0.00306226
+Epoch 457
+Average score: 0.973596 MSE: 0.00279913
+Epoch 458
+Average score: 1.08369 MSE: 0.00366165
+Epoch 459
+Average score: 0.907169 MSE: 0.00112915
+Epoch 460
+Average score: 0.89416 MSE: 0.00162756
+Epoch 461
+Average score: 0.952148 MSE: 0.00180667
+Epoch 462
+Average score: 0.877639 MSE: 0.0013362
+Epoch 463
+Average score: 0.990621 MSE: 0.00363985
+Epoch 464
+Average score: 0.71532 MSE: 0.00414789
+Epoch 465
+Average score: 1.01596 MSE: 0.00338778
+Epoch 466
+Average score: 1.01177 MSE: 0.00262767
+Epoch 467
+Average score: 0.979878 MSE: 0.00196858
+Epoch 468
+Average score: 0.927373 MSE: 0.00282777
+Epoch 469
+Average score: 0.823601 MSE: 0.00603489
+Epoch 470
+Average score: 0.871788 MSE: 0.00162519
+Epoch 471
+Average score: 0.885292 MSE: 0.00180435
+Epoch 472
+Average score: 0.954103 MSE: 0.00237399
+Epoch 473
+Average score: 0.778839 MSE: 0.000365136
+Epoch 474
+Average score: 0.924315 MSE: 0.00190308
+Epoch 475
+Average score: 0.811041 MSE: 0.00105478
+Epoch 476
+Average score: 0.815249 MSE: 0.00167325
+Epoch 477
+Average score: 0.950235 MSE: 0.00313762
+Epoch 478
+Average score: 1.02156 MSE: 0.0042098
+Epoch 479
+Average score: 0.918599 MSE: 0.00205353
+Epoch 480
+Average score: 1.04358 MSE: 0.00252972
+Epoch 481
+Average score: 1.01257 MSE: 0.00216771
+Epoch 482
+Average score: 1.00978 MSE: 0.00213172
+Epoch 483
+Average score: 0.851101 MSE: 0.000791133
+Epoch 484
+Average score: 0.984353 MSE: 0.0022607
+Epoch 485
+Average score: 0.964512 MSE: 0.00239119
+Epoch 486
+Average score: 0.962318 MSE: 0.00321599
+Epoch 487
+Average score: 0.782741 MSE: 0.000731765
+Epoch 488
+Average score: 0.896447 MSE: 0.00196643
+Epoch 489
+Average score: 0.901855 MSE: 0.00153114
+Epoch 490
+Average score: 0.941624 MSE: 0.003457
+Epoch 491
+Average score: 0.93159 MSE: 0.00231411
+Epoch 492
+Average score: 0.901187 MSE: 0.00195275
+Epoch 493
+Average score: 0.917203 MSE: 0.00231885
+Epoch 494
+Average score: 0.926882 MSE: 0.00233804
+Epoch 495
+Average score: 0.955423 MSE: 0.00311561
+Epoch 496
+Average score: 0.962078 MSE: 0.00294409
+Epoch 497
+Average score: 0.979658 MSE: 0.00238914
+Epoch 498
+Average score: 0.983296 MSE: 0.00260126
+Epoch 499
+Average score: 0.962583 MSE: 0.00227609
+Epoch 500
+Average score: 1.01316 MSE: 0.00345074
+5 grays, reward =  0.08306
+5 grays, reward =  0.03538
+5 grays, reward =  0.00506
+1 grays, reward =  -0.00049
+1 grays, reward =  -0.00065
+1 grays, reward =  -0.00052
+1 grays, reward =  -0.0008
+1 grays, reward =  -0.00131
+1 grays, reward =  -0.00158
+1 grays, reward =  -0.00159
+1 grays, reward =  -0.00285
+1 grays, reward =  -0.00319
+1 grays, reward =  -0.00359
+2 grays, reward =  -0.00677
+2 grays, reward =  -0.00526
+3 grays, reward =  -0.009
+1 grays, reward =  -0.003
+3 grays, reward =  -0.0113
+1 grays, reward =  -0.00307
+3 grays, reward =  -0.01044
+2 grays, reward =  -0.0057
+2 grays, reward =  -0.00639
+2 grays, reward =  -0.00658
+2 grays, reward =  -0.00659
+2 grays, reward =  -0.00631
+3 grays, reward =  -0.01065
+2 grays, reward =  -0.00638
+2 grays, reward =  -0.00618
+2 grays, reward =  1.00225
+W
+5 grays, reward =  0.08147
+5 grays, reward =  0.03683
+5 grays, reward =  0.00476
+1 grays, reward =  -0.00065
+1 grays, reward =  -0.00064
+1 grays, reward =  -0.00097
+1 grays, reward =  -0.00082
+1 grays, reward =  -0.00112
+1 grays, reward =  -0.0016
+1 grays, reward =  -0.00221
+1 grays, reward =  -0.00249
+2 grays, reward =  -0.00338
+1 grays, reward =  -0.00273
+1 grays, reward =  -0.00391
+3 grays, reward =  -0.01023
+1 grays, reward =  -0.00306
+3 grays, reward =  -0.00951
+1 grays, reward =  -0.00279
+3 grays, reward =  -0.01026
+1 grays, reward =  -0.00293
+3 grays, reward =  -0.01048
+2 grays, reward =  -0.00607
+2 grays, reward =  -0.00673
+2 grays, reward =  -0.00741
+2 grays, reward =  -0.00754
+3 grays, reward =  -0.01096
+2 grays, reward =  -0.00591
+2 grays, reward =  -0.0064
+2 grays, reward =  -0.00658
+2 grays, reward =  -0.00668
+2 grays, reward =  -0.00693
+3 grays, reward =  0.96325
+W
+5 grays, reward =  0.08185
+5 grays, reward =  0.03625
+5 grays, reward =  0.00526
+1 grays, reward =  -0.00047
+1 grays, reward =  -0.0005
+1 grays, reward =  -0.00078
+1 grays, reward =  -0.00097
+1 grays, reward =  -0.00157
+1 grays, reward =  -0.00149
+1 grays, reward =  -0.00179
+1 grays, reward =  -0.00217
+1 grays, reward =  -0.0034
+1 grays, reward =  -0.004
+2 grays, reward =  -0.00648
+1 grays, reward =  -0.00351
+3 grays, reward =  -0.00947
+1 grays, reward =  -0.00304
+3 grays, reward =  -0.00887
+1 grays, reward =  -0.00263
+3 grays, reward =  -0.01135
+2 grays, reward =  -0.00627
+2 grays, reward =  -0.00634
+2 grays, reward =  -0.00645
+2 grays, reward =  -0.00745
+2 grays, reward =  -0.00726
+3 grays, reward =  -0.01088
+1 grays, reward =  -0.00307
+3 grays, reward =  -0.01086
+1 grays, reward =  -0.00277
+3 grays, reward =  -0.01146
+2 grays, reward =  -0.00592
+2 grays, reward =  -0.00627
+2 grays, reward =  0.99025
+W
+5 grays, reward =  0.08135
+5 grays, reward =  0.03656
+5 grays, reward =  0.00512
+1 grays, reward =  -0.00053
+1 grays, reward =  -0.00048
+1 grays, reward =  -0.00077
+1 grays, reward =  -0.00095
+1 grays, reward =  -0.00118
+1 grays, reward =  -0.00128
+1 grays, reward =  -0.0018
+1 grays, reward =  -0.00192
+2 grays, reward =  -0.00442
+2 grays, reward =  -0.00382
+1 grays, reward =  -0.0028
+2 grays, reward =  -0.00593
+2 grays, reward =  -0.0062
+3 grays, reward =  -0.01017
+1 grays, reward =  -0.0027
+3 grays, reward =  -0.01074
+2 grays, reward =  -0.00581
+2 grays, reward =  -0.00601
+2 grays, reward =  -0.006
+2 grays, reward =  -0.00665
+2 grays, reward =  -0.00704
+3 grays, reward =  -0.01103
+1 grays, reward =  -0.00281
+3 grays, reward =  -0.01097
+2 grays, reward =  -0.00631
+2 grays, reward =  -0.00601
+2 grays, reward =  -0.00592
+2 grays, reward =  -0.00661
+2 grays, reward =  -0.00722
+2 grays, reward =  -0.0071
+3 grays, reward =  -0.01111
+1 grays, reward =  -0.00282
+2 grays, reward =  -0.00734
+3 grays, reward =  0.951
+W
+5 grays, reward =  0.08074
+5 grays, reward =  0.03754
+5 grays, reward =  0.0046
+1 grays, reward =  -0.00053
+1 grays, reward =  -0.00065
+1 grays, reward =  -0.00093
+1 grays, reward =  -0.00109
+1 grays, reward =  -0.00124
+1 grays, reward =  -0.00163
+1 grays, reward =  -0.00236
+2 grays, reward =  -0.00351
+2 grays, reward =  -0.00358
+1 grays, reward =  -0.00243
+2 grays, reward =  -0.00542
+2 grays, reward =  -0.00565
+2 grays, reward =  -0.00611
+2 grays, reward =  -0.00654
+3 grays, reward =  -0.0107
+2 grays, reward =  -0.00554
+2 grays, reward =  -0.00658
+2 grays, reward =  -0.00612
+2 grays, reward =  -0.00675
+2 grays, reward =  -0.00678
+3 grays, reward =  -0.01163
+1 grays, reward =  -0.00272
+3 grays, reward =  -0.01148
+2 grays, reward =  -0.00571
+2 grays, reward =  -0.00615
+2 grays, reward =  -0.00673
+2 grays, reward =  -0.00684
+2 grays, reward =  -0.00706
+3 grays, reward =  0.949
+W
+Average score: 0.9496 MSE: 0.00235742
+Average score: 0.968224 MSE: 0.00278842
+TCP: 100
+Average num of fractions: 31.99 Average dose: 66.37 Average survival: 0.48825

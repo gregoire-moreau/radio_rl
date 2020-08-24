@@ -112,13 +112,13 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
             return -1.0;
         } else{
             if (reward == 'd')
-                return - (double) dose / 400.0 + 0.5 + (double) (HealthyCell::count) / 4000.0;
+                return - (double) dose / 200.0 + 0.5 + (double) (HealthyCell::count) / 4000.0;
             else
                 return 0.5 + (double) (HealthyCell::count) / 4000.0;
         }
     } else {
         if (reward == 'd' || reward == 'n')
-            return - (double) dose / 400.0 + (double) (ccell_killed - 5 * hcells_lost)/100000.0;
+            return - (double) dose / 200.0 + (double) (ccell_killed - 5.0* hcells_lost)/100000.0;
         else{
 	    //cout << ccell_killed << " " << hcells_lost <<endl;
             return (double) (ccell_killed - (double) (reward - '0') * hcells_lost)/100000.0;
@@ -407,20 +407,10 @@ void test_suite(char reward){
 }
 
 int main(int argc, char * argv[]){
-
+    
     cout << "Dose "<<endl;
     test_suite('d');
-    cout << "Killed 1"<<endl;
-    test_suite('1');
-    cout << "Killed 2"<<endl;
-    test_suite('2');
-    cout << "Killed 3"<<endl;
-    test_suite('3');
-    cout << "Killed 4"<<endl;
-    test_suite('4');
-    cout << "Killed 5"<<endl;
-    test_suite('5');
-    /*
+        
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
@@ -436,7 +426,6 @@ int main(int argc, char * argv[]){
     agent -> save_Q(argv[6]);
     delete model;
     delete agent;
-    */
 }
 
 
