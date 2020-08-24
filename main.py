@@ -41,7 +41,7 @@ from other_controllers import GaussianNoiseController, GridSearchController
 from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
-rng = np.random.RandomState(123456)
+rng = np.random.RandomState(777)
 
 # TODO : best algorithm, hyperparameter tuning
 if args.network == 'DQN':
