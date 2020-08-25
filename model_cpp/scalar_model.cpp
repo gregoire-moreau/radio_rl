@@ -408,8 +408,8 @@ void test_suite(char reward){
 
 int main(int argc, char * argv[]){
     
-    cout << "Dose "<<endl;
-    test_suite('d');
+    //cout << "Dose "<<endl;
+    //test_suite('d');
         
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
@@ -420,10 +420,10 @@ int main(int argc, char * argv[]){
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
     if(argc == 8 && argv[7][0] == 'l')
         agent -> load_Q(argv[6]);
-    agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
-    agent -> test(5, true, 0.99, false);
+    //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
+    //agent -> test(5, true, 0.99, false);
     agent -> test(100, false, 0.99, true);
-    agent -> save_Q(argv[6]);
+    //agent -> save_Q(argv[6]);
     delete model;
     delete agent;
 }
