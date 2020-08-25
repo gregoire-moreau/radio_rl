@@ -172,8 +172,8 @@ plt.savefig('tmp/'+args.fname+'_treat')
 
 print(ticks, doses)
 
-doses_data = np.zeros((100, 51), dtype=float)
-for i in range(500):
+doses_data = np.zeros((100, 100), dtype=float)
+for i in range(100):
     env.init_dataset()
     agent._runEpisode(100000)
     _, _, doses = env.dataset
