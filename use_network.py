@@ -130,14 +130,12 @@ print("Avg length in successes", length_success / count)
 print("Avg number of doses", avg_doses / count)
 print("Avg hcells killed", avg_h_cell_killed / count)
 print("Avg surviving fraction: ", avg_percentage / count)
-agent.summarizeTestPerformance()
-
+#agent.summarizeTestPerformance()
+env.init_dataset()
 env.init_dose_map()
 agent._runEpisode(100000)
 #env.show_dose_map()
 print("done")
-
-
 
 
 save_tumor_image(env.tumor_images[0][1], env.tumor_images[0][0])
@@ -171,6 +169,17 @@ for i in range(len(ticks)):
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.savefig('tmp/'+args.fname+'_treat')
 
-env.end()
+
 print(ticks, doses)
 
+doses_data = np.zeros((100, 51), dtype=float)
+for i in range(500):
+    env.init_dataset()
+    agent._runEpisode(100000)
+    _, _, doses = env.dataset
+    doses_data[i, :len(doses)] = doses
+
+print(np.mean(doses_data, 0))
+print(np.std(doses_data, 0))
+
+env.end()

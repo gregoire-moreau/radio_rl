@@ -36,16 +36,18 @@ class CellEnvironment(Environment):
         self.action_type = action_type
         self.special_reward = special_reward
         self.dose_map = None
+        self.dataset = None
 
     def get_tick(self):
         return cppCellModel.controllerTick(self.controller_capsule)
 
     def init_dose_map(self):
         self.dose_map = np.zeros((50, 50), dtype=float)
-        self.dataset = [[], [], []]
         self.dose_maps = []
         self.tumor_images = []
 
+    def init_dataset(self):
+        self.dataset = [[], [], []]
 
     def add_radiation(self, dose, radius, center_x, center_y):
         if dose == 0:
@@ -89,11 +91,12 @@ class CellEnvironment(Environment):
         self.num_doses += 1 if dose > 0 else 0
         cppCellModel.irradiate(self.controller_capsule, dose)
         self.radiation_h_killed += (pre_hcell - cppCellModel.HCellCount())
-        if self.dose_map is not None:
-            self.add_radiation(dose, tumor_radius, cppCellModel.get_center_x(self.controller_capsule), cppCellModel.get_center_y(self.controller_capsule))
+        if self.dataset is not None:
             self.dataset[0].append(cppCellModel.controllerTick(self.controller_capsule) - 350)
             self.dataset[1].append((pre_ccell, cppCellModel.CCellCount()))
             self.dataset[2].append(dose)
+        if self.dose_map is not None:
+            self.add_radiation(dose, tumor_radius, cppCellModel.get_center_x(self.controller_capsule), cppCellModel.get_center_y(self.controller_capsule))
             self.dose_maps.append((cppCellModel.controllerTick(self.controller_capsule) - 350, np.copy(self.dose_map)))
             self.tumor_images.append((cppCellModel.controllerTick(self.controller_capsule) - 350, cppCellModel.observeDensity(self.controller_capsule)))
         p_hcell = cppCellModel.HCellCount()
