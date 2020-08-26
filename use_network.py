@@ -103,9 +103,11 @@ agent = NeuralAgent(
         random_state=rng)
 
 #agent.attach(bc.VerboseController())
-#agent.setNetwork(args.fname)
+if args.fname == 'baseline':
+    agent = EmpiricalTreatmentAgent(env)
+else:
+    agent.setNetwork(args.fname)
 
-agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
@@ -174,15 +176,16 @@ plt.savefig('tmp/'+args.fname+'_treat')
 plt.clf()
 plt.cla()
 
-doses_data = np.zeros((100, 100), dtype=float)
+doses_data = np.full((100, 100), np.nan, dtype=float)
 for i in range(100):
     env.init_dataset()
     agent._runEpisode(100000)
     _, _, doses = env.dataset
     doses_data[i, :len(doses)] = doses
 
-means = np.mean(doses_data, 0)
-errs = np.std(doses_data, 0)
+
+means = np.nanmean(doses_data, 0)
+errs = np.nanstd(doses_data, 0)
 steps = [i * (24 if args.network == 'DQN' else 12) for i in range(len(means))]
 treatment_var(means, errs, steps, args.fname)
 

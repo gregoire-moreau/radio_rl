@@ -14,8 +14,10 @@ def read_data(means, error, step):
     return means_data, err_data, steps
 
 def treatment_var(means_data, err_data, steps, name):
-    ind_end = list(means_data).index(0.0)
+    ind_end = list(means_data).index(np.nan)
     plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end])
+    plt.xlabel('Treatment time (h)')
+    plt.ylabel('Dose (Gy)')
     plt.savefig('tmp/' + name + 'var')
 
 
