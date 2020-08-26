@@ -1,0 +1,10 @@
+2020-08-26 03:09:10.724651
+Namespace(center=False, fname='baseline', network='DQN', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
+AGENT
+TCP =  0.722
+Avg rad 60.742382271468145
+Avg length in successes 728.9085872576177
+Avg number of doses 30.371191135734072
+Avg hcells killed 33166.92797783933
+Avg surviving fraction:  1.1120405938611104
+done

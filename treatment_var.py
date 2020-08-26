@@ -13,8 +13,9 @@ def read_data(means, error, step):
     steps = [i * step for i in range(len(means_data))]
     return means_data, err_data, steps
 
-def show_treatment(means_data, err_data, steps):
-    plt.errorbar(steps, means_data, yerr=err_data)
-    plt.show()
+def treatment_var(means_data, err_data, steps, name):
+    ind_end = list(means_data).index(0.0)
+    plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end])
+    plt.savefig('tmp/' + name + 'var')
 
 

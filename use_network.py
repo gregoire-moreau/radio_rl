@@ -24,6 +24,7 @@ elif args.simulation == 'py':
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcol
 import numpy as np
+from treatment_var import treatment_var
 from draw_treatment import make_img, make_img3
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
@@ -62,13 +63,12 @@ class EmpiricalTreatmentAgent():
         self.num_episodes += 1
         i = 0
         env.reset(-1)
-
         while(not env.inTerminalState()):
-            if i < 4:
-                self.total_score += env.act(8)
+            if i <35:
+                self.total_score += env.act(2)
                 i += 1
             else:
-                self.total_score += env.act(4)
+                self.total_score += env.act(-2)
 
 
 from deer.agent import NeuralAgent
@@ -103,9 +103,9 @@ agent = NeuralAgent(
         random_state=rng)
 
 #agent.attach(bc.VerboseController())
-agent.setNetwork(args.fname)
+#agent.setNetwork(args.fname)
 
-#agent = EmpiricalTreatmentAgent(env)
+agent = EmpiricalTreatmentAgent(env)
 count = 0
 length_success = 0
 avg_rad = 0
@@ -114,7 +114,7 @@ avg_percentage = 0
 avg_doses = 0
 k = 500
 for i in range(k):
-    print(i)
+    #print(i)
     agent._runEpisode(100000)
     if env.end_type == 'W':
         count += 1
@@ -140,20 +140,20 @@ print("done")
 
 save_tumor_image(env.tumor_images[0][1], env.tumor_images[0][0])
 save_dose_map(env.dose_maps[0][1], env.dose_maps[0][0])
-save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 2)][1], env.tumor_images[int(len(env.tumor_images) / 2)][0])
-save_dose_map(env.dose_maps[int(len(env.tumor_images) / 2)][1], env.dose_maps[int(len(env.tumor_images) / 2)][0])
-#save_tumor_image(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0])
-#save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0])
+save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 3)][1], env.tumor_images[int(len(env.tumor_images) / 3)][0])
+save_dose_map(env.dose_maps[int(len(env.tumor_images) / 3)][1], env.dose_maps[int(len(env.tumor_images) / 3)][0])
+save_tumor_image(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0])
+save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0])
 save_tumor_image(env.tumor_images[-1][1], env.tumor_images[-1][0])
 save_dose_map(env.dose_maps[-1][1], env.dose_maps[-1][0])
-ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 2)][0], env.tumor_images[-1][0]]
-make_img3(ticks, args.fname)
+ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) *2 / 3)][0], env.tumor_images[-1][0]]
+make_img(ticks, args.fname)
 
 
 ticks, counts, doses = env.dataset
 fig, ax1 = plt.subplots()
 
-color = 'tab:orange'
+color = 'tab:red'
 ax1.set_xlabel('time (h)')
 ax1.set_ylabel('Dose (Gy)', color=color)
 ax1.set_ylim(0, 5)
@@ -170,7 +170,9 @@ fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.savefig('tmp/'+args.fname+'_treat')
 
 
-print(ticks, doses)
+#print(ticks, doses)
+plt.clf()
+plt.cla()
 
 doses_data = np.zeros((100, 100), dtype=float)
 for i in range(100):
@@ -179,7 +181,9 @@ for i in range(100):
     _, _, doses = env.dataset
     doses_data[i, :len(doses)] = doses
 
-print(np.mean(doses_data, 0))
-print(np.std(doses_data, 0))
+means = np.mean(doses_data, 0)
+errs = np.std(doses_data, 0)
+steps = [i * (24 if args.network == 'DQN' else 12) for i in range(len(means))]
+treatment_var(means, errs, steps, args.fname)
 
 env.end()
