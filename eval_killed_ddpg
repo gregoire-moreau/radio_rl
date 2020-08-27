@@ -1,10 +1,10 @@
-2020-08-26 02:34:58.645423
+2020-08-27 03:19:02.733964
 Namespace(center=False, fname='killed_ddpg', network='DDPG', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
 AGENT
 TCP =  1.0
-Avg rad 38.34938948127453
-Avg length in successes 419.48
-Avg number of doses 34.938
-Avg hcells killed 9768.85
-Avg surviving fraction:  1.0716858122289996
+Avg rad 38.4259901426268
+Avg length in successes 420.32
+Avg number of doses 35.008
+Avg hcells killed 9652.502
+Avg surviving fraction:  1.0732299131670615
 done
