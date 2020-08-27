@@ -127,11 +127,11 @@ for i in range(k):
         avg_doses += env.num_doses
 
 print("TCP = ", count / k)
-print("Avg rad", avg_rad / count)
-print("Avg length in successes", length_success / count)
-print("Avg number of doses", avg_doses / count)
-print("Avg hcells killed", avg_h_cell_killed / count)
-print("Avg surviving fraction: ", avg_percentage / count)
+print("Avg rad", avg_rad / k)
+print("Avg length in successes", length_success / k)
+print("Avg number of doses", avg_doses / k)
+print("Avg hcells killed", avg_h_cell_killed / k)
+print("Avg surviving fraction: ", avg_percentage / k)
 #agent.summarizeTestPerformance()
 env.init_dataset()
 env.init_dose_map()
@@ -176,7 +176,7 @@ plt.savefig('tmp/'+args.fname+'_treat')
 plt.clf()
 plt.cla()
 
-doses_data = np.full((100, 100), np.nan, dtype=float)
+doses_data = np.full((200, 200), np.nan, dtype=float)
 for i in range(100):
     env.init_dataset()
     agent._runEpisode(100000)
