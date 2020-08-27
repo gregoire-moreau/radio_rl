@@ -272,6 +272,49 @@ void TabularAgent::run(int n_epochs, int train_steps, int test_steps, double ini
     }
 }
 
+void TabularAgent::treatment_var(int count){
+    int** treatments = new int*[count];
+    for(int i = 0; i < count; i++){
+        treatments[i] = new int[100]();
+    }
+    for(int i = 0; i < count; i++){
+        env -> reset();
+        int j = 0;
+        while (!env->inTerminalState()){
+            int obs = state();
+            int action = choose_action(obs, 0.0);
+            double r = env -> act(action);
+            treatments[i][j++] = action + 1;
+        }
+    }
+    cout << "mean, std_error" << endl;
+    for(int j = 0; j < 100; j++){
+        int count_mean = 0;;
+        int sum_mean = 0;
+        for(int i = 0; i < count; i++){
+            if (treatments[i][j] > 0){
+                sum_mean += treatments[i][j];
+                count_mean++;
+            }
+        }
+        if (count_mean == 0)
+            break;
+        double mean = (double) sum_mean / (double) count_mean;
+        double sum_std = 0.0;
+        for(int i = 0; i < count; i++){
+            if (treatments[i][j] > 0){
+                sum_std += pow(((double) treatments[i][j]) - mean, 2.0);
+            }
+        }
+        double std_error = sqrt(sum_std / (double) count_mean);
+        cout << mean << ", " << std_error << endl;
+    }
+    for(int i = 0; i < count; i++){
+        delete[] treatments[i];
+    }
+    delete[] treatments;
+}
+
 void TabularAgent::save_Q(string name){
     ofstream myfile;
     myfile.open(name);
@@ -358,6 +401,32 @@ void baseline_treatment(char reward){
     delete model;
 }
 
+void eval_baseline(char reward, int count){
+    cout << "Baseline treatment" << endl;
+    ScalarModel * model = new ScalarModel(reward);
+    int sum_fracs = 0;
+    int sum_doses = 0;
+    int sum_w = 0;
+    double survival = 0.0;
+    for (int i = 0; i < count; i++){
+        model -> reset();
+        int count_f = 0;
+        int init_hcell = HealthyCell::count;
+        while (!env->inTerminalState()){
+            int action = (count_f++ < 35)?1:-1;
+            env -> act(action);
+            sum_fracs++;
+            sum_doses += action + 1;
+        }
+        survival += (double) HealthyCell::count / (double) init_hcell;
+        if (env -> end_type == 'W')
+            sum_w++;
+    }
+    cout << "TCP: " << 100.0 * (double) sum_w / (double) count << endl;
+    cout << "Average num of fractions: " << (double) sum_fracs / (double) count << " Average dose: "  << (double) sum_doses / (double) count << " Average survival: " << survival / (double) count << endl;
+    delete model;
+}
+
 void high_treatment(char reward){
     cout << "High treatment" << endl;
     ScalarModel * model = new ScalarModel(reward);
@@ -406,6 +475,7 @@ void test_suite(char reward){
     high_low_treatment(reward);
 }
 
+
 int main(int argc, char * argv[]){
     
     //cout << "Dose "<<endl;
@@ -423,6 +493,7 @@ int main(int argc, char * argv[]){
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
     agent -> test(100, false, 0.99, true);
+    agent -> treatment_var(100);
     //agent -> save_Q(argv[6]);
     delete model;
     delete agent;
