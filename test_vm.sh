@@ -7,3 +7,7 @@
 #./main.py -r dose -n DDPG -e 100 2500 -l 0.0001 0.9 1 --fname dose_ddpg_new > training_logs/ddpg_dose_st/dose
 ./model_cpp/main 0 1 i 100 10 killed_100_10.csv l > eval_killed_scalar
 ./model_cpp/main 0 d i 100 10 dose_100_10.csv l > eval_dose_scalar
+#cd model_cpp
+#make
+#cd ..
+#./model_cpp/main > eval_scalar_baseline

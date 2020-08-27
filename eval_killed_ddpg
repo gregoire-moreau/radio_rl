@@ -1,4 +1,4 @@
-2020-08-27 03:19:02.733964
+2020-08-27 12:25:16.464729
 Namespace(center=False, fname='killed_ddpg', network='DDPG', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
 AGENT
 TCP =  1.0

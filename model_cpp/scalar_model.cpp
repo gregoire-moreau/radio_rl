@@ -330,22 +330,28 @@ void TabularAgent::save_Q(string name){
 
 void TabularAgent::load_Q(string name){
     ifstream f;
+    //cout << "Trying to open "<< name << endl; 
     f.open(name);
     if(!f.is_open()) throw std::runtime_error("Could not open file");
+    //cout << "opened" <<endl;
     string line;
     getline(f, line);
+    //cout << "First line : "<< line << endl;
     int pos_space_1 = line.find(" ");
-    int pos_space_2 = line.find(" ", pos_space_1);
+    int pos_space_2 = line.find(" ", pos_space_1 + 1);
     int t_cstage = stoi(line.substr(0, pos_space_1));
     int t_hstage = stoi(line.substr(pos_space_1 + 1, pos_space_2 - pos_space_1 - 1));
     int t_actions = stoi(line.substr(pos_space_2 + 1));
+    //cout << t_cstage << " " << t_hstage << " " << t_actions << " " << pos_space_1 << " " << pos_space_2 << endl;
     if(t_cstage != cancer_cell_stages || t_hstage != healthy_cell_stages || t_actions != actions)
         throw std::runtime_error("Parameters do not match");
-    getline(f, line);
+    //getline(f, line);
+    //cout << "Second line [" << line << "]" << endl;
     for(int i = 0; i < cancer_cell_stages * healthy_cell_stages; i++){
         for(int j = 0; j < actions; j++){
             getline(f, line, ',');
-            Q_values[i][j] = stof(line);
+            //cout << "[" <<line << "]" << endl;
+            Q_values[i][j] = stod(line);
         }
         getline(f, line);
     }
@@ -412,14 +418,14 @@ void eval_baseline(char reward, int count){
         model -> reset();
         int count_f = 0;
         int init_hcell = HealthyCell::count;
-        while (!env->inTerminalState()){
+        while (!model->inTerminalState()){
             int action = (count_f++ < 35)?1:-1;
-            env -> act(action);
+            model -> act(action);
             sum_fracs++;
             sum_doses += action + 1;
         }
         survival += (double) HealthyCell::count / (double) init_hcell;
-        if (env -> end_type == 'W')
+        if (model -> end_type == 'W')
             sum_w++;
     }
     cout << "TCP: " << 100.0 * (double) sum_w / (double) count << endl;
@@ -477,10 +483,9 @@ void test_suite(char reward){
 
 
 int main(int argc, char * argv[]){
-    
+    //eval_baseline('d', 100);
     //cout << "Dose "<<endl;
-    //test_suite('d');
-        
+    //test_suite('d');    
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
@@ -488,8 +493,9 @@ int main(int argc, char * argv[]){
     int healthy_cell_stages = stoi(argv[5]);
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
-    if(argc == 8 && argv[7][0] == 'l')
+    if(argc == 8 && argv[7][0] == 'l'){
         agent -> load_Q(argv[6]);
+    }
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
     agent -> test(100, false, 0.99, true);
@@ -497,6 +503,7 @@ int main(int argc, char * argv[]){
     //agent -> save_Q(argv[6]);
     delete model;
     delete agent;
+    
 }
 
 

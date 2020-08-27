@@ -175,7 +175,7 @@ plt.savefig('tmp/'+args.fname+'_treat')
 #print(ticks, doses)
 plt.clf()
 plt.cla()
-
+env.dose_map = None
 doses_data = np.full((200, 200), np.nan, dtype=float)
 for i in range(100):
     env.init_dataset()
