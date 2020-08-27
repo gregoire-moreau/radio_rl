@@ -186,6 +186,14 @@ for i in range(100):
 
 means = np.nanmean(doses_data, 0)
 errs = np.nanstd(doses_data, 0)
+counts = np.count_nonzero(~np.isnan(doses_data), 0)
+with open(args.fname+".csv", 'w') as f:
+    f.write('count, mean, std_error')
+    for i in range(len(counts)):
+        if counts[i] == 0:
+            break
+        else:
+            f.write(str(counts[i])+", "+str(means[i])+", "+str(errs[i]))
 steps = [i * (24 if args.network == 'DQN' else 12) for i in range(len(means))]
 treatment_var(means, errs, steps, args.fname)
 

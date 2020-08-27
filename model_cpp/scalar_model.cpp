@@ -287,7 +287,7 @@ void TabularAgent::treatment_var(int count){
             treatments[i][j++] = action + 1;
         }
     }
-    cout << "mean, std_error" << endl;
+    cout << "count, mean, std_error" << endl;
     for(int j = 0; j < 100; j++){
         int count_mean = 0;;
         int sum_mean = 0;
@@ -307,7 +307,7 @@ void TabularAgent::treatment_var(int count){
             }
         }
         double std_error = sqrt(sum_std / (double) count_mean);
-        cout << mean << ", " << std_error << endl;
+        cout << count_mean << ", " << mean << ", " << std_error << endl;
     }
     for(int i = 0; i < count; i++){
         delete[] treatments[i];
@@ -483,10 +483,10 @@ void test_suite(char reward){
 
 
 int main(int argc, char * argv[]){
-    eval_baseline('d', 100);
+    //eval_baseline('d', 100);
     //cout << "Dose "<<endl;
     //test_suite('d');    
-    /*
+
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
@@ -504,7 +504,7 @@ int main(int argc, char * argv[]){
     //agent -> save_Q(argv[6]);
     delete model;
     delete agent;
-    */   
+
 }
 
 
