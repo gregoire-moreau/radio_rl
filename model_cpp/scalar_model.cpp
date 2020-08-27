@@ -419,7 +419,7 @@ void eval_baseline(char reward, int count){
         int count_f = 0;
         int init_hcell = HealthyCell::count;
         while (!model->inTerminalState()){
-            int action = (count_f++ < 35)?1:-1;
+            int action = (count_f++ < 35)?1:1;
             model -> act(action);
             sum_fracs++;
             sum_doses += action + 1;
@@ -483,9 +483,10 @@ void test_suite(char reward){
 
 
 int main(int argc, char * argv[]){
-    //eval_baseline('d', 100);
+    eval_baseline('d', 100);
     //cout << "Dose "<<endl;
     //test_suite('d');    
+    /*
     int n_epochs = stoi(argv[1]);
     char reward = argv[2][0];
     char state_type = argv[3][0];
@@ -503,7 +504,7 @@ int main(int argc, char * argv[]){
     //agent -> save_Q(argv[6]);
     delete model;
     delete agent;
-    
+    */   
 }
 
 

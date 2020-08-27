@@ -68,7 +68,7 @@ class EmpiricalTreatmentAgent():
                 self.total_score += env.act(2)
                 i += 1
             else:
-                self.total_score += env.act(-2)
+                self.total_score += env.act(2)
 
 
 from deer.agent import NeuralAgent
