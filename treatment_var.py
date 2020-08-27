@@ -17,9 +17,10 @@ def treatment_var(means_data, err_data, steps, name):
     ind_end= len(means_data)
     while means_data[ind_end-1] == np.nan:
         ind_end -= 1
-    plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end])
+    plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-')
     plt.xlabel('Treatment time (h)')
     plt.ylabel('Dose (Gy)')
+    plt.ylim((-0.1, 5.1))
     plt.savefig('tmp/' + name + 'var')
 
 
