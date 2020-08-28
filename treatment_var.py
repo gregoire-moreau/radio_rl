@@ -24,8 +24,8 @@ def read_csv_scalar(filename):
         for line in f:
             if found:
                 a = line.strip().split(', ')
-                means.append(float(a[0]))
-                std_errs.append(float(a[1]))
+                means.append(float(a[1]))
+                std_errs.append(float(a[2]))
             elif "mean, std_error" in line:
                 found = True
     steps = [i * 24 for i in range(len(means))]

@@ -153,7 +153,7 @@ save_dose_map(env.dose_maps[-1][1], env.dose_maps[-1][0])
 ticks4 = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) *2 / 3)][0], env.tumor_images[-1][0]]
 make_img(ticks4, args.fname+'4')
 ticks3 = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 2)][0], env.tumor_images[-1][0]]
-make_img(ticks3, args.fname+'3')
+make_img3(ticks3, args.fname+'3')
 
 
 ticks, counts, doses = env.dataset
