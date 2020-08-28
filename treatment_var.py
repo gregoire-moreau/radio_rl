@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import re
 from ast import literal_eval
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 def read_data(means, error, step):
     a = re.sub(r"([^[])\s+([^]])", r"\1, \2", means)
@@ -41,5 +44,6 @@ def treatment_var(means_data, err_data, steps, name):
 
 
 if __name__ == '__main__':
-    means, std_errs, steps = read_csv_scalar('eval_dose_scalar')
-    treatment_var(means, std_errs, steps, 'dose_scalar')
+    reward = sys.argv[1]
+    means, std_errs, steps = read_csv_scalar('eval_'+reward+'_scalar')
+    treatment_var(means, std_errs, steps, reward+'_scalar')

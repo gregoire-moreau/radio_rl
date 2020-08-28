@@ -144,12 +144,16 @@ save_tumor_image(env.tumor_images[0][1], env.tumor_images[0][0])
 save_dose_map(env.dose_maps[0][1], env.dose_maps[0][0])
 save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 3)][1], env.tumor_images[int(len(env.tumor_images) / 3)][0])
 save_dose_map(env.dose_maps[int(len(env.tumor_images) / 3)][1], env.dose_maps[int(len(env.tumor_images) / 3)][0])
+save_tumor_image(env.tumor_images[int(len(env.tumor_images) / 2)][1], env.tumor_images[int(len(env.tumor_images) / 2)][0])
+save_dose_map(env.dose_maps[int(len(env.tumor_images) / 2)][1], env.dose_maps[int(len(env.tumor_images) / 2)][0])
 save_tumor_image(env.tumor_images[int(len(env.tumor_images) * 2 / 3)][1], env.tumor_images[int(len(env.tumor_images) * 2 / 3)][0])
 save_dose_map(env.dose_maps[int(len(env.tumor_images) * 2 / 3)][1], env.dose_maps[int(len(env.tumor_images) * 2 / 3)][0])
 save_tumor_image(env.tumor_images[-1][1], env.tumor_images[-1][0])
 save_dose_map(env.dose_maps[-1][1], env.dose_maps[-1][0])
-ticks = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) *2 / 3)][0], env.tumor_images[-1][0]]
-make_img(ticks, args.fname)
+ticks4 = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 3)][0], env.tumor_images[int(len(env.tumor_images) *2 / 3)][0], env.tumor_images[-1][0]]
+make_img(ticks4, args.fname+'4')
+ticks3 = [env.tumor_images[0][0], env.tumor_images[int(len(env.tumor_images) / 2)][0], env.tumor_images[-1][0]]
+make_img(ticks3, args.fname+'3')
 
 
 ticks, counts, doses = env.dataset
@@ -183,7 +187,7 @@ for i in range(100):
     _, _, doses = env.dataset
     doses_data[i, :len(doses)] = doses
 
-
+np.save(args.fname+'_treatments', doses_data)
 means = np.nanmean(doses_data, 0)
 errs = np.nanstd(doses_data, 0)
 counts = np.count_nonzero(~np.isnan(doses_data), 0)
