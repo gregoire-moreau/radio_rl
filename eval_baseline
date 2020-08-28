@@ -1,4 +1,4 @@
-2020-08-28 01:40:47.768860
+2020-08-28 03:06:01.648146
 Namespace(center=False, fname='baseline', network='DQN', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
 AGENT
 TCP =  0.996
