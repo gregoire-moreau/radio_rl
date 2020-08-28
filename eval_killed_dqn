@@ -1,4 +1,4 @@
-2020-08-27 12:16:23.451565
+2020-08-28 01:49:31.697612
 Namespace(center=False, fname='killed_dqn_new', network='DQN', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
 AGENT
 TCP =  1.0
