@@ -45,7 +45,7 @@ def treatment_var(means_data, err_data, steps, name):
 
 if __name__ == '__main__':
     reward = sys.argv[1]
-    means, std_errs, steps = read_csv_scalar('eval_' + reward + '_scalar')
+    means, std_errs, steps = read_csv_scalar('eval/eval_' + reward + '_scalar')
     treatment_var(means, std_errs, steps, reward + '_scalar')
     '''
     treats = np.load('eval/'+sys.argv[1]+'_treatments.npy')

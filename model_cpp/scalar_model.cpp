@@ -499,7 +499,7 @@ int main(int argc, char * argv[]){
     }
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
-    agent -> test(500, false, 0.99, true);
+    agent -> test(5000, false, 0.99, true);
     agent -> treatment_var(1000);
     //agent -> save_Q(argv[6]);
     delete model;
