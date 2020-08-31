@@ -299,14 +299,14 @@ void TabularAgent::treatment_var(int count){
         }
         if (count_mean == 0)
             break;
-        double mean = (double) sum_mean / (double) count_mean;
+        double mean = (double) sum_mean / (double) count;
         double sum_std = 0.0;
         for(int i = 0; i < count; i++){
-            if (treatments[i][j] > 0){
+            //if (treatments[i][j] > 0){
                 sum_std += pow(((double) treatments[i][j]) - mean, 2.0);
-            }
+            //}
         }
-        double std_error = sqrt(sum_std / (double) count_mean);
+        double std_error = sqrt(sum_std / (double) count);
         cout << count_mean << ", " << mean << ", " << std_error << endl;
     }
     for(int i = 0; i < count; i++){
@@ -500,7 +500,7 @@ int main(int argc, char * argv[]){
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
     agent -> test(500, false, 0.99, true);
-    agent -> treatment_var(100);
+    agent -> treatment_var(1000);
     //agent -> save_Q(argv[6]);
     delete model;
     delete agent;
