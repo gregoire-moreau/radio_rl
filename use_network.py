@@ -114,7 +114,7 @@ avg_rad = 0
 avg_h_cell_killed = 0
 avg_percentage = 0
 avg_doses = 0
-k = 500
+k = 5000
 for i in range(k):
     #print(i)
     agent._runEpisode(100000)
@@ -180,8 +180,8 @@ plt.savefig('tmp/'+args.fname+'_treat')
 plt.clf()
 plt.cla()
 env.dose_map = None
-doses_data = np.full((200, 200), np.nan, dtype=float)
-for i in range(100):
+doses_data = np.full((1000, 200), np.nan, dtype=float)
+for i in range(1000):
     env.init_dataset()
     agent._runEpisode(100000)
     _, _, doses = env.dataset

@@ -1,10 +1,10 @@
-2020-08-28 16:38:55.132095
+2020-08-31 02:51:01.587167
 Namespace(center=False, fname='killed_dqn_new', network='DQN', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
 AGENT
 TCP =  1.0
-Avg rad 35.466
-Avg length in successes 261.072
-Avg number of doses 10.878
-Avg hcells killed 8634.182
-Avg surviving fraction:  1.0060377624009296
+Avg rad 35.7863
+Avg length in successes 263.2416
+Avg number of doses 10.9684
+Avg hcells killed 8621.0658
+Avg surviving fraction:  1.0062387762731346
 done
