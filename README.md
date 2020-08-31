@@ -1,18 +1,10 @@
-This repository contains the code used in the master thesis "Optimizing radiation therapy dose planification using deep reinforcement learning".
-
 The model folder contains the code of the Python implementation of the simulation.
 
 The model_cpp folder contains the code of the C++ implementation of the simulation.
-To use this implementation, it is necessary to use the command:
-python3 setup.py install --user
+To use this implementation, it is necessary to use the command:  
+        python3 setup.py install --user   
 inside the folder to create a module that can be used inside Python code.
 
-
-The deer folder contains a copy of the DeeR package by Vincent François-Lavet that implements the deep reinforcement learning algorithms used in the project.
-To use it, these commands need to be called inside the deer folder.
-pip install -r requirements.txt
-python3 setup.py develop
-It might be possible to delete this local folder and use the deer package as provided by Pip.
 
 The nnets folder contains the neural networks trained with different algorithms and reward functions as explained in the manuscript.
 
