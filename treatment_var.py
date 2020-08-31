@@ -34,7 +34,7 @@ def read_csv_scalar(filename):
 
 def treatment_var(means_data, err_data, steps, name):
     ind_end= len(means_data)
-    while means_data[ind_end-1] == np.nan:
+    while means_data[ind_end-1] == np.nan or means_data[ind_end-1] == 0.0:
         ind_end -= 1
     plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-')
     plt.xlabel('Treatment time (h)')
@@ -44,6 +44,9 @@ def treatment_var(means_data, err_data, steps, name):
 
 
 if __name__ == '__main__':
-    reward = sys.argv[1]
-    means, std_errs, steps = read_csv_scalar('eval_'+reward+'_scalar')
-    treatment_var(means, std_errs, steps, reward+'_scalar')
+    treats = np.load('eval/'+sys.argv[1]+'_treatments.npy')
+    treats[np.isnan(treats)] = 0.0
+    means = np.mean(treats, 0)
+    errs = np.std(treats, 0)
+    steps = [i*(12 if 'ddpg' in sys.argv[1] else 24) for i in range(len(means))]
+    treatment_var(means, errs, steps, sys.argv[1])
