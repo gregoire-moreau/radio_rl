@@ -38,12 +38,12 @@ def treatment_var(means_data, err_data, steps, name):
         ind_end -= 1
     plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-', color='b')
     if 'baseline' not in name:
-        plt.plot([i * 24 for i in range(100)], 2.0, fmt='o-', color='r')
+        plt.plot([i * 24 for i in range(100)], [2.0 for i in range(100)], 'ro-')
     plt.xlabel('Treatment time (h)')
     plt.ylabel('Dose (Gy)')
-    plt.xlim((-1, steps[ind_end]+1))
+    plt.xlim((-1, steps[ind_end-1]+1))
     plt.ylim((-0.1, 5.1))
-    plt.savefig('tmp/' + name + 'var', format='pdf')
+    plt.savefig('tmp/' + name + 'var.pdf', format='pdf')
 
 
 def load_other(name):

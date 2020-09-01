@@ -1,4 +1,4 @@
-2020-09-01 14:29:40.246644
+2020-09-02 00:22:14.622251
 Namespace(center=False, fname='dose_dqn_new', network='DQN', obs_type='densities', resize=False, reward='dose', simulation='c++', special=True, tumor_radius=False)
 TCP =  1.0
 Avg rad 32.095 Std error: 5.2655935088079096

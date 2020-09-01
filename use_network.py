@@ -178,14 +178,14 @@ for i in range(len(ticks)):
     d_counts += [counts[i][0], counts[i][1]]
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
-plt.savefig('tmp/'+args.fname+'_treat', format='pdf')
+plt.savefig('tmp/'+args.fname+'_treat.pdf', format='pdf')
 
 
 #print(ticks, doses)
 plt.clf()
 plt.cla()
 env.dose_map = None
-doses_data = np.full((1000, 200), np.nan, dtype=float)
+doses_data = np.full((1000, 200), 0.0, dtype=float)
 for i in range(1000):
     env.init_dataset()
     agent._runEpisode(100000)
@@ -196,7 +196,7 @@ np.save(args.fname+'_treatments', doses_data)
 means = np.nanmean(doses_data, 0)
 errs = np.nanstd(doses_data, 0)
 counts = np.count_nonzero(~np.isnan(doses_data), 0)
-with open(args.fname+".csv", 'w') as f:
+with open('eval/'+args.fname+".csv", 'w') as f:
     f.write('count, mean, std_error\n')
     for i in range(len(counts)):
         if counts[i] == 0:
