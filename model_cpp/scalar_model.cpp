@@ -262,7 +262,7 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor, bool eva
             squared_doses += doses*doses;
             sum_length += time;
             squared_length += time*time;
-            double survival += (double) HealthyCell::count / (double) init_hcell;
+            double survival = (double) HealthyCell::count / (double) init_hcell;
             sum_survival += survival;
             squared_survival += survival * survival;
         }
@@ -271,22 +271,22 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor, bool eva
     }
     cout << "Average score: " << sum_scores / (double) episodes << " MSE: " << sum_error / (double) episodes << endl;
     if(eval){
-        cout << "TCP: " << 100.0 * (double) sum_w / (double) count << endl;
+        cout << "TCP: " << 100.0 * (double) sum_w / (double) episodes << endl;
 
-        double mean_frac = (double) sum_fracs / (double) count;
-        double std_frac = sqrt(((double) squared_fracs / (double) count) - (mean_frac * mean_frac));
+        double mean_frac = (double) sum_fracs / (double) episodes;
+        double std_frac = sqrt(((double) squared_fracs / (double) episodes) - (mean_frac * mean_frac));
         cout << "Average num of fractions: " << mean_frac << " std error: "<< std_frac <<endl;
 
-        double mean_dose = (double) sum_doses / (double) count;
-        double std_dose = sqrt(((double) squared_doses / (double) count) - (mean_dose * mean_dose));
+        double mean_dose = (double) sum_doses / (double) episodes;
+        double std_dose = sqrt(((double) squared_doses / (double) episodes) - (mean_dose * mean_dose));
         cout << "Average radiation dose: " << mean_dose << " std error: "<< std_dose <<endl;
 
-        double mean_duration = (double) sum_length / (double) count;
-        double std_duration = sqrt(((double) squared_length / (double) count) - (mean_duration * mean_duration));
+        double mean_duration = (double) sum_length / (double) episodes;
+        double std_duration = sqrt(((double) squared_length / (double) episodes) - (mean_duration * mean_duration));
         cout << "Average duration: " << mean_duration << " std error: "<< std_duration <<endl;
 
-        double mean_survival = (double) sum_survival / (double) count;
-        double std_survival = sqrt(((double) squared_survival / (double) count) - (mean_survival * mean_survival));
+        double mean_survival = (double) sum_survival / (double) episodes;
+        double std_survival = sqrt(((double) squared_survival / (double) episodes) - (mean_survival * mean_survival));
         cout << "Average survival: " << mean_survival << " std error: "<< std_survival <<endl;
     }
 }
@@ -473,7 +473,7 @@ void eval_baseline(char reward, int count){
         squared_doses += doses*doses;
         sum_length += time;
         squared_length += time*time;
-        double survival += (double) HealthyCell::count / (double) init_hcell;
+        double survival = (double) HealthyCell::count / (double) init_hcell;
         sum_survival += survival;
         squared_survival += survival * survival;
         if (model -> end_type == 'W')
