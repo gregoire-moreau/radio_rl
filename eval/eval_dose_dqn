@@ -1,10 +1,8 @@
-2020-08-31 03:39:03.624579
+2020-09-01 14:29:40.246644
 Namespace(center=False, fname='dose_dqn_new', network='DQN', obs_type='densities', resize=False, reward='dose', simulation='c++', special=True, tumor_radius=False)
-AGENT
 TCP =  1.0
-Avg rad 32.1822
-Avg length in successes 196.9536
-Avg number of doses 8.2064
-Avg hcells killed 7328.3678
-Avg surviving fraction:  0.9615165751341997
+Avg rad 32.095 Std error: 5.2655935088079096
+Avg length in successes 195.792 Std error: 43.53891059730365
+Avg number of doses 8.158 Std error: 1.814121274887652
+Avg surviving fraction:  0.959946763825084 Std error: 0.040994269327871334
 done
