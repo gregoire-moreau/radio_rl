@@ -109,29 +109,34 @@ else:
     agent.setNetwork(args.fname)
 
 count = 0
-length_success = 0
-avg_rad = 0
-avg_h_cell_killed = 0
-avg_percentage = 0
-avg_doses = 0
-k = 5000
+length_success = []
+avg_rad = []
+avg_h_cell_killed = []
+avg_percentage = []
+avg_doses = []
+k = 1000
 for i in range(k):
     #print(i)
     agent._runEpisode(100000)
     if env.end_type == 'W':
         count += 1
-        length_success += env.get_tick() - 350
-        avg_rad += env.total_dose
-        avg_percentage += env.surviving_fraction()
-        avg_h_cell_killed += env.radiation_h_killed
-        avg_doses += env.num_doses
+    length_success.append(env.get_tick() - 350)
+    avg_rad.append(env.total_dose)
+    avg_percentage.append(env.surviving_fraction())
+    avg_h_cell_killed.append(env.radiation_h_killed)
+    avg_doses.append(env.num_doses)
+
+rads = np.array(avg_rad)
+percentages = np.array(avg_percentage)
+fracs = np.array(avg_doses)
+durations = np.array(length_success)
 
 print("TCP = ", count / k)
-print("Avg rad", avg_rad / k)
-print("Avg length in successes", length_success / k)
-print("Avg number of doses", avg_doses / k)
-print("Avg hcells killed", avg_h_cell_killed / k)
-print("Avg surviving fraction: ", avg_percentage / k)
+print("Avg rad", np.mean(rads), "Std error:", np.std(rads))
+print("Avg length in successes", np.mean(durations), "Std error:", np.std(durations))
+print("Avg number of doses", np.mean(fracs), "Std error:", np.std(fracs))
+#print("Avg hcells killed", avg_h_cell_killed / k)
+print("Avg surviving fraction: ", np.mean(percentages), "Std error:", np.std(percentages))
 #agent.summarizeTestPerformance()
 env.init_dataset()
 env.init_dose_map()
@@ -175,7 +180,7 @@ for i in range(len(ticks)):
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 plt.savefig('tmp/'+args.fname+'_treat')
 
-
+'''
 #print(ticks, doses)
 plt.clf()
 plt.cla()
@@ -200,5 +205,5 @@ with open(args.fname+".csv", 'w') as f:
             f.write(str(counts[i])+", "+str(means[i])+", "+str(errs[i])+"\n")
 steps = [i * (24 if args.network == 'DQN' else 12) for i in range(len(means))]
 treatment_var(means, errs, steps, args.fname)
-
+'''
 env.end()
