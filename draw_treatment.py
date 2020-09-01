@@ -81,7 +81,7 @@ def add_text(base, ticks):
 
 
 def save_base(base, filename):
-    cv2.imwrite('tmp/'+filename+'.png', base)
+    cv2.imwrite('tmp/'+filename+'.pdf', base)
 
 def make_img(ticks, name):
     height = 2350

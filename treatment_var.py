@@ -36,22 +36,27 @@ def treatment_var(means_data, err_data, steps, name):
     ind_end= len(means_data)
     while means_data[ind_end-1] == np.nan or means_data[ind_end-1] == 0.0:
         ind_end -= 1
-    plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-')
+    plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-', color='b')
+    if 'baseline' not in name:
+        plt.plot([i * 24 for i in range(100)], 2.0, fmt='o-', color='r')
     plt.xlabel('Treatment time (h)')
     plt.ylabel('Dose (Gy)')
+    plt.xlim((-1, steps[ind_end]+1))
     plt.ylim((-0.1, 5.1))
-    plt.savefig('tmp/' + name + 'var')
+    plt.savefig('tmp/' + name + 'var', format='pdf')
+
+
+def load_other(name):
+    treats = np.load('eval/'+name+'_treatments.npy')
+    treats[np.isnan(treats)] = 0.0
+    means = np.mean(treats, 0)
+    errs = np.std(treats, 0)
+    steps = [i*(12 if 'ddpg' in sys.argv[1] else 24) for i in range(len(means))]
+    return means, errs, steps
 
 
 if __name__ == '__main__':
     reward = sys.argv[1]
     means, std_errs, steps = read_csv_scalar('eval/eval_' + reward + '_scalar')
     treatment_var(means, std_errs, steps, reward + '_scalar')
-    '''
-    treats = np.load('eval/'+sys.argv[1]+'_treatments.npy')
-    treats[np.isnan(treats)] = 0.0
-    means = np.mean(treats, 0)
-    errs = np.std(treats, 0)
-    steps = [i*(12 if 'ddpg' in sys.argv[1] else 24) for i in range(len(means))]
-    treatment_var(means, errs, steps, sys.argv[1])
-    '''
+

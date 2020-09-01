@@ -178,9 +178,9 @@ for i in range(len(ticks)):
     d_counts += [counts[i][0], counts[i][1]]
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
-plt.savefig('tmp/'+args.fname+'_treat')
+plt.savefig('tmp/'+args.fname+'_treat', format='pdf')
 
-'''
+
 #print(ticks, doses)
 plt.clf()
 plt.cla()
@@ -205,5 +205,5 @@ with open(args.fname+".csv", 'w') as f:
             f.write(str(counts[i])+", "+str(means[i])+", "+str(errs[i])+"\n")
 steps = [i * (24 if args.network == 'DQN' else 12) for i in range(len(means))]
 treatment_var(means, errs, steps, args.fname)
-'''
+
 env.end()
