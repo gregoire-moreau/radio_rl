@@ -192,10 +192,10 @@ for i in range(1000):
     _, _, doses = env.dataset
     doses_data[i, :len(doses)] = doses
 
-np.save(args.fname+'_treatments', doses_data)
+np.save('eval/'+args.fname+'_treatments', doses_data)
 means = np.nanmean(doses_data, 0)
 errs = np.nanstd(doses_data, 0)
-counts = np.count_nonzero(~np.isnan(doses_data), 0)
+counts = np.count_nonzero(doses_data, 0)
 with open('eval/'+args.fname+".csv", 'w') as f:
     f.write('count, mean, std_error\n')
     for i in range(len(counts)):
