@@ -1,4 +1,4 @@
-2020-09-02 01:09:58.373109
+2020-09-02 13:12:55.960547
 Namespace(center=False, fname='baseline', network='DQN', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
 TCP =  0.995
 Avg rad 65.642 Std error: 10.570706504297618

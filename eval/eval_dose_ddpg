@@ -1,4 +1,4 @@
-2020-09-02 02:40:28.679968
+2020-09-02 14:36:48.855801
 Namespace(center=False, fname='dose_ddpg_new', network='DDPG', obs_type='densities', resize=False, reward='dose', simulation='c++', special=True, tumor_radius=False)
 TCP =  1.0
 Avg rad 39.383910634399044 Std error: 5.8967700748274785
