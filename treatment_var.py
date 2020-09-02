@@ -38,7 +38,12 @@ def treatment_var(means_data, err_data, steps, name):
         ind_end -= 1
     plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-', color='b')
     if 'baseline' not in name:
-        plt.plot([i * 24 for i in range(100)], [2.0 for i in range(100)], 'ro-')
+        if 'scalar' in name:
+            means_b, std_errs_b, steps_b = read_csv_scalar('eval/eval_scalar_baseline')
+        else:
+            means_b, std_errs_b, steps_b = load_other('baseline')
+        plt.errorbar(steps_b, means_b, yerr=std_errs_b, fmt='o-', color='b')
+
     plt.xlabel('Treatment time (h)')
     plt.ylabel('Dose (Gy)')
     plt.xlim((-10, steps[ind_end-1]+10))
@@ -51,7 +56,7 @@ def load_other(name):
     treats[np.isnan(treats)] = 0.0
     means = np.mean(treats, 0)
     errs = np.std(treats, 0)
-    steps = [i*(12 if 'ddpg' in sys.argv[1] else 24) for i in range(len(means))]
+    steps = [i*(12 if 'ddpg' in name else 24) for i in range(len(means))]
     return means, errs, steps
 
 

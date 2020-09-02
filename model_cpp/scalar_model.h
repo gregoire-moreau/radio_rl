@@ -38,6 +38,7 @@ public:
     void save_Q(std::string name);
     void load_Q(std::string name);
     void treatment_var(int count);
+    void change_val(int state, int action, double val);
 private:
     ScalarModel * env;
     int cancer_cell_stages;

@@ -548,24 +548,32 @@ void test_suite(char reward){
     high_low_treatment(reward);
 }
 
+void TabularAgent::change_val(int state, int action, double val){
+    Q_values[state][action] = val;
+}
+
 
 int main(int argc, char * argv[]){
     if(argc == 1){
-        eval_baseline('d', 1000);
-        return 0;
+        int n_epochs = 0;
+        char reward = 'd';
+        char state_type = 'i';
+        int cancer_cell_stages = 1;
+        int healthy_cell_stages = 1;
+    }else{
+        int n_epochs = stoi(argv[1]);
+        char reward = argv[2][0];
+        char state_type = argv[3][0];
+        int cancer_cell_stages = stoi(argv[4]);
+        int healthy_cell_stages = stoi(argv[5]);
     }
-    //cout << "Dose "<<endl;
-    //test_suite('d');
-
-    int n_epochs = stoi(argv[1]);
-    char reward = argv[2][0];
-    char state_type = argv[3][0];
-    int cancer_cell_stages = stoi(argv[4]);
-    int healthy_cell_stages = stoi(argv[5]);
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
     if(argc == 8 && argv[7][0] == 'l'){
         agent -> load_Q(argv[6]);
+    }
+    if(argc == 1){
+        change_val(0, 1, 1.0);
     }
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
