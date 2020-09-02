@@ -1,2 +1,8 @@
-2020-09-02 00:35:13.526026
+2020-09-02 02:10:04.758614
 Namespace(center=False, fname='killed_ddpg', network='DDPG', obs_type='densities', resize=False, reward='killed', simulation='c++', special=True, tumor_radius=False)
+TCP =  1.0
+Avg rad 38.49153410129907 Std error: 6.183963336936401
+Avg length in successes 420.94 Std error: 67.70167206206949
+Avg number of doses 35.069 Std error: 5.634202605515709
+Avg surviving fraction:  1.073391325493655 Std error: 0.034085927957225426
+done
