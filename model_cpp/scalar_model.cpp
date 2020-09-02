@@ -560,8 +560,8 @@ int main(int argc, char * argv[]){
         n_epochs = 0;
         reward = 'd';
         state_type = 'i';
-        cancer_cell_stages = 1;
-        healthy_cell_stages = 1;
+        cancer_cell_stages = 50;
+        healthy_cell_stages = 5;
     }else{
         n_epochs = stoi(argv[1]);
         reward = argv[2][0];
@@ -575,7 +575,8 @@ int main(int argc, char * argv[]){
         agent -> load_Q(argv[6]);
     }
     if(argc == 1){
-        agent -> change_val(0, 1, 1.0);
+        for(int i = 0; i < 250; i++)
+            agent -> change_val(i, 1, 1.0);
     }
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
