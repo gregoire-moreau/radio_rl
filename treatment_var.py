@@ -42,7 +42,7 @@ def treatment_var(means_data, err_data, steps, name):
             means_b, std_errs_b, steps_b = read_csv_scalar('eval/eval_scalar_baseline')
         else:
             means_b, std_errs_b, steps_b = load_other('baseline')
-        plt.errorbar(steps_b, means_b, yerr=std_errs_b, fmt='o-', color='b')
+        plt.errorbar(steps_b, means_b, yerr=std_errs_b, fmt='o-', color='r')
 
     plt.xlabel('Treatment time (h)')
     plt.ylabel('Dose (Gy)')

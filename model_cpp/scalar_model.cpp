@@ -575,7 +575,7 @@ int main(int argc, char * argv[]){
         agent -> load_Q(argv[6]);
     }
     if(argc == 1){
-        change_val(0, 1, 1.0);
+        agent -> change_val(0, 1, 1.0);
     }
     //agent -> run(n_epochs, 5000, 10, 0.8, 0.05, 0.8, 0.01, 0.99);
     //agent -> test(5, true, 0.99, false);
