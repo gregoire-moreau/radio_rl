@@ -554,18 +554,20 @@ void TabularAgent::change_val(int state, int action, double val){
 
 
 int main(int argc, char * argv[]){
+    int n_epochs, cancer_cell_stages, healthy_cell_stages;
+    char reward, state_type;
     if(argc == 1){
-        int n_epochs = 0;
-        char reward = 'd';
-        char state_type = 'i';
-        int cancer_cell_stages = 1;
-        int healthy_cell_stages = 1;
+        n_epochs = 0;
+        reward = 'd';
+        state_type = 'i';
+        cancer_cell_stages = 1;
+        healthy_cell_stages = 1;
     }else{
-        int n_epochs = stoi(argv[1]);
-        char reward = argv[2][0];
-        char state_type = argv[3][0];
-        int cancer_cell_stages = stoi(argv[4]);
-        int healthy_cell_stages = stoi(argv[5]);
+        n_epochs = stoi(argv[1]);
+        reward = argv[2][0];
+        state_type = argv[3][0];
+        cancer_cell_stages = stoi(argv[4]);
+        healthy_cell_stages = stoi(argv[5]);
     }
     ScalarModel * model = new ScalarModel(reward);
     TabularAgent * agent = new TabularAgent(model, cancer_cell_stages, healthy_cell_stages, 5, state_type);
