@@ -17,15 +17,15 @@ args = parser.parse_args()
 print(args)
 
 if args.simulation == 'c++':
-    from model_cpp.model_env_cpp import CellEnvironment, transform, transform_densities
+    from model_cpp.model_env_cpp import CellEnvironment, transform_densities
 elif args.simulation == 'py':
-    from cell_environment import CellEnvironment, transform, transform_densities
+    from model.cell_environment import CellEnvironment, transform_densities
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcol
 import numpy as np
-from treatment_var import treatment_var
-from draw_treatment import make_img, make_img3
+from misc.treatment_var import treatment_var
+from misc.draw_treatment import make_img, make_img3
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 def save_tumor_image(data, tick):
@@ -74,10 +74,7 @@ class EmpiricalTreatmentAgent():
 from deer.agent import NeuralAgent
 from deer.learning_algos.q_net_keras import MyQNetwork
 from deer.learning_algos.AC_net_keras import MyACNetwork
-import deer.experiment.base_controllers as bc
 from deer.policies import EpsilonGreedyPolicy
-from other_controllers import GaussianNoiseController, GridSearchController
-from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
 
 rng = np.random.RandomState(123456)
 

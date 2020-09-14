@@ -39,7 +39,7 @@ def treatment_var(means_data, err_data, steps, name):
     plt.errorbar(steps[:ind_end], means_data[:ind_end], yerr=err_data[:ind_end], fmt='o-', color='b')
     if 'baseline' not in name:
         if 'scalar' in name:
-            means_b, std_errs_b, steps_b = read_csv_scalar('eval/eval_scalar_baseline')
+            means_b, std_errs_b, steps_b = read_csv_scalar('../eval/eval_scalar_baseline')
         else:
             means_b, std_errs_b, steps_b = load_other('baseline')
         plt.errorbar(steps_b, means_b, yerr=std_errs_b, fmt='o-', color='r', elinewidth=0.8, linewidth=0.8, mew=0.4, ms=4)

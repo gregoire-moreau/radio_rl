@@ -28,7 +28,7 @@ if args.canicula:
 if args.simulation == 'c++':
     from model_cpp.model_env_cpp import CellEnvironment
 elif args.simulation == 'py':    
-    from cell_environment import CellEnvironment
+    from model.cell_environment import CellEnvironment
 
 
 import numpy as np
@@ -37,8 +37,8 @@ from deer.learning_algos.q_net_keras import MyQNetwork
 from deer.learning_algos.AC_net_keras import MyACNetwork
 import deer.experiment.base_controllers as bc
 from deer.policies import EpsilonGreedyPolicy
-from other_controllers import GaussianNoiseController, GridSearchController
-from GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
+from misc.other_controllers import GaussianNoiseController
+from misc.GaussianNoiseExplorationPolicy import GaussianNoiseExplorationPolicy
 env = CellEnvironment(args.obs_type, args.resize, args.reward, args.network, args.special)
 
 rng = np.random.RandomState(777)
