@@ -1,3 +1,6 @@
+//Defines the interface between the Python package created by setup.py and the C++ code
+
+
 //http://www.speedupcode.com/c-class-in-python3/
 //https://www.tutorialspoint.com/python/python_further_extensions.htm
 //https://scipy-lectures.org/advanced/interfacing_with_c/interfacing_with_c.html#id1

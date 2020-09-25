@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import random
 import matplotlib.colors as mcol
-import cv2
+import cv2 #Requires the package opencv-python
 import math
 try:
     import cppCellModel

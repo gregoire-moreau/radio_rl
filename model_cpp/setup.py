@@ -1,3 +1,4 @@
+#Creates the Python package that allows to interact with the simulation C++ implementation
 try:
     from distutils.core import setup, Extension
     import numpy

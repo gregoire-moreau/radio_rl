@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -std=gnu++11 -g
+CXXFLAGS = -Wall -std=gnu++11
 
 main: scalar_model.o cell.o grid.o
 	$(CXX) $(CXXFLAGS) -o main scalar_model.o cell.o grid.o

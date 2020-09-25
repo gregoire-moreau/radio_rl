@@ -10,14 +10,31 @@ using namespace std;
 default_random_engine generator2(5);
 uniform_real_distribution<double> uni_distribution2(0.0, 1.0);
 
+
+/**
+  * Constructor of Scalar Model
+  *
+  * The scalar model contains all the cells and sources of the 2D model inside a single pixel
+  * The constructor doesn't actually create the simuation as the agent will always first call reset() on the scalar model.
+  *
+  */
 ScalarModel::ScalarModel(char reward): reward(reward), cancer_cells(nullptr), healthy_cells(nullptr), time(0), glucose(0.0), oxygen(0.0), end_type('0'), init_hcell_count(0){
 }
 
+/**
+  * Destructor of the scalar model
+  *
+  */
 ScalarModel::~ScalarModel(){
     delete cancer_cells;
     delete healthy_cells;
 }
 
+/**
+  *
+  * Starts the simulation until the time where the treatment can start (350 hours, cancer cells outnumber healthy cells)
+  *
+  */
 void ScalarModel::reset(){
     delete cancer_cells;
     delete healthy_cells;
@@ -35,6 +52,10 @@ void ScalarModel::reset(){
     init_hcell_count = HealthyCell::count;
 }
 
+/**
+ * Go through all cells in the model and advance them by one hour in their cycle
+ *
+ */
 void ScalarModel::cycle_cells(){
     int hcell_count = HealthyCell::count;
     int ccell_count = CancerCell::count;
@@ -64,11 +85,18 @@ void ScalarModel::cycle_cells(){
     cancer_cells -> deleteDeadAndSort();
 }
 
+/**
+  * Add new nutrients to the model
+  *
+  */
 void ScalarModel::fill_sources(){
     glucose += 13000.0;
     oxygen += 450000.0;
 }
 
+/**
+  * Simulate one hour
+  */
 void ScalarModel::go(int i){
     for(int x = 0; x < i; x++){
         time++;
@@ -77,6 +105,11 @@ void ScalarModel::go(int i){
     }
 }
 
+/**
+ * Irradiate all cells in the model with a certain dose
+ *
+ * @param dose The dose of radiation (in grays)
+ */
 void ScalarModel::irradiate(int dose){
     CellNode * current_h = healthy_cells -> head;
     while(current_h){
@@ -92,6 +125,11 @@ void ScalarModel::irradiate(int dose){
     cancer_cells -> deleteDeadAndSort();
 }
 
+/**
+  * Apply the action selected by the agent and let 24 hours pass
+  *
+  * This action will be the irradiation dose -1 (as the action space starts at 0 Gy)
+  */
 double ScalarModel::act(int action){
     int dose = action + 1;
     int pre_hcell = HealthyCell::count;
@@ -105,6 +143,10 @@ double ScalarModel::act(int action){
     return adjust_reward(dose, pre_ccell - post_ccell, pre_hcell-min(post_hcell, m_hcell));
 }
 
+/**
+  * Compute the reward to the agent after the action was applied to the environment
+  *
+  */
 double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
     //cout << dose << " " << reward << " " << ccell_killed << " " << hcells_lost << endl;
     if (inTerminalState() && reward != 'n'){
@@ -126,6 +168,10 @@ double ScalarModel::adjust_reward(int dose, int ccell_killed, int hcells_lost){
     }
 }
 
+/**
+  * Returns true if the simulation has reached a terminal state
+  *
+  */
 bool ScalarModel::inTerminalState(){
     if (CancerCell::count <= 0){
         end_type = 'W';

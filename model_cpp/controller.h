@@ -1,7 +1,3 @@
-//
-// Created by grego on 01/02/2020.
-//
-
 #ifndef RADIO_RL_CONTROLLER_H
 #define RADIO_RL_CONTROLLER_H
 

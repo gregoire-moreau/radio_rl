@@ -1,7 +1,3 @@
-//
-// Created by grego on 18/01/2020.
-//
-
 #ifndef RADIO_RL_GRID_H
 #define RADIO_RL_GRID_H
 
