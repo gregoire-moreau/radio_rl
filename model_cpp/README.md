@@ -28,5 +28,5 @@ Files only used in the scalar model:
 
 You can install the scalar model by calling 
 ```
-main
+make
 ```
