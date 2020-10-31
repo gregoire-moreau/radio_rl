@@ -321,19 +321,19 @@ void TabularAgent::test(int episodes, bool verbose, double disc_factor, bool eva
 
         double mean_frac = (double) sum_fracs / (double) episodes;
         double std_frac = sqrt(((double) squared_fracs / (double) episodes) - (mean_frac * mean_frac));
-        cout << "Average num of fractions: " << mean_frac << " std error: "<< std_frac <<endl;
+        cout << "Average num of fractions: " << mean_frac << " std dev: "<< std_frac <<endl;
 
         double mean_dose = (double) sum_doses / (double) episodes;
         double std_dose = sqrt(((double) squared_doses / (double) episodes) - (mean_dose * mean_dose));
-        cout << "Average radiation dose: " << mean_dose << " std error: "<< std_dose <<endl;
+        cout << "Average radiation dose: " << mean_dose << " std dev: "<< std_dose <<endl;
 
         double mean_duration = (double) sum_length / (double) episodes;
         double std_duration = sqrt(((double) squared_length / (double) episodes) - (mean_duration * mean_duration));
-        cout << "Average duration: " << mean_duration << " std error: "<< std_duration <<endl;
+        cout << "Average duration: " << mean_duration << " std dev: "<< std_duration <<endl;
 
         double mean_survival = (double) sum_survival / (double) episodes;
         double std_survival = sqrt(((double) squared_survival / (double) episodes) - (mean_survival * mean_survival));
-        cout << "Average survival: " << mean_survival << " std error: "<< std_survival <<endl;
+        cout << "Average survival: " << mean_survival << " std dev: "<< std_survival <<endl;
     }
 }
 

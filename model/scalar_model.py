@@ -1,4 +1,4 @@
-import math
+from math import exp, log, ceil, floor
 import matplotlib.pyplot as plt
 from model.cell import CancerCell, HealthyCell, OARCell
 import random
@@ -87,14 +87,14 @@ class ScalarModel:
                 return -1
             else:
                 if self.reward == 'dose':
-                    return - dose / 400 + 0.5 - (self.init_hcell_count - HealthyCell.cell_count) / 3000
+                    return - dose / 200.0 + 0.5 + HealthyCell.cell_count / 4000.0
                 else:
-                    return 0.5 - (self.init_hcell_count - HealthyCell.cell_count) / 3000#(cppCellModel.HCellCount() / self.init_hcell_count) - 0.5 - (2 * hcells_lost/2500)
+                    return 0.5 + HealthyCell.cell_count / 4000.0
         else:
             if self.reward == 'dose' or self.reward == 'oar':
-                return - dose / 400 + (ccell_killed - 5 * hcells_lost)/100000
+                return - dose / 200.0 + (ccell_killed - 5.0 * hcells_lost) / 100000.0
             elif self.reward == 'killed':
-                return (ccell_killed - 5 * hcells_lost)/100000
+                return  (ccell_killed - int(self.reward) * hcells_lost)/100000.0
 
     def inTerminalState(self):
         if CancerCell.cell_count <= 0 :
@@ -122,20 +122,32 @@ class ScalarModel:
 
 class TabularLearner:
 
-    def __init__(self, env, cancer_cell_stages, healthy_cell_stages, actions):
+    def __init__(self, env, cancer_cell_stages, healthy_cell_stages, actions, state_type):
         self.env = env
         self.cancer_cell_stages = cancer_cell_stages
         self.healthy_cell_stages = healthy_cell_stages
         self.actions = actions
+        self.state_type = state_type
         self.Q = np.zeros((cancer_cell_stages, healthy_cell_stages, actions), dtype=float)
-        self.log_base_hcell = math.exp(math.log(4000) / (self.healthy_cell_stages - 1))
-        self.log_base_ccell = math.exp(math.log(40000) / (self.cancer_cell_stages - 1))
+        if (state_type == 'o'): #log
+            self.state_helper_hcells = exp(log(3500.0) / (healthy_cell_stages - 2.0))
+            self.state_helper_ccells = exp(log(40000.0) / (cancer_cell_stages - 2.0))
+        else: # lin
+            self.state_helper_hcells = 3500.0 / (healthy_cell_stages - 2.0)
+            self.state_helper_ccells = 40000.0 / (cancer_cell_stages - 2.0)
 
     def ccell_state(self, count):
-        return min(self.cancer_cell_stages - 1, math.floor(math.log(count + 1, self.log_base_ccell)))
+        if (self.state_type == 'o'): # log
+            return min(self.cancer_cell_stages - 1, int(ceil(log(CancerCell.cell_count + 1) / log(self.state_helper_ccells))))
+        else:
+            return min(self.cancer_cell_stages - 1, int(ceil(CancerCell.cell_count / self.state_helper_ccells)))
+
 
     def hcell_state(self, count):
-        return min(self.cancer_cell_stages - 1, math.floor(math.log(count + 1, self.log_base_hcell)))
+        if (self.state_type == 'o'): # log
+            return min(self.healthy_cell_stages - 1, ceil(log(max(HealthyCell.cell_count -8, 1) ) / log(self.state_helper_hcells)))
+        else:
+            return min(self.healthy_cell_stages - 1, int(ceil(max(HealthyCell.cell_count - 9, 0) / self.state_helper_hcells)))
 
     def convert(self, obs):
         return self.ccell_state(obs[1]), self.hcell_state(obs[0])
@@ -159,33 +171,73 @@ class TabularLearner:
             if steps > 0:
                 self.env.reset()
 
-    def test(self, steps, verbose=False):
-        sum_r = 0
-        count = steps
-        self.env.reset()
-        while steps > 0:
-            while not self.env.inTerminalState() and steps > 0:
+
+    def test(self, episodes, disc_factor, verbose=False, eval=False):
+        sum_scores = 0.0
+        sum_error = 0.0
+        lengths_arr = []
+        fracs_arr = []
+        doses_arr = []
+        sum_w = 0
+        survivals_arr = []
+        for _ in range(episodes):
+            self.env.reset()
+            sum_r = 0
+            err = 0.0
+            count = 0
+            fracs = 0
+            doses = 0
+            time = 0
+            init_hcell = HealthyCell.cell_count
+            while not self.env.inTerminalState():
                 state = self.convert(self.env.observe())
                 action = np.argmax(self.Q[state])
+                r = self.env.act(action)
                 if verbose:
-                    print(action + 1, "grays")
-                sum_r += self.env.act(action)
-                steps -= 1
-            if steps > 0:
+                    print(action + 1, "grays, reward =", r)
+                fracs += 1
+                doses += action + 1
+                time += 24
+                sum_r += r
+                new_state = self.convert(self.env.observe())
+                err += pow(r + disc_factor * self.Q[new_state][action] - self.Q[state][action], 2.0)
+                count += 1
+            if verbose:
                 print(self.env.end_type)
-                self.env.reset()
-        print("Average reward = ", sum_r / count)
+            if self.env.end_type == 'W':
+                sum_w += 1
+            if eval:
+                fracs_arr.append(fracs)
+                doses_arr.append(doses)
+                lengths_arr.append(time)
+                survival = HealthyCell.cell_count / init_hcell
+                survivals_arr.append(survival)
+            sum_scores += sum_r
+            sum_error += err / count
+        fracs_arr = np.array(fracs_arr)
+        doses_arr = np.array(doses_arr)
+        lengths_arr = np.array(lengths_arr)
+        survivals_arr = np.array(survivals_arr)
+        print("Average score:", sum_scores / episodes, "MSE:", sum_error / episodes)
+        if eval:
+            print("TCP: " , 100.0 *sum_w /episodes)
+            print("Average num of fractions: ", np.mean(fracs_arr), " std dev: ", np.std(fracs_arr))
+            print("Average radiation dose: ", np.mean(doses_arr), " std dev: ", np.std(doses_arr))
+            print("Average duration: ", np.mean(lengths_arr), " std dev: ", np.std(lengths_arr))
+            print("Average survival: ", np.mean(survivals_arr), " std dev: ", np.std(survivals_arr))
+
 
     def run(self, n_epochs, train_steps, test_steps, init_alpha, alpha_mult, init_epsilon, final_epsilon, disc_factor):
-        self.test(test_steps)
+        self.test(test_steps, disc_factor)
         alpha = init_alpha
         epsilon = init_epsilon
         epsilon_change = (init_epsilon - final_epsilon) / (n_epochs - 1)
+        alpha_change = (init_alpha - alpha_mult) / (n_epochs - 1)
         for i in range(n_epochs):
             print("Epoch ", i + 1)
             self.train(train_steps, alpha, epsilon, disc_factor)
-            self.test(test_steps)
-            alpha *= alpha_mult
+            self.test(test_steps, disc_factor)
+            alpha -= alpha_change
             epsilon -= epsilon_change
 
     def save_Q(self, name):
